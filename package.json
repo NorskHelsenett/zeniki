@@ -37,7 +37,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/NorskHelsenett/zeniki"
+    "url": "git+https://github.com/NorskHelsenett/zeniki.git"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

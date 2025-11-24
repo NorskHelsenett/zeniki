@@ -11,6 +11,7 @@ jobs:
     permissions:
       id-token: write  # Required for npm provenance/trusted publishing
       contents: write
+      packages: write
 
     steps:
       - uses: actions/checkout@v4
@@ -49,6 +50,9 @@ jobs:
           git commit -m "chore: update version to ${{ steps.version.outputs.version }}" || true
           git push origin ${{ github.event.repository.default_branch }}
 
+      - name: NPM Update
+        run: npm install -g npm@latest
+        
       - name: Install dependencies
         run: npm install
 
