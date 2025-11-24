@@ -1,0 +1,8 @@
+src/
+test/
+test_/
+coverage/
+*.config.js
+.eslintrc.js
+tsconfig*.json
+.env

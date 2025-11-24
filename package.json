@@ -1,0 +1,73 @@
+{
+  "name": "@norskhelsenett/zeniki",
+  "version": "0.3.23",
+  "description": "A API communication library for commonly used network hardware and tools",
+  "author": {
+    "name": "Kevin Andre Vatn",
+    "email": "kevin.vatn@nhn.no",
+    "url": "https://www.nhn.no/"
+  },
+  "contributors": [
+    {
+      "name": "Carl-Fredrik Lund",
+      "email": "carl-fredrik.lund@nhn.no",
+      "url": "https://www.nhn.no/"
+    }
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE",
+    "zeniki-logo.png"
+  ],
+  "scripts": {
+    "build": "npm run clean && npm run compile",
+    "compile": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm install && npm run build",
+    "dev": "ts-node src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NorskHelsenett/zeniki"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "keywords": [
+    "NHN",
+    "Zeniki",
+    "API Communications library",
+    "API abstraction drivers"
+  ],
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/lodash.differencewith": "^4.5.9",
+    "@types/node": "^24.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.41.0",
+    "@typescript-eslint/parser": "^8.41.0",
+    "dotenv": "^17.2.2",
+    "eslint": "^9.34.0",
+    "jest": "^30.1.2",
+    "mongodb": "^6.20.0",
+    "node-ts": "^8.0.7",
+    "ts-jest": "^29.4.1",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "lodash.differencewith": "^4.5.0",
+    "logform": "^2.7.0",
+    "winston-transport": "^4.9.0",
+    "yaml": "^2.8.1"
+  }
+}
