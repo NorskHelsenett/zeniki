@@ -1,6 +1,6 @@
 {
   "name": "@norskhelsenett/zeniki",
-  "version": "0.3.23",
+  "version": "0.3.24",
   "description": "A API communication library for commonly used network hardware and tools",
   "author": {
     "name": "Kevin Andre Vatn",
