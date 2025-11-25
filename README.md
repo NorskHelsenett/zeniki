@@ -10,7 +10,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-blue.svg)](https://www.typescriptlang.org/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Zeniki is a modern TypeScript library that provides type-safe, well-documented drivers for network infrastructure platforms including NetBox IPAM, FortiGate firewalls, VMware NSX, and Network Automation Management (NAM) v2. Features comprehensive type safety with NHN-specific custom field types, immutable API responses, and enterprise-grade network automation capabilities.
+Zeniki is a modern TypeScript library that provides type-safe, well-documented drivers for network infrastructure platforms including NetBox IPAM, FortiGate firewalls, VMware NSX, and Network Architecture Management (NAM) v2. Features comprehensive type safety with NHN-specific custom field types, immutable API responses, and enterprise-grade network automation capabilities.
 
 ## Installation
 
@@ -82,7 +82,10 @@ console.log(`Found ${prefixes.count} active prefixes`);
 - 📖 **[NetBox Driver](src/core/tools/netbox/README.md)** - Complete IPAM and DCIM management
 - 🛡️ **[FortiOS Driver](src/core/hw/fortinet/README.md)** - Enterprise firewall management  
 - 🔧 **[VMware NSX Driver](src/core/hw/vmware/README.md)** - Software-defined networking
-- 🌐 **[NAM v2 Driver](src/core/tools/nhn/nam-v2/README.md)** - Network automation management
+- 🌐 **[NAM v2 Driver](src/core/tools/nhn/nam-v2/README.md)** - Network architecture management
+
+### Utilities
+- ⚙️ **[EnvLoader](src/core/utils/README.md)** - Configuration and secrets management
 
 ### Logging
 - 📊 **[Winston HEC Logger](src/core/loggers/README.md)** - Splunk HTTP Event Collector transport

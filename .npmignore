@@ -1,3 +1,5 @@
+config/
+secrets/
 src/
 test/
 test_/
@@ -6,3 +8,5 @@ coverage/
 .eslintrc.js
 tsconfig*.json
 .env
+secrets.*
+config.*
