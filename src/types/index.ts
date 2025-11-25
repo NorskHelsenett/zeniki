@@ -75,7 +75,13 @@ export * from "./tools/nhn/nam-v2/nam-api-endpoint";
 export * from "./tools/nhn/nam-v2/nam-api-endpoint-ssl";
 export * from "./tools/nhn/nam-v2/nam-fortios-vdom";
 export * from "./tools/nhn/nam-v2/integrators/nam-netbox-integrator";
+export * from "./tools/nhn/nam-v2/integrators/nam-ror-integrator";
 export * from "./tools/nhn/nam-v2/shared/nam-default-fields";
 export * from "./tools/nhn/nam-v2/shared/nam-params";
 export * from "./tools/nhn/nam-v2/shared/nam-api-endpoint-types";
-export * from "./tools/nhn/nam-v2/shared/nam-response"; 
+export * from "./tools/nhn/nam-v2/shared/nam-response";
+
+// ===== ROR V1 TYPES =====
+export * from "./tools/nhn/ror-v1/clusters/ror-cluster-control-plane-metadata";
+export * from "./tools/nhn/ror-v1/clusters/ror-cluster-control-plane-metadata-ip";
+export * from "./tools/nhn/ror-v1/clusters/ror-cluster-control-plane-metadata-datacenter";

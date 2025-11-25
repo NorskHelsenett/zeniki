@@ -26,6 +26,7 @@ import {
   HTTPError,
   NAMAPIEndpoint,
   NAMNetboxIntegrator,
+  NAMRorIntegrator,
 } from "../../../../types";
 import { NAMParams } from "../../../../types/tools/nhn/nam-v2/shared/nam-params";
 import { ObjectId } from "mongodb";
@@ -129,7 +130,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
 
     if (response.ok) {
       return await response.json();
-   } else {
+    } else {
       throw new HTTPError(response.statusText, response.status, response);
     }
   }
@@ -308,6 +309,223 @@ export class NAMv2Driver extends ZenikiCoreDriver {
     const response = await this.delete<NAMNetboxIntegrator>(
       this.config.baseURL +
         `/vendors/netbox/netbox-integrators/${id}/` +
+        queryBuilderSync(params as any),
+      { ...this.config, method: "DELETE" }
+    );
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new HTTPError(response.statusText, response.status, response);
+    }
+  }
+
+  /**
+   * Retrieve a specific ROR integrator by MongoDB ObjectId or string identifier.
+   * Returns complete integrator configuration including associated endpoints and synchronization settings.
+   *
+   * @param id MongoDB ObjectId or string identifier of the ROR integrator
+   * @param params optional query parameters for filtering and pagination
+   * @returns Promise resolving to NAMRorIntegrator response
+   *
+   * @example
+   * ```typescript
+   * const response = await nam.getRorIntegrator('674d7b2c8f1e4a1b2c3d4e5f');
+   * const integrator = await response.json();
+   * console.log(`Integrator: ${integrator.name}, Priority: ${integrator.sync_priority}`);
+   * ```
+   */
+  async getRorIntegrator(
+    id: string | ObjectId,
+    params?: { [key: string]: any } | NAMParams | URLSearchParams
+  ): Promise<NAMRorIntegrator | undefined> {
+    const response = await this.get<NAMRorIntegrator>(
+      this.config.baseURL +
+        `/vendors/nhn/ror-integrators/${id}/` +
+        queryBuilderSync(params as any),
+      { ...this.config, method: "GET" }
+    );
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new HTTPError(response.statusText, response.status, response);
+    }
+  }
+
+  /**
+   * Retrieve paginated list of ROR integrators with optional filtering capabilities.
+   * Supports filtering by enabled state, priority level, and custom field values.
+   *
+   * @param params optional query parameters for filtering, pagination, and ordering
+   * @returns Promise resolving to paginated NAMRorIntegrator collection
+   *
+   * @example
+   * ```typescript
+   * const integrators = await nam.getRorIntegrators({
+   *   enabled: true,
+   *   sync_priority: 'high',
+   *   limit: 50
+   * });
+   * ```
+   */
+  async getRorIntegrators(
+    params?: { [key: string]: any } | NAMParams | URLSearchParams
+  ): Promise<NAMResponse<NAMRorIntegrator> | undefined> {
+    const response = await this.get<NAMResponse<NAMRorIntegrator>>(
+      this.config.baseURL +
+        `/vendors/nhn/ror-integrators/` +
+        queryBuilderSync(params as any),
+      { ...this.config, method: "GET" }
+    );
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new HTTPError(response.statusText, response.status, response);
+    }
+  }
+
+  /**
+   * Create a new ROR integrator configuration with multi-vendor endpoint associations.
+   *
+   * @param integrator NAMRorIntegrator configuration object with required and optional properties
+   * @param params optional query parameters for creation context
+   * @returns Promise resolving to created NAMRorIntegrator response
+   *
+   * @example
+   * ```typescript
+   * const integrator = {
+   *   name: 'production-sync',
+   *   sync_priority: 'high',
+   *   enabled: true,
+   *   netbox_endpoint: '674d7b2c8f1e4a1b2c3d4e5f',
+   *   fortigate_endpoints: [{ endpoint: '674d7b2c8f1e4a1b2c3d4e60' }]
+   * };
+   * const response = await nam.addRorIntegrator(integrator);
+   * const result = await response.json();
+   * console.log(`Created integrator: ${result.name}`);
+   * ```
+   */
+  async addRorIntegrator(
+    integrator: NAMRorIntegrator,
+    params?: { [key: string]: any } | NAMParams | URLSearchParams
+  ): Promise<NAMRorIntegrator | undefined> {
+    const response = await this.post<NAMRorIntegrator>(
+      this.config.baseURL +
+        `/vendors/nhn/ror-integrators/` +
+        queryBuilderSync(params as any),
+      { ...this.config, method: "POST", body: JSON.stringify(integrator) }
+    );
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new HTTPError(response.statusText, response.status, response);
+    }
+  }
+
+  /**
+   * Update existing ROR integrator with partial configuration changes.
+   * Allows modification of priority, endpoints, custom fields, and synchronization settings.
+   *
+   * @param id MongoDB ObjectId or string identifier of the integrator to update
+   * @param integrator Partial NAMRorIntegrator object with properties to modify
+   * @param params optional query parameters for update context
+   * @returns Promise resolving to updated NAMRorIntegrator response
+   *
+   * @example
+   * ```typescript
+   * const updates = {
+   *   sync_priority: 'critical',
+   *   enabled: false
+   * };
+   * const response = await nam.patchRorIntegrator('674d7b2c8f1e4a1b2c3d4e5f', updates);
+   * const result = await response.json();
+   * console.log(`Updated integrator: ${result.name}`);
+   * ```
+   */
+  async patchRorIntegrator(
+    id: string | ObjectId,
+    integrator: Partial<NAMRorIntegrator>,
+    params?: { [key: string]: any } | NAMParams | URLSearchParams
+  ): Promise<NAMRorIntegrator | undefined> {
+    const response = await this.patch<NAMRorIntegrator>(
+      this.config.baseURL +
+        `/vendors/nhn/ror-integrators/${id}/` +
+        queryBuilderSync(params as any),
+      { ...this.config, method: "PATCH", body: JSON.stringify(integrator) }
+    );
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new HTTPError(response.statusText, response.status, response);
+    }
+  }
+
+  /**
+   * Replace existing ROR integrator with complete new configuration.
+   * Performs full replacement of integrator settings including all endpoints and custom fields.
+   *
+   * @param id MongoDB ObjectId or string identifier of the integrator to replace
+   * @param integrator Complete NAMRorIntegrator configuration object
+   * @param params optional query parameters for replacement context
+   * @returns Promise resolving to updated NAMRorIntegrator response
+   *
+   * @example
+   * ```typescript
+   * const integrator = {
+   *   name: 'updated-integrator',
+   *   sync_priority: 'medium',
+   *   enabled: true,
+   *   netbox_endpoint: '674d7b2c8f1e4a1b2c3d4e5f'
+   * };
+   * const response = await nam.updateRorIntegrator('674d7b2c8f1e4a1b2c3d4e5f', integrator);
+   * const result = await response.json();
+   * console.log(`Replaced integrator: ${result.name}`);
+   * ```
+   */
+  async updateRorIntegrator(
+    id: string | ObjectId,
+    integrator: NAMRorIntegrator,
+    params?: { [key: string]: any } | NAMParams | URLSearchParams
+  ): Promise<NAMRorIntegrator | undefined> {
+    const response = await this.put<NAMRorIntegrator>(
+      this.config.baseURL +
+        `/vendors/nhn/ror-integrators/${id}/` +
+        queryBuilderSync(params as any),
+      { ...this.config, method: "PUT", body: JSON.stringify(integrator) }
+    );
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new HTTPError(response.statusText, response.status, response);
+    }
+  }
+
+  /**
+   * Delete ROR integrator configuration and remove all associated synchronization schedules.
+   * Permanently removes integrator from NAM v2 system with cascade cleanup of related data.
+   *
+   * @param id MongoDB ObjectId or string identifier of the integrator to delete
+   * @param params optional query parameters for deletion context
+   * @returns Promise resolving to deleted NAMRorIntegrator response
+   *
+   * @example
+   * ```typescript
+   * await nam.deleteRorIntegrator('674d7b2c8f1e4a1b2c3d4e5f');
+   * console.log('Integrator deleted successfully');
+   * ```
+   */
+  async deleteRorIntegrator(
+    id: string | ObjectId,
+    params?: { [key: string]: any } | NAMParams | URLSearchParams
+  ): Promise<NAMRorIntegrator | undefined> {
+    const response = await this.delete<NAMRorIntegrator>(
+      this.config.baseURL +
+        `/vendors/nhn/ror-integrators/${id}/` +
         queryBuilderSync(params as any),
       { ...this.config, method: "DELETE" }
     );
