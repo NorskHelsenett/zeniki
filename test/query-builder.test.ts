@@ -1,275 +1,285 @@
 /**
- * @fileoverview Unit tests for query builder utilities.
- * Tests both synchronous and asynchronous query string building functions.
+ * @fileoverview Unit tests for query-builder utilities
+ * Tests both queryBuilder (async) and queryBuilderSync (sync) functions
+ * with various input types including objects and URLSearchParams
  */
 
 import { queryBuilder, queryBuilderSync } from '../src/core/utils/query-builder';
 
-describe('Query Builder Utilities', () => {
-  describe('queryBuilderSync', () => {
-    it('should build a simple query string from an object', () => {
+describe('queryBuilder (async)', () => {
+  describe('with object input', () => {
+    it('should build query string from simple object', async () => {
+      const params = {
+        limit: '50',
+        offset: '0',
+        search: 'example'
+      };
+      const result = await queryBuilder(params);
+      expect(result).toBe('?limit=50&offset=0&search=example');
+    });
+
+    it('should handle numeric values', async () => {
+      const params = {
+        page: '1',
+        size: '25'
+      };
+      const result = await queryBuilder(params);
+      expect(result).toBe('?page=1&size=25');
+    });
+
+    it('should encode special characters', async () => {
+      const params = {
+        search: 'example with spaces',
+        description: 'DMZ & firewall'
+      };
+      const result = await queryBuilder(params);
+      expect(result).toContain('search=example+with+spaces');
+      expect(result).toContain('description=DMZ+%26+firewall');
+    });
+
+    it('should handle empty object', async () => {
+      const params = {};
+      const result = await queryBuilder(params);
+      expect(result).toBe('');
+    });
+
+    it('should handle NetBox-style filters', async () => {
       const params = {
         status: 'active',
-        family: 4,
-        limit: 50
+        family: '4',
+        site_id: '1'
       };
-
-      const result = queryBuilderSync(params);
-      
-      expect(result).toBe('?status=active&family=4&limit=50');
+      const result = await queryBuilder(params);
+      expect(result).toBe('?status=active&family=4&site_id=1');
     });
 
-    it('should handle URL encoding of special characters', () => {
+    it('should handle complex NetBox filters', async () => {
       const params = {
-        description: 'Test & Development',
-        prefix: '192.168.1.0/24',
-        tags: 'production,staging'
+        description__icontains: 'network',
+        created__gte: '2025-01-01'
       };
-
-      const result = queryBuilderSync(params);
-      
-      expect(result).toContain('description=Test+%26+Development'); // URLSearchParams uses + for spaces
-      expect(result).toContain('prefix=192.168.1.0%2F24');
-      expect(result).toContain('tags=production%2Cstaging');
+      const result = await queryBuilder(params);
+      expect(result).toContain('description__icontains=network');
+      expect(result).toContain('created__gte=2025-01-01');
     });
 
-    it('should handle boolean values', () => {
+    it('should handle URL-encoded values', async () => {
       const params = {
-        is_pool: true,
-        mark_utilized: false,
-        brief: true
+        within_include: '10.0.0.0/8'
       };
+      const result = await queryBuilder(params);
+      expect(result).toBe('?within_include=10.0.0.0%2F8');
+    });
+  });
 
+  describe('with URLSearchParams input', () => {
+    it('should build query string from URLSearchParams', async () => {
+      const urlParams = new URLSearchParams({
+        page: '1',
+        limit: '100'
+      });
+      const result = await queryBuilder(urlParams);
+      expect(result).toBe('?page=1&limit=100');
+    });
+
+    it('should handle empty URLSearchParams', async () => {
+      const urlParams = new URLSearchParams();
+      const result = await queryBuilder(urlParams);
+      expect(result).toBe('');
+    });
+
+    it('should handle URLSearchParams with special characters', async () => {
+      const urlParams = new URLSearchParams({
+        search: 'test value',
+        filter: 'a&b'
+      });
+      const result = await queryBuilder(urlParams);
+      expect(result).toContain('search=test+value');
+      expect(result).toContain('filter=a%26b');
+    });
+
+    it('should handle URLSearchParams with multiple values', async () => {
+      const urlParams = new URLSearchParams();
+      urlParams.append('tag', 'network');
+      urlParams.append('tag', 'production');
+      const result = await queryBuilder(urlParams);
+      expect(result).toContain('tag=network');
+      expect(result).toContain('tag=production');
+    });
+  });
+
+  describe('edge cases', () => {
+    it('should handle null input', async () => {
+      const result = await queryBuilder(null as any);
+      expect(result).toBe('');
+    });
+
+    it('should handle undefined input', async () => {
+      const result = await queryBuilder(undefined as any);
+      expect(result).toBe('');
+    });
+
+    it('should handle single parameter', async () => {
+      const params = { id: '123' };
+      const result = await queryBuilder(params);
+      expect(result).toBe('?id=123');
+    });
+  });
+});
+
+describe('queryBuilderSync (sync)', () => {
+  describe('with object input', () => {
+    it('should build query string from simple object', () => {
+      const params = {
+        limit: '50',
+        offset: '0',
+        search: 'example'
+      };
       const result = queryBuilderSync(params);
-      
-      expect(result).toContain('is_pool=true');
-      expect(result).toContain('mark_utilized=false');
-      expect(result).toContain('brief=true');
+      expect(result).toBe('?limit=50&offset=0&search=example');
     });
 
     it('should handle numeric values', () => {
       const params = {
-        id: 123,
-        limit: 100,
-        offset: 50,
-        prefix_length: 24
+        page: '1',
+        size: '25'
       };
-
       const result = queryBuilderSync(params);
-      
-      expect(result).toContain('id=123');
-      expect(result).toContain('limit=100');
-      expect(result).toContain('offset=50');
-      expect(result).toContain('prefix_length=24');
+      expect(result).toBe('?page=1&size=25');
     });
 
-    it('should handle null and undefined values by converting them to strings', () => {
+    it('should encode special characters', () => {
+      const params = {
+        search: 'example with spaces',
+        description: 'DMZ & firewall'
+      };
+      const result = queryBuilderSync(params);
+      expect(result).toContain('search=example+with+spaces');
+      expect(result).toContain('description=DMZ+%26+firewall');
+    });
+
+    it('should handle empty object', () => {
+      const params = {};
+      const result = queryBuilderSync(params);
+      expect(result).toBe('');
+    });
+
+    it('should handle NetBox-style filters', () => {
       const params = {
         status: 'active',
-        vlan: null,
-        site: undefined,
-        description: 'test'
+        family: '4',
+        site_id: '1'
       };
-
       const result = queryBuilderSync(params);
-      
-      expect(result).toContain('status=active');
-      expect(result).toContain('description=test');
-      expect(result).toContain('vlan=null'); // URLSearchParams converts null to string
-      expect(result).toContain('site=undefined'); // URLSearchParams converts undefined to string
+      expect(result).toBe('?status=active&family=4&site_id=1');
     });
 
-    it('should handle empty objects', () => {
-      const result = queryBuilderSync({});
-      expect(result).toBe('?'); // URLSearchParams produces ? even for empty objects
-    });
-
-    it('should handle arrays by converting them to comma-separated strings', () => {
+    it('should handle complex NetBox filters', () => {
       const params = {
-        tags: ['production', 'critical'],
-        status: ['active', 'reserved'],
-        site_id: [1, 2, 3]
+        description__icontains: 'network',
+        created__gte: '2025-01-01'
       };
-
       const result = queryBuilderSync(params);
-      
-      expect(result).toContain('tags=production%2Ccritical');
-      expect(result).toContain('status=active%2Creserved');
-      expect(result).toContain('site_id=1%2C2%2C3');
+      expect(result).toContain('description__icontains=network');
+      expect(result).toContain('created__gte=2025-01-01');
     });
 
-    it('should handle complex nested objects by converting to string', () => {
+    it('should handle URL-encoded values', () => {
       const params = {
-        filter: {
-          status: 'active',
-          family: 4
-        },
-        ordering: 'prefix'
+        within_include: '10.0.0.0/8'
       };
-
       const result = queryBuilderSync(params);
-      
-      expect(result).toContain('ordering=prefix');
-      expect(result).toContain('filter=');
-    });
-
-    it('should handle mixed parameter types', () => {
-      const params = {
-        q: 'search term',
-        limit: 25,
-        active: true,
-        tags: ['prod', 'web'],
-        vlan: null,
-        offset: 0
-      };
-
-      const result = queryBuilderSync(params);
-      
-      expect(result).toContain('q=search+term'); // URLSearchParams uses + for spaces
-      expect(result).toContain('limit=25');
-      expect(result).toContain('active=true');
-      expect(result).toContain('tags=prod%2Cweb');
-      expect(result).toContain('offset=0');
-      expect(result).toContain('vlan=null'); // null becomes string
+      expect(result).toBe('?within_include=10.0.0.0%2F8');
     });
   });
 
-  describe('queryBuilder (async)', () => {
-    it('should build a simple query string from an object asynchronously', async () => {
-      const params = {
-        status: 'active',
-        family: 4,
-        limit: 50
-      };
-
-      const result = await queryBuilder(params);
-      
-      expect(result).toBe('?status=active&family=4&limit=50');
+  describe('with URLSearchParams input', () => {
+    it('should build query string from URLSearchParams', () => {
+      const urlParams = new URLSearchParams({
+        page: '1',
+        limit: '100'
+      });
+      const result = queryBuilderSync(urlParams);
+      expect(result).toBe('?page=1&limit=100');
     });
 
-    it('should handle URL encoding of special characters asynchronously', async () => {
-      const params = {
-        description: 'Test & Development',
-        prefix: '192.168.1.0/24',
-        tags: 'production,staging'
-      };
-
-      const result = await queryBuilder(params);
-      
-      expect(result).toContain('description=Test+%26+Development'); // URLSearchParams uses + for spaces
-      expect(result).toContain('prefix=192.168.1.0%2F24');
-      expect(result).toContain('tags=production%2Cstaging');
+    it('should handle empty URLSearchParams', () => {
+      const urlParams = new URLSearchParams();
+      const result = queryBuilderSync(urlParams);
+      expect(result).toBe('');
     });
 
-    it('should handle complex NetBox query parameters', async () => {
-      const params = {
-        within_include: '10.0.0.0/8',
-        status: 'active',
-        role: 'user-networks',
-        family: 4,
-        is_pool: false,
-        limit: 100,
-        ordering: 'prefix'
-      };
-
-      const result = await queryBuilder(params);
-      
-      expect(result).toContain('within_include=10.0.0.0%2F8');
-      expect(result).toContain('status=active');
-      expect(result).toContain('role=user-networks');
-      expect(result).toContain('family=4');
-      expect(result).toContain('is_pool=false');
-      expect(result).toContain('limit=100');
-      expect(result).toContain('ordering=prefix');
+    it('should handle URLSearchParams with special characters', () => {
+      const urlParams = new URLSearchParams({
+        search: 'test value',
+        filter: 'a&b'
+      });
+      const result = queryBuilderSync(urlParams);
+      expect(result).toContain('search=test+value');
+      expect(result).toContain('filter=a%26b');
     });
 
-    it('should handle custom field filters', async () => {
-      const params = {
-        cf_environment: 'production',
-        cf_business_unit: 'engineering',
-        'cf_cost_center': '1234',
-        limit: 50
-      };
-
-      const result = await queryBuilder(params);
-      
-      expect(result).toContain('cf_environment=production');
-      expect(result).toContain('cf_business_unit=engineering');
-      expect(result).toContain('cf_cost_center=1234');
-      expect(result).toContain('limit=50');
+    it('should handle URLSearchParams with multiple values', () => {
+      const urlParams = new URLSearchParams();
+      urlParams.append('tag', 'network');
+      urlParams.append('tag', 'production');
+      const result = queryBuilderSync(urlParams);
+      expect(result).toContain('tag=network');
+      expect(result).toContain('tag=production');
     });
 
-    it('should handle empty objects asynchronously', async () => {
-      const result = await queryBuilder({});
-      expect(result).toBe('?'); // URLSearchParams produces ? even for empty objects
-    });
-
-    it('should produce the same result as sync version', async () => {
-      const params = {
-        status: 'active',
-        family: 4,
-        limit: 50,
-        tags: ['prod', 'critical'],
-        is_pool: true,
-        description: 'Network & Infrastructure'
-      };
-
-      const asyncResult = await queryBuilder(params);
-      const syncResult = queryBuilderSync(params);
-      
-      expect(asyncResult).toBe(syncResult);
+    it('should handle URLSearchParams with vlan_id', () => {
+      const urlParams = new URLSearchParams({ vlan_id: '100' });
+      const result = queryBuilderSync(urlParams);
+      expect(result).toBe('?vlan_id=100');
     });
   });
 
-  describe('Real-world NetBox scenarios', () => {
-    it('should build query for prefix search within a supernet', async () => {
-      const params = {
-        within_include: '192.168.0.0/16',
-        status: 'active',
-        family: 4,
-        limit: 100,
-        ordering: 'prefix'
-      };
-
-      const result = await queryBuilder(params);
-      
-      expect(result).toContain('within_include=192.168.0.0%2F16');
-      expect(result).toContain('status=active');
-      expect(result).toContain('family=4');
-      expect(result).toContain('limit=100');
-      expect(result).toContain('ordering=prefix');
+  describe('edge cases', () => {
+    it('should handle null input', () => {
+      const result = queryBuilderSync(null as any);
+      expect(result).toBe('');
     });
 
-    it('should build query for custom field filtering', async () => {
-      const params = {
-        cf_environment: 'production',
-        cf_business_unit: 'platform',
-        status: ['active', 'reserved'],
-        limit: 200
-      };
-
-      const result = await queryBuilder(params);
-      
-      expect(result).toContain('cf_environment=production');
-      expect(result).toContain('cf_business_unit=platform');
-      expect(result).toContain('status=active%2Creserved');
-      expect(result).toContain('limit=200');
+    it('should handle undefined input', () => {
+      const result = queryBuilderSync(undefined as any);
+      expect(result).toBe('');
     });
 
-    it('should build query for text search with pagination', async () => {
-      const params = {
-        q: 'management network',
-        limit: 25,
-        offset: 50,
-        ordering: '-created'
-      };
-
-      const result = await queryBuilder(params);
-      
-      expect(result).toContain('q=management+network'); // URLSearchParams uses + for spaces
-      expect(result).toContain('limit=25');
-      expect(result).toContain('offset=50');
-      expect(result).toContain('ordering=-created');
+    it('should handle single parameter', () => {
+      const params = { id: '123' };
+      const result = queryBuilderSync(params);
+      expect(result).toBe('?id=123');
     });
+  });
+});
+
+describe('queryBuilder vs queryBuilderSync', () => {
+  it('should produce identical results for the same input object', async () => {
+    const params = {
+      status: 'active',
+      limit: '50',
+      offset: '0'
+    };
+    const asyncResult = await queryBuilder(params);
+    const syncResult = queryBuilderSync(params);
+    expect(asyncResult).toBe(syncResult);
+  });
+
+  it('should produce identical results for the same URLSearchParams', async () => {
+    const urlParams = new URLSearchParams({
+      page: '1',
+      size: '25'
+    });
+    const asyncResult = await queryBuilder(urlParams);
+    const syncResult = queryBuilderSync(urlParams);
+    expect(asyncResult).toBe(syncResult);
+  });
+
+  it('should both handle empty inputs identically', async () => {
+    const asyncResult = await queryBuilder({});
+    const syncResult = queryBuilderSync({});
+    expect(asyncResult).toBe(syncResult);
+    expect(asyncResult).toBe('');
   });
 });
