@@ -40,7 +40,7 @@ const fortios = new FortiOSDriver({
 ```typescript
 // Get a specific IPv4 address object
 const address = await fortios.getAddress('web-server-1');
-console.log(`Address: ${address.data.results[0].subnet}, Type: ${address.data.results[0].type}`);
+console.log(`Address: ${address.results[0].subnet}, Type: ${address.results[0].type}`);
 
 // Get all IPv4 address objects with filtering
 const addresses = await fortios.getAddresses({
@@ -48,7 +48,7 @@ const addresses = await fortios.getAddresses({
   count: 50
 });
 
-console.log(`Found ${addresses.data.count} addresses`);
+console.log(`Found ${addresses.count} addresses`);
 
 // Add a new IPv4 address object
 const newAddress = await fortios.addAddress({
@@ -166,8 +166,10 @@ async getAddress(
 ```typescript
 // Get address object by name
 const response = await fortios.getAddress('web-server-1');
-const address = response.data.results[0];
-console.log(`Address: ${address.name}, Subnet: ${address.subnet}`);
+if (response && response.results && response.results.length > 0) {
+  const address = response.results[0];
+  console.log(`Address: ${address.name}, Subnet: ${address.subnet}`);
+}
 
 // Get address with specific VDOM
 const response = await fortios.getAddress('web-server-1', {
@@ -195,7 +197,9 @@ async getAddresses(
 ```typescript
 // Get all IPv4 addresses
 const response = await fortios.getAddresses();
-const addresses = response.data.results;
+if (response && response.results) {
+  const addresses = response.results;
+}
 
 // Get addresses with filtering
 const response = await fortios.getAddresses({
@@ -518,8 +522,8 @@ async function backupAddressConfiguration() {
   
   const backup = {
     timestamp: new Date().toISOString(),
-    addresses: addresses.data.results,
-    groups: groups.data.results
+    addresses: addresses.results,
+    groups: groups.results
   };
   
   return backup;
@@ -575,7 +579,7 @@ async function manageAddressObjects() {
 
   // READ: Get the created address object
   const retrievedAddress = await fortios.getAddress('web-servers');
-  console.log(`Address: ${retrievedAddress.data.results.subnet}`);
+  console.log(`Address: ${retrievedAddress.results.subnet}`);
 
   // UPDATE: Modify the address object
   const updatedAddress = await fortios.updateAddress('web-servers', {
@@ -679,8 +683,8 @@ async function generateComplianceReport() {
   const report = {
     timestamp: new Date().toISOString(),
     summary: {
-      totalAddresses: allAddresses.data.count,
-      totalGroups: allGroups.data.count
+      totalAddresses: allAddresses.count,
+      totalGroups: allGroups.count
     },
     findings: {
       uncommentedObjects: [],
@@ -690,7 +694,7 @@ async function generateComplianceReport() {
   };
 
   // Analyze addresses for compliance
-  for (const address of allAddresses.data.results) {
+  for (const address of allAddresses.results) {
     if (!address.comment || address.comment.trim() === '') {
       report.findings.uncommentedObjects.push({
         type: 'address',
@@ -709,7 +713,7 @@ async function generateComplianceReport() {
   }
 
   // Analyze groups for compliance
-  for (const group of allGroups.data.results) {
+  for (const group of allGroups.results) {
     if (!group.comment || group.comment.trim() === '') {
       report.findings.uncommentedObjects.push({
         type: 'group',

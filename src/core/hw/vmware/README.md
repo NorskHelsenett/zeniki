@@ -39,7 +39,7 @@ const nsx = new VMWareNSXDriver({
 ```typescript
 // Get a specific security group by ID
 const group = await nsx.getGroup('web-servers-group');
-console.log(`Group: ${group.data.display_name}, Type: ${group.data.group_type}`);
+console.log(`Group: ${group.display_name}, Type: ${group.group_type}`);
 
 // Get all security groups with filtering
 const groups = await nsx.getGroups({
@@ -47,7 +47,7 @@ const groups = await nsx.getGroups({
   page_size: 100
 });
 
-console.log(`Found ${groups.data.result_count} groups`);
+console.log(`Found ${groups.result_count} groups`);
 
 // Add a new security group
 const newGroup = await nsx.addGroup('database-servers', {
@@ -190,9 +190,10 @@ async getGroup(
 
 ```typescript
 // Get group from default domain using local manager
-const response = await nsx.getGroup('web-servers-group');
-const group = response.data;
-console.log(`Group: ${group.display_name}, Members: ${group.expression?.length}`);
+const group = await nsx.getGroup('web-servers-group');
+if (group) {
+  console.log(`Group: ${group.display_name}, Members: ${group.expression?.length}`);
+}
 
 // Get group from specific domain
 const response = await nsx.getGroup(
@@ -233,8 +234,10 @@ async getGroups(
 
 ```typescript
 // Get all groups from default domain
-const response = await nsx.getGroups();
-const groups = response.data.results;
+const groups = await nsx.getGroups();
+if (groups && groups.results) {
+  const groupList = groups.results;
+}
 
 // Get groups with pagination
 const response = await nsx.getGroups({
@@ -735,7 +738,7 @@ async function manageSecurityGroups() {
 
   // READ: Get the created group
   const retrievedGroup = await nsx.getGroup('web-servers');
-  console.log(`Group: ${retrievedGroup.data.display_name}`);
+  console.log(`Group: ${retrievedGroup.display_name}`);
 
   // UPDATE: Modify the group (partial update)
   const updatedGroup = await nsx.patchGroup('web-servers', {

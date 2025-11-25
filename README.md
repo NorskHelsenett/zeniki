@@ -72,8 +72,8 @@ const prefixes = await netbox.getPrefixes({
   family: 4
 });
 
-console.log(`Created prefix: ${prefix.data.prefix}`);
-console.log(`Found ${prefixes.data.count} active prefixes`);
+console.log(`Created prefix: ${prefix.prefix}`);
+console.log(`Found ${prefixes.count} active prefixes`);
 ```
 
 ## Documentation
@@ -136,9 +136,8 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 For support and questions:
 
-- 📧 Email: kevin.vatn@nhn.no
 - 🌐 Website: [https://www.nhn.no/](https://www.nhn.no/)
-- 📝 Issues: [Project Issues](git@git.nhn.no:dcn/nam/zeniki.git)
+- 📝 Issues: [GitHub Issues](https://github.com/NorskHelsenett/zeniki/issues)
 
 ---
 

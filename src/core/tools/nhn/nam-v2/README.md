@@ -44,16 +44,20 @@ const nam = new NAMv2Driver({
 ```typescript
 // Get a specific NetBox integrator by ID
 const integrator = await nam.getNetboxIntegrator('674d7b2c8f1e4a1b2c3d4e5f');
-console.log(`Integrator: ${integrator.data.name}, Enabled: ${integrator.data.enabled}`);
+if (integrator) {
+  console.log(`Integrator: ${integrator.name}, Enabled: ${integrator.enabled}`);
+}
 
 // Get all NetBox integrators with filtering
-const integrators = await nam.getNetboxIntegrators({
+const response = await nam.getNetboxIntegrators({
   enabled: true,
   sync_priority: 'high',
   limit: 50
 });
 
-console.log(`Found ${integrators.data.count} active integrators`);
+if (response) {
+  console.log(`Found ${response.count} active integrators`);
+}
 
 // Add a new NetBox integrator
 const newIntegrator = await nam.addNetboxIntegrator({
@@ -178,7 +182,7 @@ async getNetboxIntegrator(
 ```typescript
 // Get integrator by ObjectId string
 const response = await nam.getNetboxIntegrator('674d7b2c8f1e4a1b2c3d4e5f');
-const integrator = response.data;
+const integrator = response;
 console.log(`Integrator: ${integrator.name}, Priority: ${integrator.sync_priority}`);
 
 // Get integrator with query parameters
@@ -206,8 +210,10 @@ async getNetboxIntegrators(
 
 ```typescript
 // Get all NetBox integrators
-const response = await nam.getNetboxIntegrators();
-const integrators = response.data.results;
+const integrators = await nam.getNetboxIntegrators();
+if (integrators && integrators.results) {
+  const integratorList = integrators.results;
+}
 
 // Get enabled integrators with high priority
 const response = await nam.getNetboxIntegrators({
@@ -812,7 +818,7 @@ try {
 async function monitorIntegrators() {
   const integrators = await nam.getNetboxIntegrators({ enabled: true });
   
-  for (const integrator of integrators.data.results) {
+  for (const integrator of integrators.results) {
     console.log(`Integrator: ${integrator.name}`);
     console.log(`Priority: ${integrator.sync_priority}`);
     console.log(`Last Modified: ${integrator.updated_at}`);

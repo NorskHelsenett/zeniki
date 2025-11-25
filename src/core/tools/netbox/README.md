@@ -43,7 +43,9 @@ const netbox = new NetboxDriver({
 ```typescript
 // Get a specific prefix by ID
 const prefix = await netbox.getPrefix(123);
-console.log(`Prefix: ${prefix.data.prefix}, Status: ${prefix.data.status?.label}`);
+if (prefix) {
+  console.log(`Prefix: ${prefix.prefix}, Status: ${prefix.status?.label}`);
+}
 
 // Get all active IPv4 prefixes using string literals (quick prototyping)
 const response = await netbox.getPrefixes({
@@ -52,8 +54,8 @@ const response = await netbox.getPrefixes({
   limit: 50
 });
 
-console.log(`Found ${response.data.count} prefixes`);
-response.data.results.forEach(prefix => {
+console.log(`Found ${response.count} prefixes`);
+response.results.forEach(prefix => {
   console.log(`${prefix.prefix} - ${prefix.description || 'No description'}`);
 });
 
@@ -144,11 +146,13 @@ All API responses return readonly data structures:
 const prefix = await netbox.getPrefix(123);
 
 // Access immutable value-label pairs
-console.log(prefix.data.status);  // { readonly value: 'active', readonly label: 'Active' }
-console.log(prefix.data.site);    // { readonly id: 1, readonly name: 'DC-01', ... }
+if (prefix) {
+  console.log(prefix.status);  // { readonly value: 'active', readonly label: 'Active' }
+  console.log(prefix.site);    // { readonly id: 1, readonly name: 'DC-01', ... }
 
-// ❌ Cannot modify readonly properties (TypeScript prevents this)
-// prefix.data.status.value = 'inactive';  // Error: Cannot assign to readonly property
+  // ❌ Cannot modify readonly properties (TypeScript prevents this)
+  // prefix.status.value = 'inactive';  // Error: Cannot assign to readonly property
+}
 
 // ✅ Create new objects for updates instead
 const updates = {
@@ -228,12 +232,13 @@ async getPrefix(
 
 ```typescript
 // Get prefix with basic information
-const response = await netbox.getPrefix(42);
-const prefix = response.data;
-console.log(`Prefix: ${prefix.prefix}, Status: ${prefix.status?.label}`);
+const prefix = await netbox.getPrefix(42);
+if (prefix) {
+  console.log(`Prefix: ${prefix.prefix}, Status: ${prefix.status?.label}`);
+}
 
 // Get prefix with additional query parameters
-const response = await netbox.getPrefix(42, {
+const prefix2 = await netbox.getPrefix(42, {
   brief: true // NetBox parameter for condensed response
 });
 ```
@@ -252,9 +257,11 @@ async getPrefixes(
 
 ```typescript
 // Get all prefixes (first page with default limit)
-const response = await netbox.getPrefixes();
-const prefixes = response.data.results;
-const totalCount = response.data.count;
+const prefixes = await netbox.getPrefixes();
+if (prefixes) {
+  const results = prefixes.results;
+  const totalCount = prefixes.count;
+}
 
 // Get active IPv4 prefixes with pagination
 const response = await netbox.getPrefixes({
@@ -308,17 +315,19 @@ async getNextAvailablePrefix(
 ```typescript
 // Get all available prefixes within parent prefix ID 42
 const availablePrefixes = await netbox.getNextAvailablePrefix(42);
-console.log(`Found ${availablePrefixes.data.length} available prefixes`);
+console.log(`Found ${availablePrefixes.length} available prefixes`);
 
 // Get available prefixes with specific length filter
-const availablePrefixes = await netbox.getNextAvailablePrefix(42, {
+const availablePrefixes2 = await netbox.getNextAvailablePrefix(42, {
   prefix_length: 24  // Only show /24 suggestions
 });
 
 // Process available prefixes
-availablePrefixes.data.forEach(prefix => {
-  console.log(`Available: ${prefix.prefix}`);
-});
+if (availablePrefixes2) {
+  availablePrefixes2.forEach(prefix => {
+    console.log(`Available: ${prefix.prefix}`);
+  });
+}
 ```
 
 #### `addPrefix(prefix, id?)`
@@ -486,7 +495,7 @@ async getVrf(
 ```typescript
 // Get VRF with basic information
 const response = await netbox.getVrf(10);
-const vrf = response.data;
+const vrf = response;
 console.log(`VRF: ${vrf.name}, RD: ${vrf.rd}`);
 
 // Get VRF with additional query parameters
@@ -719,8 +728,8 @@ async getCustomFields(
 ```typescript
 // Get all custom fields
 const response = await netbox.getCustomFields();
-const customFields = response.data.results;
-const totalCount = response.data.count;
+const customFields = response.results;
+const totalCount = response.count;
 
 // Get custom fields for specific content types
 const response = await netbox.getCustomFields({
@@ -756,7 +765,7 @@ async getCustomFieldChoiceSet(
 ```typescript
 // Get custom field choice set with basic information
 const response = await netbox.getCustomFieldChoiceSet(2);
-const choiceSet = response.data;
+const choiceSet = response;
 console.log(`Choice Set: ${choiceSet.name}, Choices: ${choiceSet.extra_choices.length}`);
 
 // Get choice set with additional query parameters
@@ -781,7 +790,7 @@ async getCustomFieldChoiceSets(
 ```typescript
 // Get all custom field choice sets
 const response = await netbox.getCustomFieldChoiceSets();
-response.data.results.forEach(choiceSet => {
+response.results.forEach(choiceSet => {
   console.log(`Choice Set: ${choiceSet.name} (${choiceSet.extra_choices.length} choices)`);
 });
 
@@ -820,8 +829,8 @@ const choiceSet = await netbox.getByUrl<NetboxCustomFieldChoiceSet>(
 
 // Follow a link from an API response
 const prefix = await netbox.getPrefix(123);
-if (prefix.data.site && typeof prefix.data.site === 'string') {
-  const site = await netbox.getByUrl<NetboxSite>(prefix.data.site);
+if (prefix.site && typeof prefix.site === 'string') {
+  const site = await netbox.getByUrl<NetboxSite>(prefix.site);
 }
 
 // Access any NetBox endpoint with parameters
@@ -861,10 +870,10 @@ All major NetBox resources support full CRUD operations with consistent patterns
 ```typescript
 // Create/Read/Update/Delete pattern for all resources
 const vrf = await netbox.addVrf(newVrfData);           // Create
-const existing = await netbox.getVrf(vrf.data.id);     // Read
-await netbox.patchVrf({ description: 'Updated' }, vrf.data.id); // Update (partial)
-await netbox.updateVrf(fullVrfData, vrf.data.id);      // Update (complete)
-await netbox.deleteVrfById(vrf.data.id);               // Delete
+const existing = await netbox.getVrf(vrf.id);     // Read
+await netbox.patchVrf({ description: 'Updated' }, vrf.id); // Update (partial)
+await netbox.updateVrf(fullVrfData, vrf.id);      // Update (complete)
+await netbox.deleteVrfById(vrf.id);               // Delete
 ```
 
 ### Pagination Support
@@ -906,11 +915,11 @@ const choiceSet = await netbox.getByUrl<NetboxCustomFieldChoiceSet>(
   'https://netbox.example.com/api/extras/custom-field-choice-sets/1/'
 );
 
-console.log(`Choice set "${choiceSet.data.name}" has ${choiceSet.data.choices_count} options`);
+console.log(`Choice set "${choiceSet.name}" has ${choiceSet.choices_count} options`);
 
 // Access choice options
-if (choiceSet.data.extra_choices) {
-  choiceSet.data.extra_choices.forEach(([value, label]) => {
+if (choiceSet.extra_choices) {
+  choiceSet.extra_choices.forEach(([value, label]) => {
     console.log(`Option: ${value} = ${label}`);
   });
 }
@@ -941,9 +950,9 @@ try {
 ```typescript
 // Follow API links dynamically
 const prefix = await netbox.getPrefix(123);
-if (prefix.data.vrf && typeof prefix.data.vrf === 'string') {
-  const vrf = await netbox.getByUrl(prefix.data.vrf);
-  console.log(`VRF: ${vrf.data.name}`);
+if (prefix.vrf && typeof prefix.vrf === 'string') {
+  const vrf = await netbox.getByUrl(prefix.vrf);
+  console.log(`VRF: ${vrf.name}`);
 }
 ```
 
@@ -972,17 +981,17 @@ async function managePrefixes() {
   });
 
   // READ: Get the created prefix
-  const retrievedPrefix = await netbox.getPrefix(newPrefix.data.id);
-  console.log(`Prefix: ${retrievedPrefix.data.prefix}, Status: ${retrievedPrefix.data.status?.label}`);
+  const retrievedPrefix = await netbox.getPrefix(newPrefix.id);
+  console.log(`Prefix: ${retrievedPrefix.prefix}, Status: ${retrievedPrefix.status?.label}`);
 
   // UPDATE: Modify the prefix (partial update)
   const updatedPrefix = await netbox.patchPrefix({
     description: 'Updated production server network',
     status: NetboxPrefixStatus.Reserved
-  }, newPrefix.data.id);
+  }, newPrefix.id);
 
   // DELETE: Remove the prefix
-  await netbox.deletePrefixById(newPrefix.data.id);
+  await netbox.deletePrefixById(newPrefix.id);
 }
 ```
 
@@ -1010,7 +1019,7 @@ async function provisionCompleteInfrastructure() {
     status: NetboxSiteStatus.Active,  // Site-specific enum (more precise than general operational status)
     description: 'New branch office location'
   });
-  console.log(`Created site: ${newSite.data.name}`);
+  console.log(`Created site: ${newSite.name}`);
 
   // 2. Create a tenant for organization
   const newTenant = await netbox.addTenant({
@@ -1023,7 +1032,7 @@ async function provisionCompleteInfrastructure() {
   const newVrf = await netbox.addVrf({
     name: 'BRANCH_EAST_VRF',
     rd: '65000:200',
-    tenant: newTenant.data.id,
+    tenant: newTenant.id,
     enforce_unique: true
   });
   
@@ -1031,16 +1040,16 @@ async function provisionCompleteInfrastructure() {
   const managementVlan = await netbox.addVlan({
     name: 'Management',
     vid: 100,
-    site: newSite.data.id,
-    tenant: newTenant.data.id,
+    site: newSite.id,
+    tenant: newTenant.id,
     status: NetboxVlanStatus.Active  // VLAN-specific enum (more precise than general operational status)
   });
   
   const userVlan = await netbox.addVlan({
     name: 'User Network',
     vid: 200,
-    site: newSite.data.id,
-    tenant: newTenant.data.id,
+    site: newSite.id,
+    tenant: newTenant.id,
     status: NetboxVlanStatus.Active  // VLAN-specific enum
   });
   
@@ -1049,8 +1058,8 @@ async function provisionCompleteInfrastructure() {
     name: 'branch-east-sw01',
     device_type: 42, // Assuming device type ID
     role: 1,         // Assuming role ID
-    site: newSite.data.id,
-    tenant: newTenant.data.id
+    site: newSite.id,
+    tenant: newTenant.id
   });
   
   // 6. Create tags for organization
@@ -1084,7 +1093,7 @@ const netbox = new NetboxDriver({
 async function provisionNetwork() {
   // 1. Find available space within a parent prefix
   const availablePrefixes = await netbox.getNextAvailablePrefix(42);
-  console.log(`Found ${availablePrefixes.data.length} available prefix options`);
+  console.log(`Found ${availablePrefixes.length} available prefix options`);
 
   // 2. Automatically allocate a new prefix with metadata (using type-safe enums)
   const newPrefix = await netbox.registerNextAvailablePrefix(
@@ -1148,18 +1157,18 @@ async function cleanupInfrastructure(siteId: number) {
   const prefixes = await netbox.getPrefixes({ site_id: siteId });
   
   // 2. Clean up devices first (dependencies)
-  for (const device of devices.data.results) {
+  for (const device of devices.results) {
     await netbox.deleteDeviceById(device.id!);
     console.log(`Deleted device: ${device.name}`);
   }
   
   // 3. Clean up network resources
-  for (const vlan of vlans.data.results) {
+  for (const vlan of vlans.results) {
     await netbox.deleteVlanById(vlan.id!);
     console.log(`Deleted VLAN: ${vlan.name}`);
   }
   
-  for (const prefix of prefixes.data.results) {
+  for (const prefix of prefixes.results) {
     await netbox.deletePrefixById(prefix.id!);
     console.log(`Deleted prefix: ${prefix.prefix}`);
   }
