@@ -1,23 +1,18 @@
 /**
- * @fileoverview Jest test setup configuration.
- * Configures global test environment settings and mocks.
+ * @fileoverview Jest setup file
+ * Runs before each test suite to configure the testing environment
  */
 
-// Increase timeout for async operations
+// Set test environment variables if needed
+process.env.NODE_ENV = 'test';
+
+// Configure global test timeouts
 jest.setTimeout(10000);
 
-// Mock console methods for cleaner test output
-const originalConsoleLog = console.log;
-const originalConsoleError = console.error;
-
-beforeEach(() => {
-  // Reset console mocks before each test
-  console.log = jest.fn();
-  console.error = jest.fn();
-});
-
-afterAll(() => {
-  // Restore original console methods
-  console.log = originalConsoleLog;
-  console.error = originalConsoleError;
-});
+// Add any custom matchers or global test configuration here
+// Example:
+// expect.extend({
+//   customMatcher(received, expected) {
+//     // custom matcher implementation
+//   }
+// });

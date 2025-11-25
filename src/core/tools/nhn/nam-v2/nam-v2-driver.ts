@@ -1,5 +1,5 @@
 /**
- * @fileoverview NAM v2 driver for NHN Network Automation Management system integration.
+ * @fileoverview NAM v2 driver for NHN Network Architecture Management system integration.
  * Provides comprehensive API communication with NAM v2 for NetBox integrators, API endpoints,
  * and multi-vendor network automation. Built on ZenikiCoreDriver with MongoDB ObjectId support,
  * type-safe methods, and automated pagination handling for enterprise network management.
@@ -32,7 +32,7 @@ import { ObjectId } from "mongodb";
 import { queryBuilderSync } from "../../../utils";
 
 /**
- * NAM v2 driver class extending ZenikiCoreDriver for comprehensive network automation management.
+ * NAM v2 driver class extending ZenikiCoreDriver for comprehensive network architecture management.
  * Provides type-safe methods for NetBox integrators, API endpoints, and multi-vendor synchronization.
  * Supports MongoDB ObjectId operations, automated pagination, and enterprise-grade network orchestration.
  *

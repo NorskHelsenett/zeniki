@@ -1,6 +1,6 @@
 # NAM v2 Driver Documentation
 
-The NAM (Network Automation Management) v2 driver provides comprehensive integration with NHN's Network Automation Management system for centralized network infrastructure orchestration. Built for enterprise-scale network automation with MongoDB-backed persistence, offering type-safe methods for managing NetBox integrations, API endpoints, and multi-vendor network synchronization.
+The NAM (Network Architecture Management) v2 driver provides comprehensive integration with NHN's Network Architecture Management system for centralized network infrastructure orchestration. Built for enterprise-scale network automation with MongoDB-backed persistence, offering type-safe methods for managing NetBox integrations, API endpoints, and multi-vendor network synchronization.
 
 ## Table of Contents
 
@@ -90,7 +90,7 @@ const updatedIntegrator = await nam.patchNetboxIntegrator(
 
 ## NAM v2 Integration Features
 
-The NAM v2 driver provides enterprise-grade features for network automation management:
+The NAM v2 driver provides enterprise-grade features for network architecture management:
 
 ### Multi-Vendor Integration
 - **NetBox IPAM Integration** - Automated synchronization with NetBox for IP address management
@@ -157,7 +157,7 @@ const nam = new NAMv2Driver({
 
 ## API Methods
 
-The NAM v2 driver provides comprehensive CRUD operations for network automation management:
+The NAM v2 driver provides comprehensive CRUD operations for network architecture management:
 
 - **NetBox Integrator Management** - Complete lifecycle management for NetBox synchronization
 - **API Endpoint Management** - Configuration and management of multi-vendor API endpoints

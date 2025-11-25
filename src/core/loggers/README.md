@@ -4,11 +4,12 @@ Winston transport for Splunk HTTP Event Collector (HEC) integration. Sends struc
 
 ## Features
 
-- **Splunk HEC Integration** - Direct HTTP POST to Splunk Event Collector endpoint
-- **Token-Based Authentication** - Automatic authorization header injection via interceptors
-- **Error Handling** - Built-in request/response error interceptors with debug logging
+- **Splunk HEC Integration** - Direct HTTP POST to Splunk Event Collector endpoint using native fetch API
+- **Token-Based Authentication** - Authorization header support for Splunk HEC tokens
+- **Error Handling** - Built-in error handling with event emission for failed requests
 - **Winston Transport** - Extends standard Winston transport for seamless integration
-- **Development Mode** - Detailed error logging when running in development environment
+- **Lightweight** - Uses modern native fetch API, no external HTTP dependencies
+- **Clean Disposal** - Proper resource cleanup to prevent memory leaks
 
 ## Installation
 
@@ -26,13 +27,13 @@ import { WinstonHecLogger } from '@norskhelsenett/zeniki';
 import winston from 'winston';
 import { WinstonHecLogger } from '@norskhelsenett/zeniki';
 
-// Create HEC transport
+// Create HEC transport with native fetch configuration
 const hecTransport = new WinstonHecLogger({
   baseURL: 'https://splunk.example.com:8088',
   headers: {
-    Authorization: 'Splunk YOUR-HEC-TOKEN-HERE'
-  },
-  timeout: 5000
+    'Authorization': 'Splunk YOUR-HEC-TOKEN-HERE',
+    'Content-Type': 'application/json'
+  }
 }, {
   level: 'info',
   format: winston.format.json()
@@ -48,23 +49,20 @@ logger.info('Application started', { userId: 123, action: 'login' });
 logger.error('Database connection failed', { error: 'Connection timeout' });
 ```
 
-### Advanced Configuration with SSL and Retry
+### Advanced Configuration with Multiple Transports
 
 ```typescript
 import winston from 'winston';
-import https from 'https';
 import { WinstonHecLogger } from '@norskhelsenett/zeniki';
 
-// Create HEC transport with custom HTTPS agent
+// Create HEC transport with custom headers
 const hecTransport = new WinstonHecLogger({
   baseURL: 'https://splunk.company.com:8088',
   headers: {
-    Authorization: 'Splunk abc123-def456-ghi789'
-  },
-  timeout: 10000,
-  httpsAgent: new https.Agent({
-    rejectUnauthorized: false // For self-signed certificates
-  })
+    'Authorization': 'Splunk abc123-def456-ghi789',
+    'Content-Type': 'application/json',
+    'X-Splunk-Request-Channel': 'custom-channel-id'
+  }
 }, {
   level: 'info',
   format: winston.format.combine(
@@ -90,6 +88,10 @@ logger.info('Multi-transport logging', {
   service: 'api-gateway',
   requestId: 'req-12345'
 });
+
+// Clean up when done
+logger.remove(hecTransport);
+hecTransport.dispose();
 ```
 
 ## Configuration Options
@@ -98,13 +100,22 @@ logger.info('Multi-transport logging', {
 
 **config** (RequestConfig) - Required
 - `baseURL` - Splunk HEC endpoint URL (e.g., `https://splunk.example.com:8088`)
-- `headers.Authorization` - Splunk HEC token (format: `Splunk <token>`)
-- `timeout` - Request timeout in milliseconds
-- `httpsAgent` - Custom HTTPS agent for SSL configuration
+- `headers` - HTTP headers object
+  - `Authorization` - Splunk HEC token (format: `Splunk <token>`)
+  - `Content-Type` - Should be `application/json`
+  - Custom headers as needed
 
 **opts** (TransportStreamOptions) - Optional
 - `level` - Minimum log level to send to HEC
 - `format` - Winston format to apply before sending
+
+### Native Fetch API
+
+The transport uses the native fetch API for HTTP communication. All fetch-compatible options can be passed through the `config` object, including:
+- `method` - HTTP method (automatically set to POST)
+- `headers` - Request headers
+- `signal` - AbortSignal for request cancellation
+- Additional fetch options as needed
 
 ## Log Format Requirements
 
@@ -133,18 +144,19 @@ const httpLoggerFormat = winston.format.combine(
 
 ## Error Handling
 
-The transport includes automatic error handling:
+The transport includes automatic error handling using native fetch:
 
-- **401/403 Errors** - Unauthorized/Forbidden errors are logged in development mode
-- **Request Errors** - Network and connection errors are logged with full details
-- **Response Errors** - HTTP error responses are intercepted and logged
+- **Network Errors** - Connection failures and network errors are emitted as `error` events
 - **Event Validation** - Only sends logs with valid event structure to prevent errors
+- **Error Emission** - Failed requests emit Winston transport error events for upstream handling
+- **Graceful Degradation** - Logging failures don't crash your application
 
-## Environment Variables
-
-For development debugging, the transport respects the following:
-
-- `NODE_ENV=development` or `DENO_ENV=development` - Enables detailed error logging
+```typescript
+// Listen for transport errors
+hecTransport.on('error', (error) => {
+  console.error('Failed to send log to Splunk:', error);
+});
+```
 
 ## Integration with Zeniki Logger
 
@@ -173,6 +185,18 @@ The transport sends logs to the Splunk HEC event collector endpoint:
 
 ```
 POST /services/collector/event
+```
+
+## Resource Cleanup
+
+Always dispose of the transport when removing it from your logger to prevent memory leaks:
+
+```typescript
+// Remove transport from logger
+logger.remove(hecTransport);
+
+// Dispose of transport resources
+hecTransport.dispose();
 ```
 
 ## See Also

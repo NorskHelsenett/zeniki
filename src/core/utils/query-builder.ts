@@ -9,11 +9,13 @@
  * Converts an object with key-value pairs into a properly formatted URL query string.
  * Uses the native URLSearchParams API for reliable query string construction and encoding.
  *
- * @param params - Object containing key-value pairs to convert to query parameters
- * @returns Promise that resolves to the constructed query string with leading '?'
+ * @param params - Object containing key-value pairs to convert to query parameters, or a URLSearchParams instance
+ * @returns Promise that resolves to the constructed query string with leading '?' (or empty string if no parameters)
  *
  * @example
  * ```typescript
+ * import { queryBuilder } from '@norskhelsenett/zeniki';
+ *
  * // Building query parameters from an object
  * const params = {
  *   limit: 50,
@@ -32,13 +34,14 @@
  * const queryString = await queryBuilder(filters);
  * // Result: "?status=active&family=4&site_id=1"
  *
- * // Handling arrays and multiple values
- * const params = {
- *   tag: ["network", "production"],
- *   limit: 100
- * };
- * const queryString = await queryBuilder(params);
- * // Result: "?tag=network%2Cproduction&limit=100"
+ * // Using with URLSearchParams
+ * const urlParams = new URLSearchParams({ page: "1", limit: "100" });
+ * const queryString = await queryBuilder(urlParams);
+ * // Result: "?page=1&limit=100"
+ *
+ * // Empty or null parameters
+ * const queryString = await queryBuilder({});
+ * // Result: ""
  * ```
  *
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams} URLSearchParams Documentation
@@ -73,11 +76,13 @@ export const queryBuilder = async (
  * Converts an object with key-value pairs into a properly formatted URL query string.
  * Uses the native URLSearchParams API for reliable query string construction and encoding.
  *
- * @param params - Object containing key-value pairs to convert to query parameters
- * @returns The constructed query string with leading '?'
+ * @param params - Object containing key-value pairs to convert to query parameters, or a URLSearchParams instance
+ * @returns The constructed query string with leading '?' (or empty string if no parameters)
  *
  * @example
  * ```typescript
+ * import { queryBuilderSync } from '@norskhelsenett/zeniki';
+ *
  * // Building new query parameters
  * const params = {
  *   page: 1,
@@ -99,7 +104,7 @@ export const queryBuilder = async (
  * // Empty object handling
  * const emptyParams = {};
  * const queryString = queryBuilderSync(emptyParams);
- * // Result: "?"
+ * // Result: ""
  *
  * // Complex values with special characters
  * const searchParams = {
@@ -108,6 +113,11 @@ export const queryBuilder = async (
  * };
  * const queryString = queryBuilderSync(searchParams);
  * // Result: "?description__icontains=DMZ+%26+firewall+rules&created__gte=2025-01-01"
+ *
+ * // Using with URLSearchParams
+ * const urlParams = new URLSearchParams({ vlan_id: "100" });
+ * const queryString = queryBuilderSync(urlParams);
+ * // Result: "?vlan_id=100"
  * ```
  *
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams} URLSearchParams Documentation

@@ -11,6 +11,8 @@
  * @see {@link https://netbox.readthedocs.io/en/stable/rest-api/} NetBox REST API Documentation
  */
 
+import { CommonKeyValueStore } from "../../../common/common-types";
+import { NetboxCustomField } from "../extras/netbox-custom-field";
 import { NetboxTag } from "../extras/netbox-tag";
 
 /**
@@ -54,7 +56,7 @@ export interface NetboxPartial {
   tags?: number[] | Partial<NetboxTag>[];
   
   /** User-defined custom fields for additional metadata. */
-  custom_fields?: object;
+  custom_fields?: CommonKeyValueStore<string, string>;
   
   /** Timestamp when the entity was created in NetBox. */
   readonly created?: string | Date | null;
