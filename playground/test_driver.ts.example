@@ -1,0 +1,56 @@
+/**
+ * @fileoverview Example test driver for NetBox API integration and custom field validation.
+ * Demonstrates EnvLoader usage and NetboxDriver custom field operations.
+ * 
+ * **This is an example file.** Copy to `test_driver.ts` before running:
+ * ```bash
+ * cp playground/test_driver.ts.example playground/test_driver.ts
+ * npx tsx playground/test_driver.ts
+ * ```
+ */
+
+import { NetboxDriver } from "../src/core/tools/netbox/netbox-driver";
+import { EnvLoader } from "../src/core/utils";
+
+// Load environment variables from config/secrets files
+const envLoader = new EnvLoader();
+
+const NETBOX_URL = process.env.NETBOX_URL;
+const NETBOX_TOKEN = process.env.NETBOX_TOKEN;
+const NETBOX_PREFIX = process.env.NETBOX_PREFIX;
+
+/**
+ * Tests NetBox driver functionality by fetching custom fields and choice sets.
+ * Requires NETBOX_URL, NETBOX_TOKEN, and NETBOX_PREFIX environment variables.
+ *
+ * @returns Promise<void>
+ */
+export const testDriver = async () => {
+  try {
+    if (!NETBOX_URL || !NETBOX_TOKEN || !NETBOX_PREFIX) {
+      console.log("Required parameters missing, please configure.");
+      return;
+    }
+    const ipam = new NetboxDriver({
+      baseURL: NETBOX_URL,
+      headers: {
+        "User-Agent": "Zeniki_Test_Driver/0.0.1",
+        "Content-Type": "application/json",
+        accept: "application/json",
+        Authorization: `Token ${NETBOX_TOKEN}`,
+      },
+    });
+
+    const custom_fields = await ipam.custom_fields.getCustomFields();
+    const choice_sets = await ipam.custom_fields.getCustomFieldChoiceSets();
+ 
+
+    console.log("Custom fields found", custom_fields);
+
+    console.log("Choice sets found", choice_sets);
+  } catch (error: any) {
+    console.error("zeniki-test-driver: Error occurred ", error.message);
+  }
+};
+
+testDriver();

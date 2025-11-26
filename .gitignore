@@ -8,6 +8,7 @@ tsconfig.tsbuildinfo
 tmp/
 *.tmp.ts
 test_/
+playground/*.ts
 
 #Certs
 *.pem

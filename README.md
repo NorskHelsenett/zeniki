@@ -91,45 +91,12 @@ console.log(`Found ${prefixes.count} active prefixes`);
 - 📊 **[Winston HEC Logger](src/core/loggers/README.md)** - Splunk HTTP Event Collector transport
 
 ### Testing & Examples
-📝 **[Test Suite Documentation](test/README.md)** - Unit tests, integration tests, and examples
+- 📝 **[Test Suite Documentation](test/README.md)** - Unit tests, integration tests, and examples
+- 🎮 **[Playground](playground/README.md)** - Manual testing and driver verification
 
 ## Development
 
-### Building
-
-```bash
-# Install dependencies
-npm install
-
-# Build the library
-npm run build
-
-# Create distributable package
-npm pack
-
-# Run tests
-npm test
-```
-
-### Project Structure
-
-```
-src/
-├── core/                 # Core functionality
-│   ├── base/            # Base classes
-│   ├── tools/           # API drivers
-│   └── utils/           # Utility functions
-├── types/               # TypeScript definitions
-└── index.ts             # Main entry point
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+See [Development Guide](DEVELOPMENT.md) for building, testing, project structure, and contribution guidelines.
 
 ## License
 
