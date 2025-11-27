@@ -1,54 +1,85 @@
 import { NetboxPartial } from "../shared/netbox-partial";
 
 /**
- * Represents a complete tenant or organization in NetBox multi-tenancy system.
- * Tenants are used to isolate and organize resources for different customers or departments.
- * This is the full tenant interface with all properties, including resource counts.
+ * NetBox tenant for multi-tenancy.
+ * Isolates and organizes resources for different customers or departments.
  *
- * This interface extends NetboxPartial, inheriting common properties like id, url, display,
- * description, comments, tags, custom_fields, created, and last_updated.
- *
- * @interface NetboxTenant
- * @extends NetboxPartial
- * @see {@link https://netbox.readthedocs.io/en/stable/models/tenancy/tenant/} NetBox Tenant Documentation
+ * @example
+ * ```typescript
+ * const tenant: NetboxTenant = {
+ *   name: 'Customer Corp',
+ *   slug: 'customer-corp',
+ *   group: 1
+ * };
+ * ```
  */
 export interface NetboxTenant extends NetboxPartial {
-  /** Human-readable name of the tenant or organization (required) */
+  /** Tenant name. */
   name: string;
 
-  /** URL-safe slug identifier for the tenant, used in API endpoints and URLs (required) */
+  /** URL-safe slug identifier. */
   slug: string;
   
-  /** Optional tenant group ID for hierarchical organization of tenants */
+  /** Tenant group for hierarchy. */
   group?: number | null;
   
-  /** Total number of circuits associated with this tenant */
+  /**
+   * Circuit count.
+   * @readonly
+   */
   readonly circuit_count?: number;
   
-  /** Total number of devices associated with this tenant */
+  /**
+   * Device count.
+   * @readonly
+   */
   readonly device_count?: number;
   
-  /** Total number of IP addresses associated with this tenant */
+  /**
+   * IP address count.
+   * @readonly
+   */
   readonly ipaddress_count?: number;
   
-  /** Total number of IP prefixes associated with this tenant */
+  /**
+   * Prefix count.
+   * @readonly
+   */
   readonly prefix_count?: number;
   
-  /** Total number of racks associated with this tenant */
+  /**
+   * Rack count.
+   * @readonly
+   */
   readonly rack_count?: number;
   
-  /** Total number of sites associated with this tenant */
+  /**
+   * Site count.
+   * @readonly
+   */
   readonly site_count?: number;
   
-  /** Total number of virtual machines associated with this tenant */
+  /**
+   * Virtual machine count.
+   * @readonly
+   */
   readonly virtualmachine_count?: number;
   
-  /** Total number of VLANs associated with this tenant */
+  /**
+   * VLAN count.
+   * @readonly
+   */
   readonly vlan_count?: number;
   
-  /** Total number of VRFs associated with this tenant */
+  /**
+   * VRF count.
+   * @readonly
+   */
   readonly vrf_count?: number;
   
-  /** Total number of clusters associated with this tenant */
+  /**
+   * Cluster count.
+   * @readonly
+   */
   readonly cluster_count?: number;
 }

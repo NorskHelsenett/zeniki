@@ -1,123 +1,79 @@
 import { HttpMethods } from "../../../common/common-types";
 
 /**
- * FortiOS configuration revision response interface for change tracking and audit management.
- * 
- * Provides detailed metadata about FortiOS configuration changes, revision tracking, operational
- * context, enterprise-grade audit capabilities, Security Fabric integration, multi-VDOM support,
- * and comprehensive change management features for large-scale enterprise deployments.
- * 
+ * FortiOS configuration revision response for change tracking and audit management.
+ *
  * @example
  * ```typescript
- * const enterpriseRevision: FortiOSRevisionResponse = {
- *   http_method: HttpMethods.POST,
- *   revision: '7.4.2024.1001',
- *   revision_changed: true,
- *   old_revision: '7.4.2024.1000',
- *   mkey: 'security-policy-dmz',
- *   status: 'success',
- *   http_status: 201,
- *   vdom: 'enterprise-prod',
- *   path: '/api/v2/cmdb/firewall/addrgrp',
- *   name: 'Enterprise_DMZ_Servers',
- *   action: 'create',
- *   serial: 'FGT60F3G12345678'
- * };
+ * const revision: FortiOSRevisionResponse = { http_method: HttpMethods.POST, revision: '7.4.2024.1001', revision_changed: true, old_revision: '7.4.2024.1000', mkey: 'policy-1', status: 'success', http_status: 201, vdom: 'root', path: '/api/v2/cmdb/firewall/addrgrp', name: 'DMZ_Servers', action: 'create', serial: 'FGT60F3G12345678', build: 1234 };
  * ```
  */
 export interface FortiOSRevisionResponse {
-  /**
-   * HTTP method executed in the API request that generated this revision response.
+  /** HTTP method executed in the API request
    * @readonly
-   * @see HttpMethods
    * @required
    */
   readonly http_method: HttpMethods;
-
-  /**
-   * Current system configuration revision identifier after the operation completion.
+  /** Current configuration revision identifier
    * @readonly
    * @required
    */
   readonly revision: string;
-
-  /**
-   * Boolean flag indicating whether the configuration revision was modified by the operation.
+  /** Configuration revision was modified by operation
    * @readonly
    * @required
    */
   readonly revision_changed: boolean;
-
-  /**
-   * Previous configuration revision identifier before the operation execution.
+  /** Previous configuration revision identifier
    * @readonly
    * @required
    */
   readonly old_revision: string;
-
-  /**
-   * Universal object identifier used across FortiOS configuration management.
+  /** Object identifier for configuration management
    * @readonly
    * @required
    */
   readonly mkey: string;
-
-  /**
-   * Operation execution status indicating success or failure of the configuration change.
+  /** Operation execution status
    * @readonly
    * @required
    */
   readonly status: string;
-
-  /**
-   * HTTP status code returned by the FortiOS API operation.
+  /** HTTP status code from API operation
    * @readonly
    * @minimum 100
    * @maximum 599
    * @required
    */
   readonly http_status: number;
-
-  /**
-   * Virtual Domain (VDOM) name where the configuration operation was executed.
+  /** Virtual Domain (VDOM) name for operation context
    * @readonly
    * @maxLength 31
    * @required
    */
   readonly vdom: string;
-
-  /**
-   * FortiOS API response path indicating the specific API endpoint that was accessed.
+  /** API endpoint path accessed
    * @readonly
    * @required
    */
   readonly path: string;
-
-  /**
-   * Configuration object name associated with the operation.
+  /** Configuration object name
    * @readonly
    * @maxLength 79
    * @required
    */
   readonly name: string;
-
-  /**
-   * Specific action performed during the configuration operation.
+  /** Action performed (create, edit, delete, move)
    * @readonly
-   * @values "create" | "edit" | "delete" | "move"
    * @required
    */
   readonly action: string;
-
-  /**
-   * Device serial number providing hardware identification context for the response.
+  /** Device serial number
    * @readonly
    * @required
    */
   readonly serial: string;
-
-  /**
-   * FortiOS build number providing system version context for the response.
+  /** FortiOS build number
    * @readonly
    * @minimum 1
    * @required

@@ -1,27 +1,18 @@
 import { NAMDefaultFields } from "./shared/nam-default-fields";
 
 /**
- * NAM v2 FortiOS Virtual Domain (VDOM) configuration interface.
- * Extends NAMDefaultFields to provide MongoDB document tracking capabilities
- * for FortiGate VDOM management and multi-tenant firewall operations.
- * 
- * @interface NAMFortiOSVdom
- * @since NAM v2.0
- * @context FortiGate VDOM configuration and multi-tenant firewall management
+ * NAM v2 FortiOS Virtual Domain configuration.
+ * FortiGate VDOM management for multi-tenant firewall operations.
  * 
  * @example
  * ```typescript
  * const vdom: NAMFortiOSVdom = {
  *   name: 'production-vdom',
- *   createdBy: 'admin',
- *   createdAt: new Date()
+ *   createdBy: 'admin'
  * };
  * ```
  */
 export interface NAMFortiOSVdom extends NAMDefaultFields {
-  /**
-   * FortiOS Virtual Domain name identifier
-   * @required
-   */
+  /** VDOM name. */
   name: string;
 }

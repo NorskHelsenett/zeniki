@@ -1,20 +1,3 @@
-/**
- * @fileoverview NetBox Site DCIM Model Type Definitions for Infrastructure Management
- * 
- * Comprehensive site model types for NetBox infrastructure documentation and management
- * platform. Provides complete type definitions for physical site locations, geographic
- * organization, multi-tenant associations, facility management, ASN routing relationships,
- * and comprehensive infrastructure tracking capabilities.
- * 
- * Supports enterprise network infrastructure management with geographic organization,
- * operational status tracking, multi-tenant environments, and extensive metadata including
- * device counts, circuit counts, and infrastructure statistics for data center operations.
- * 
- * @version NetBox 3.7+ compatible
- * @see {@link https://netbox.readthedocs.io/en/stable/models/dcim/site/} NetBox Site Documentation
- * @see {@link https://netbox.readthedocs.io/en/stable/} NetBox Official Documentation
- */
-
 import { NetboxGeneric } from "../shared/netbox-generic";
 import { NetboxPartial } from "../shared/netbox-partial";
 import { NetboxRegion } from "./netbox-region";
@@ -24,12 +7,9 @@ import {
 import { NetboxTenant } from "../tenancy/netbox-tenant";
 
 /**
- * Represents a physical site or location in NetBox infrastructure management platform.
- * 
- * Sites organize devices and resources by geographic or logical location with support
- * for geographic organization, multi-tenant associations, facility management, ASN
- * routing relationships, and comprehensive infrastructure tracking. Extends NetboxPartial
- * for common properties including timestamps and custom fields.
+ * NetBox physical site for infrastructure organization.
+ * Organizes devices by geographic/logical location with support for facility management,
+ * ASN routing, multi-tenant associations, and infrastructure tracking.
  * 
  * @example
  * ```typescript
@@ -42,185 +22,128 @@ import { NetboxTenant } from "../tenancy/netbox-tenant";
  *   latitude: 40.7128,
  *   longitude: -74.0060,
  *   facility: 'Building A',
- *   time_zone: 'America/New_York',
- *   tenant: { id: 1, name: 'Enterprise Corp' },
- *   asns: [65001, 65002],
- *   device_count: 150
+ *   time_zone: 'America/New_York'
  * };
  * ```
- * 
- * @see {@link https://netbox.readthedocs.io/en/stable/models/dcim/site/} NetBox Site Documentation
  */
 export interface NetboxSite extends NetboxPartial {
   /**
-   * Human-readable name of the site for identification and display purposes.
+   * Site name.
    * @maxLength 100
    * @required
    */
   name: string;
 
   /**
-   * URL-safe slug identifier for the site, used in API endpoints and URLs.
+   * URL-safe slug identifier.
    * @maxLength 100
-   * @format Lowercase alphanumeric with hyphens
    * @required
    */
   slug: string;
 
   /**
-   * Operational status of the site indicating current lifecycle phase.
-   * @see NetboxSiteStatus
+   * Operational status.
    * @default planned
-   * @optional
    */
   status?:
     | NetboxSiteStatuses
     | NetboxSiteStatus
     | Readonly<NetboxValueLabel<NetboxSiteStatuses, string>>;
 
-  /**
-   * Geographic region where the site is located for organizational hierarchy.
-   * @see NetboxRegion
-   * @optional
-   */
+  /** Geographic region. */
   region?: number | Readonly<Partial<NetboxRegion>> | null;
 
-  /**
-   * Site group for organizational hierarchy and categorization.
-   * @see NetboxGeneric
-   * @optional
-   */
+  /** Site group. */
   group?: number | Readonly<Partial<NetboxGeneric>> | null;
 
-  /**
-   * Tenant that owns or has responsibility for this site.
-   * @see NetboxTenant
-   * @optional
-   */
+  /** Tenant owner. */
   tenant?: number | Readonly<Partial<NetboxTenant>> | null;
 
   /**
-   * Facility name or identifier within the site for asset management.
+   * Facility identifier.
    * @maxLength 50
-   * @optional
    */
   facility?: string;
 
-  /**
-   * Time zone for the site location used for scheduling and logging.
-   * @format IANA time zone identifier
-   * @optional
-   */
+  /** Time zone (IANA identifier). */
   time_zone?: string | null;
 
   /**
-   * Physical street address of the site for logistics and documentation.
+   * Physical address.
    * @maxLength 200
-   * @optional
    */
   physical_address?: string;
 
   /**
-   * Shipping/delivery address for the site if different from physical address.
+   * Shipping address.
    * @maxLength 200
-   * @optional
    */
   shipping_address?: string;
 
   /**
-   * Geographic latitude coordinate for mapping and location services.
+   * Latitude coordinate.
    * @minimum -90
    * @maximum 90
-   * @format Decimal degrees
-   * @optional
    */
   latitude?: number | null;
 
   /**
-   * Geographic longitude coordinate for mapping and location services.
+   * Longitude coordinate.
    * @minimum -180
    * @maximum 180
-   * @format Decimal degrees
-   * @optional
    */
   longitude?: number | null;
 
-  /**
-   * List of Autonomous System Numbers (ASNs) associated with this site.
-   * @format Array of 32-bit ASN numbers
-   * @optional
-   */
+  /** Associated ASN numbers. */
   asns?: number[];
 
   /**
-   * Total number of circuits at this site for capacity planning.
+   * Number of circuits.
    * @readonly
-   * @minimum 0
    */
   readonly circuit_count: number;
 
   /**
-   * Total number of devices at this site for inventory management.
+   * Number of devices.
    * @readonly
-   * @minimum 0
    */
   readonly device_count: number;
 
   /**
-   * Total number of IP prefixes associated with this site.
+   * Number of IP prefixes.
    * @readonly
-   * @minimum 0
    */
   readonly prefix_count: number;
 
   /**
-   * Total number of racks at this site for space management.
+   * Number of racks.
    * @readonly
-   * @minimum 0
    */
   readonly rack_count: number;
 
   /**
-   * Total number of virtual machines at this site.
+   * Number of virtual machines.
    * @readonly
-   * @minimum 0
    */
   readonly virtualmachine_count: number;
 
   /**
-   * Total number of VLANs associated with this site.
+   * Number of VLANs.
    * @readonly
-   * @minimum 0
    */
   readonly vlan_count: number;
 }
 
-/**
- * Status values for sites in NetBox infrastructure management platform.
- * @enum NetboxSiteStatus
- * @see {@link https://netbox.readthedocs.io/en/stable/models/dcim/site/} NetBox Site Status Documentation
- */
+// Site status enumeration
 export enum NetboxSiteStatus {
-  // Site is planned for future deployment
   Planned = "planned",
-  
-  // Site is in staging phase before going live
   Staging = "staging",
-  
-  // Site is actively operational and serving traffic
   Active = "active",
-  
-  // Site is being decommissioned and phased out
   Decommissioning = "decommissioning",
-  
-  // Site has been retired and is no longer operational
   Retired = "retired",
 }
 
-/**
- * String literal type alias for site status values.
- * @see NetboxSiteStatus for enum values
- */
+// String literal union for site status values
 export type NetboxSiteStatuses =
   | "planned"
   | "staging"

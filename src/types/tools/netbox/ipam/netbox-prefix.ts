@@ -13,13 +13,9 @@ import { NetboxSite } from "../dcim/netbox-site";
 import { NetboxPartial } from "../shared/netbox-partial";
 
 /**
- * Represents a network prefix in NetBox IPAM, defining a contiguous block of IP addresses.
- * 
- * Prefixes are fundamental building blocks in NetBox's IP address management system,
- * organizing address space into hierarchical structures with parent-child relationships.
- * They support IPv4/IPv6, VRF isolation, VLAN association, automated allocation, and
- * organizational metadata through sites, tenants, roles, and custom fields. Extends
- * NetboxPartial for common properties including timestamps and custom fields.
+ * NetBox network prefix for IP address management.
+ * Organizes address space with hierarchical parent-child relationships,
+ * VRF isolation, VLAN association, and automated allocation.
  * 
  * @example
  * ```typescript
@@ -32,64 +28,63 @@ import { NetboxPartial } from "../shared/netbox-partial";
  *   is_pool: false
  * };
  * ```
- * 
- * @see {@link https://netbox.readthedocs.io/en/stable/models/ipam/prefix/} NetBox Prefix Documentation
  */
 export interface NetboxPrefix extends NetboxPartial {
-  /** IP protocol version information (IPv4 or IPv6) with immutable value-label pairs. */
+  /**
+   * IP protocol version (IPv4 or IPv6).
+   * @readonly
+   */
   readonly family?: NetboxValueLabel<IPVersion, IPVersionLabel>;
 
-  /** The network prefix in CIDR notation (e.g., "192.168.1.0/24", "2001:db8::/32"). */
+  /** Network prefix in CIDR notation. */
   prefix: string | null;
 
-  /** Physical or logical site where this prefix is deployed or assigned. */
+  /** Site where this prefix is deployed. */
   site?: number | Readonly<Partial<NetboxSite>> | null;
 
-  /** Virtual Routing and Forwarding (VRF) instance that contains this prefix. */
+  /** VRF instance containing this prefix. */
   vrf?: number | Readonly<Partial<NetboxVrf>> | null;
 
-  /** Tenant or organizational entity that owns or manages this prefix. */
+  /** Tenant that owns this prefix. */
   tenant?: number | Readonly<Partial<NetboxTenant>> | null;
 
-  /** VLAN association for Layer 2 network segmentation and broadcast domain isolation. */
+  /** VLAN association for Layer 2 segmentation. */
   vlan?: number | Readonly<Partial<NetboxVlan>> | null;
 
-  /** Operational status tracking the current lifecycle state of the prefix. */
+  /** Operational status. */
   status?: NetboxPrefixStatuses | NetboxPrefixStatus | Readonly<NetboxValueLabel<string, string>>;
 
-  /** Functional role or purpose classification for the prefix. */
+  /** Functional role or purpose. */
   role?: number | Readonly<Partial<NetboxRole>> | null;
 
-  /** Designates whether this prefix serves as an allocation pool for automatic subnet creation. */
+  /** Indicates if prefix is an allocation pool. */
   is_pool?: boolean;
 
-  /** Automatic utilization marking for IP addresses within this prefix. */
+  /** Automatic utilization marking. */
   mark_utilized?: boolean;
 
-  /** Count of direct child prefixes contained within this prefix. */
+  /**
+   * Count of direct child prefixes.
+   * @readonly
+   */
   readonly children?: number;
 
-  /** Hierarchical depth level within the prefix tree structure. */
+  /**
+   * Hierarchical depth level.
+   * @readonly
+   */
   readonly _depth?: number;
 }
 
-/**
- * Status values for network prefixes in NetBox IPAM.
- */
+// Network prefix status enumeration
 export enum NetboxPrefixStatus {
-  /** Prefix serves as a container for subdividing into smaller prefixes */
   Container = "container",
-  /** Prefix is actively in use and available for IP address allocation */
   Active = "active",
-  /** Prefix is reserved for future use but not currently active */
   Reserved = "reserved",
-  /** Prefix is deprecated and should not be used for new allocations */
   Deprecated = "deprecated",
 }
 
-/**
- * String literal type alias for prefix status values.
- */
+// String literal union for prefix status values
 export type NetboxPrefixStatuses =
   | "container"
   | "active"

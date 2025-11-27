@@ -1,19 +1,23 @@
+/**
+ * ROR cluster datacenter information.
+ * Datacenter name, provider, and API endpoint.
+ *
+ * @example
+ * ```typescript
+ * const datacenter: RORClusterControlPlaneMetadataDatacenter = {
+ *   name: 'DC01',
+ *   provider: 'vmware',
+ *   apiEndpoint: 'https://vcenter.example.com'
+ * };
+ * ```
+ */
 export interface RORClusterControlPlaneMetadataDatacenter {
-  /**
-   * Name of the datacenter within the Cluster Control Plane MetaData..
-   * @required
-   */
+  /** Datacenter name. */
   name: string;
 
-  /**
-   * Provider of the datacenter within the Cluster Control Plane MetaData.
-   * @required
-   */
+  /** Datacenter provider. */
   provider: string;
 
-  /**
-   * API endpoint of the datacenter within the Cluster Control Plane MetaData.
-   * @required
-   */
+  /** API endpoint. */
   apiEndpoint: string;
 }

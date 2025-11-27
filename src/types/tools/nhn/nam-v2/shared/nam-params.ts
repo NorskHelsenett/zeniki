@@ -1,11 +1,7 @@
 /**
- * NAM v2 query parameters interface for API request configuration and data filtering.
- * Provides standardized parameters for pagination, sorting, field expansion, and
- * response formatting across NAM API endpoints and data retrieval operations.
- * 
- * @interface NAMParams
- * @since NAM v2.0
- * @context API query parameters for data filtering and response configuration
+ * NAM v2 query parameters.
+ * Standardized parameters for pagination, sorting, field expansion,
+ * and response formatting.
  * 
  * @example
  * ```typescript
@@ -13,82 +9,47 @@
  *   q: 'production',
  *   pageSize: 50,
  *   page: 1,
- *   expand: 1,
- *   sort: 1,
- *   auto: true
+ *   expand: 1
  * };
  * ```
  */
 export interface NAMParams {
-  /**
-   * Query string for text-based filtering and search operations
-   * @optional
-   */
+  /** Query string for filtering. */
   q?: string;
 
   /**
-   * Number of items per page for pagination control
-   * @optional
+   * Items per page.
    * @minimum 1
    */
   pageSize?: number;
 
   /**
-   * Page number for pagination navigation
-   * @optional
+   * Page number.
    * @minimum 1
    */
   page?: number;
 
-  /**
-   * Enable field expansion in response data
-   * @optional
-   * @values 0, 1
-   */
+  /** Enable field expansion. */
   expand?: 0 | 1;
 
-  /**
-   * Specific fields to expand in response data
-   * @optional
-   */
+  /** Fields to expand. */
   expand_fields?: string[];
 
-  /**
-   * Enable sorting of response data
-   * @optional
-   * @values 0, 1
-   */
+  /** Enable sorting. */
   sort?: 0 | 1;
 
-  /**
-   * Enable reduced response data format
-   * @optional
-   * @values 0, 1
-   */
+  /** Enable reduced response format. */
   less?: 0 | 1;
 
-  /**
-   * Enable list format for response data
-   * @optional
-   * @values 0, 1
-   */
+  /** Enable list format. */
   list?: 0 | 1;
 
-  /**
-   * Hierarchical level specification for nested data
-   * @optional
-   */
+  /** Hierarchical level for nested data. */
   level?: any;
 
-  /**
-   * Enable automatic processing and optimization
-   * @optional
-   */
+  /** Enable automatic processing. */
   auto?: boolean;
 
-  /**
-   * Enable CLI-compatible response formatting
-   * @optional
-   */
+  /** Enable CLI-compatible formatting. */
   cli?: boolean;
 }

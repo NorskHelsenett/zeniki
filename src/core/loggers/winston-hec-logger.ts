@@ -4,45 +4,32 @@ import { RequestConfig } from "../base/zeniki-core-driver";
 
 /**
  * Winston transport for Splunk HTTP Event Collector (HEC) integration.
- * Extends Winston Transport to send structured log events to Splunk HEC endpoint via HTTP POST.
- * Uses native fetch API for HTTP communication with token-based authentication and error handling.
+ * Sends structured log events to Splunk HEC endpoint via HTTP POST using native fetch API.
  *
- * @class WinstonHecLogger
  * @extends Transport
- * @since 1.0.0
- * @context Splunk HEC log streaming with Winston integration
- *
  * @example
+ * ```typescript
  * const hecTransport = new WinstonHecLogger({
  *   baseURL: 'https://splunk.example.com:8088',
  *   headers: { Authorization: 'Splunk <token>' }
- * }, {
- *   level: 'info',
- *   format: winston.format.json()
- * });
+ * }, { level: 'info' });
+ * ```
  */
 export class WinstonHecLogger extends Transport {
-  /**
-   * Request configuration for HEC API communication
-   * @protected
-   * @type {RequestConfig}
-   */
+  /** Request configuration for HEC API communication */
   protected config: RequestConfig;
 
   /**
    * Initializes Winston HEC Logger transport with request configuration.
-   * Sets up native fetch configuration for HEC endpoint connection.
-   *
-   * @param {RequestConfig} config - Request configuration for HEC endpoint connection
-   * @param {TransportStreamOptions} [opts] - Winston transport stream options
-   * @required config
-   * @optional opts
-   *
+   * @param config - Request configuration for HEC endpoint
+   * @param opts - Winston transport stream options
    * @example
-   * const transport = new WinstonHecLogger({
+   * ```typescript
+   * new WinstonHecLogger({
    *   baseURL: 'https://splunk.example.com:8088',
-   *   headers: { Authorization: 'Splunk abc123' }
+   *   headers: { Authorization: 'Splunk token' }
    * });
+   * ```
    */
   constructor(config: RequestConfig, opts?: TransportStreamOptions) {
     super(opts);
@@ -51,19 +38,14 @@ export class WinstonHecLogger extends Transport {
   }
 
   /**
-   * Winston transport log method that sends formatted log events to Splunk HEC.
-   * Extracts event data from log info and posts to HEC collector endpoint.
-   * Only sends logs containing valid event structure in message symbol.
-   *
-   * @public
+   * Sends formatted log events to Splunk HEC.
    * @override
-   * @param {TransformableInfo} info - Winston log information object with formatted message
-   * @param {Function} next - Callback function to signal completion
-   * @required info
-   * @required next
-   *
+   * @param info - Winston log information object
+   * @param next - Callback function to signal completion
    * @example
+   * ```typescript
    * transport.log({ level: 'info', message: 'test' }, () => {});
+   * ```
    */
   public override log(info: TransformableInfo, next: () => void) {
     const data = JSON.parse(info[Symbol.for("message")] as string);
@@ -87,18 +69,9 @@ export class WinstonHecLogger extends Transport {
 
   /**
    * Disposes of the logger instance and cleans up resources.
-   * Clears references to prevent memory leaks.
-   * Should be called when removing the transport from Winston logger.
-   *
-   * @public
-   *
    * @example
    * ```typescript
-   * const hecTransport = new WinstonHecLogger(config);
-   * logger.add(hecTransport);
-   * // ... use logger
-   * logger.remove(hecTransport);
-   * hecTransport.dispose(); // Clean up resources
+   * hecTransport.dispose();
    * ```
    */
   public dispose(): void {

@@ -9,19 +9,14 @@ import { VMwareNSXPartial } from "../../shared/vmware-nsx-partial";
 import { VMWareNSXTag } from "../../shared/vmware-nsx-tag";
 
 /**
- * VMware NSX group interface for policy-based security group management.
- * Extends VMwareNSXPartial to provide grouping capabilities with expression-based
- * membership criteria, extended identity context, and reference group support.
- * 
- * @interface VMwareNSXGroup
- * @since NSX 3.0+
- * @context VMware NSX policy security groups and firewall rules
+ * VMware NSX group for policy-based security management.
+ * Provides grouping with expression-based membership, identity context, and references.
  * 
  * @example
  * ```typescript
  * const group: VMwareNSXGroup = {
  *   display_name: 'web-servers',
- *   description: 'Production web server group',
+ *   description: 'Production web servers',
  *   resource_type: 'Group',
  *   group_type: ['VM'],
  *   expression: [{ resource_type: 'Condition' }],
@@ -30,57 +25,39 @@ import { VMWareNSXTag } from "../../shared/vmware-nsx-tag";
  * ```
  */
 export interface VMwareNSXGroup extends VMwareNSXPartial {
-  /**
-   * Expression list defining group membership criteria with validation rules
-   * @optional
-   * @see VMWareExpression
-   */
+  /** Expression list defining group membership criteria. */
   expression?: VMWareExpression[];
 
   /**
-   * Extended expression for higher-level context (user AD groups for IDFW)
-   * @optional
+   * Extended expression for higher-level context.
    * @maxItems 1
-   * @see VMWareExpression
    */
   extended_expression?: VMWareExpression[];
 
-  /**
-   * Resource type identifier for this group object
-   * @optional
-   * @see VmwareResourceTypes
-   */
+  /** Resource type identifier. */
   resource_type?: VmwareResourceTypes;
 
   /**
-   * Group type specification for entity membership constraints
-   * @optional
+   * Group type for entity membership constraints.
    * @maxItems 1
-   * @see VmwareGroupTypes
    */
   group_type?: VmwareGroupTypes[];
 
   /**
-   * Indicates if group is a remote reference with different span
-   * @optional
+   * Indicates if group is a remote reference.
    * @readonly
-   * @default false
    */
   readonly reference?: boolean;
 
   /**
-   * Current realization state of the group object
-   * @optional
+   * Current realization state.
    * @readonly
-   * @see VmwareRealizationStates
    */
   readonly state?: VmwareRealizationStates | VmwareRealizationState;
 
   /**
-   * Tag collection for group metadata and filtering
-   * @optional
+   * Tag collection for metadata and filtering.
    * @maxItems 30
-   * @see VMWareNSXTag
    */
   tags?: VMWareNSXTag[] | [];
 }

@@ -7,20 +7,29 @@ import { HTTPError, NAMNetboxIntegrator, NAMParams } from "../../../../types";
 import { queryBuilderSync } from "../../../utils";
 import { RORClusterControlPlaneMetaData } from "../../../../types/tools/nhn/ror-v1/clusters/ror-cluster-control-plane-metadata";
 
+/**
+ * ROR v1 API driver for Norwegian Health Network cluster management.
+ * Provides type-safe access to ROR (Register of Resources) API endpoints for retrieving
+ * cluster control plane metadata and resource information. Extends ZenikiCoreDriver with
+ * HTTP methods and authentication handling for ROR infrastructure operations.
+ *
+ * @extends ZenikiCoreDriver
+ * @example
+ * ```typescript
+ * const ror = new RORv1Driver({
+ *   baseURL: 'https://ror.company.com/api/v1',
+ *   headers: { 'x-api-key': 'your-api-key' }
+ * });
+ * const metadata = await ror.getControlplanesMetadata();
+ * ```
+ */
 export class RORv1Driver extends ZenikiCoreDriver {
   /**
    * Initialize ROR v1 driver with request configuration for API communication.
-   * Inherits HTTP methods and security features from ZenikiCoreDriver base class.
-   *
-   * @param config Request configuration including base URL and authentication headers
-   *
+   * @param config - Request configuration including base URL and authentication headers
    * @example
    * ```typescript
-   * // Simple initialization
-   * const ror = new RORv1Driver({
-   *   baseURL: 'https://ror.company.com/api/v2',
-   *   headers: { 'x-api-key': '12345678-abcd-1234-efgh-123456789ijk' }
-   * });
+   * new RORv1Driver({ baseURL: 'https://ror.company.com/api/v1', headers: { 'x-api-key': 'key' } });
    * ```
    */
   constructor(public config: RequestConfig) {
@@ -29,23 +38,17 @@ export class RORv1Driver extends ZenikiCoreDriver {
 
   /**
    * Retrieve all Cluster Control Plane Metadata objects.
-   *
-   * @returns {Promise<ResponseGeneric<RORClusterControlPlaneMetaData[]>>} Promise resolving to ROR response containing array of ROR Cluster Control Plane Metadata objects
-   *
+   * @param params - Optional query parameters
+   * @returns Promise resolving to array of cluster control plane metadata objects
    * @example
    * ```typescript
-   * const response = await ror.getControlplanesMetadata();
-   * console.log(`Found ${response.data.results.length} Cluster Control Plane Metadata objects`);
+   * const metadata = await ror.getControlplanesMetadata();
    * ```
-   *
-   * @since ROR v1
    */
   async getControlplanesMetadata(
     params?: { [key: string]: any } | URLSearchParams
-  ): Promise<RORClusterControlPlaneMetaData[] | undefined> {
-    const response = await this.get<
-      RORClusterControlPlaneMetaData[] | undefined
-    >(
+  ): Promise<RORClusterControlPlaneMetaData[]> {
+    const response = await this.get<RORClusterControlPlaneMetaData[]>(
       this.config.baseURL +
         `/clusters/controlplanesMetadata` +
         queryBuilderSync(params as any),

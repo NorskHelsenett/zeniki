@@ -1,862 +1,362 @@
 # FortiOS Driver Documentation
 
-The FortiOS driver provides comprehensive integration with Fortinet FortiGate firewalls, offering type-safe, well-documented methods for managing firewall addresses, address groups, and automated security policy configuration. Built for FortiOS 7.4.x with backward compatibility to 6.0.0.
+## Summary
+
+The FortiOS driver provides type-safe integration with Fortinet FortiGate firewalls (v7.4.x+) for managing addresses, address groups, and VDOMs through a modular sub-driver architecture. Core functionality includes IPv4/IPv6 dual-stack address management, multi-VDOM operations, and Security Fabric integration with EMS tag support and ZTNA configurations.
+
+Key features include comprehensive TypeScript type definitions with enum support, HTTP error handling via `HTTPError` class, automatic pagination for large datasets, and specialized sub-drivers (`address`, `address6`, `addrgrp`, `addrgrp6`, `vdoms`) for organized API access. The driver supports enterprise features like fabric object distribution, dynamic group membership, and compliance automation.
+
+Access patterns follow a consistent sub-driver structure: `fortios.address.*`, `fortios.address6.*`, `fortios.addrgrp.*`, `fortios.addrgrp6.*`, and `fortios.vdoms.*` for specialized operations, plus `getByUrl()` and `getPaginatedByUrl()` for generic API access. Each sub-driver provides standard CRUD operations with consistent method signatures.
+
+Technical implementation uses native fetch API with `RequestConfig` supporting standard `RequestInit` options. Authentication via Bearer tokens or Basic Auth, with VDOM targeting through query parameters. Error handling through `HTTPError` class exposing HTTP status codes and response details.
 
 ## Table of Contents
 
-- [Quick Start](#quick-start)
-- [Driver Configuration](#driver-configuration)
-- [API Methods](#api-methods)
+- [Configuration](#configuration)
+- [Basic Usage](#basic-usage)
 - [Advanced Usage](#advanced-usage)
-- [Examples](#examples)
+- [Components](#components)
 - [Type Definitions](#type-definitions)
 
-## Quick Start
+## Configuration
 
-### Basic Setup
-
-```typescript
-import { 
-  FortiOSDriver,
-  FortiOSFirewallAddress,
-  FortiOSFirewallAddress6,
-  FortiOSFirewallAddrGrp,
-  FortiOSFirewallAddrGrp6
-} from '@norskhelsenett/zeniki';
-
-// Initialize the FortiOS driver
-const fortios = new FortiOSDriver({
-  baseURL: 'https://fortigate.company.com',
-  headers: {
-    'Authorization': 'Bearer your-api-token',
-    'Content-Type': 'application/json'
-  },
-  timeout: 30000
-});
-```
-
-### Basic Operations
+### Required Parameters
 
 ```typescript
-// Get a specific IPv4 address object
-const address = await fortios.getAddress('web-server-1');
-console.log(`Address: ${address.results[0].subnet}, Type: ${address.results[0].type}`);
-
-// Get all IPv4 address objects with filtering
-const addresses = await fortios.getAddresses({
-  filter: 'subnet=@192.168.1.0/24',
-  count: 50
-});
-
-console.log(`Found ${addresses.count} addresses`);
-
-// Add a new IPv4 address object
-const newAddress = await fortios.addAddress({
-  name: 'database-server',
-  type: 'ipmask',
-  subnet: '192.168.100.50/32',
-  comment: 'Primary database server'
-});
-
-// Create an address group with multiple members
-const addressGroup = await fortios.addAddressGroup({
-  name: 'web-servers',
-  type: 'default',
-  member: [
-    { name: 'web-server-1' },
-    { name: 'web-server-2' },
-    { name: 'web-server-3' }
-  ],
-  comment: 'Production web server cluster'
-});
-```
-
-## FortiOS Integration Features
-
-The FortiOS driver provides enterprise-grade features for FortiGate firewall management:
-
-### Security Fabric Integration
-- **EMS Tag Integration** - Leverage FortiClient EMS tags for dynamic policy creation
-- **Zero Trust Network Access (ZTNA)** - Support for ZTNA gateway configurations
-- **Global Object Distribution** - Manage objects across Security Fabric members
-
-### Enterprise Automation
-- **Multi-VDOM Support** - Complete support for Virtual Domain configurations
-- **Compliance Automation** - Automated policy validation and compliance checking
-- **Audit Logging** - Comprehensive logging for security and compliance requirements
-- **CI/CD Integration** - Pipeline-friendly configuration management
-
-### Advanced Networking
-- **IPv4/IPv6 Dual-Stack** - Complete support for both IPv4 and IPv6 configurations
-- **Template-Based Addressing** - Support for address templates and dynamic objects
-- **Interface Integration** - Associate addresses with specific interfaces and zones
-
-## Driver Configuration
-
-### Constructor
-
-```typescript
-new FortiOSDriver(config: RequestConfig)
-```
-
-**Parameters:**
-- `config` - Request configuration including base URL, headers, and authentication
-
-**Example configurations:**
-
-```typescript
-// Basic configuration with API token
-const fortios = new FortiOSDriver({
-  baseURL: 'https://fortigate.company.com',
-  headers: {
-    'Authorization': 'Bearer your-api-token',
-    'Content-Type': 'application/json'
-  },
-  timeout: 30000
-});
-
-// Configuration with username/password authentication
-const fortios = new FortiOSDriver({
-  baseURL: 'https://fortigate.company.com',
-  auth: {
-    username: 'admin',
-    password: 'password'
-  },
-  timeout: 30000
-});
-
-// Configuration with VDOM specification
-const fortios = new FortiOSDriver({
-  baseURL: 'https://fortigate.company.com',
-  headers: {
-    'Authorization': 'Bearer your-api-token',
-    'Content-Type': 'application/json'
-  },
-  params: {
-    vdom: 'production'  // Target specific VDOM
-  }
-});
-```
-
-## API Methods
-
-The FortiOS driver provides comprehensive CRUD operations for firewall objects:
-
-- **IPv4 Address Management** - Complete lifecycle management for IPv4 address objects
-- **IPv6 Address Management** - Full support for IPv6 address objects and configurations
-- **IPv4 Address Groups** - Group management with up to 600 members per group
-- **IPv6 Address Groups** - IPv6 group management with enterprise scalability
-- **Generic URL Access** - Direct access to any FortiOS API endpoint
-
-### IPv4 Address Management
-
-#### `getAddress(name, params?)`
-
-Retrieves a specific IPv4 address object by name.
-
-```typescript
-async getAddress(
-  name: string,
-  params?: FortiOSParams
-): Promise<FortiOSResponse<FortiOSFirewallAddress>>>
-```
-
-**Examples:**
-
-```typescript
-// Get address object by name
-const response = await fortios.getAddress('web-server-1');
-if (response && response.results && response.results.length > 0) {
-  const address = response.results[0];
-  console.log(`Address: ${address.name}, Subnet: ${address.subnet}`);
+interface RequestConfig {
+  baseURL: string;              // FortiGate API base URL (e.g., 'https://fortigate.company.com')
+  headers?: HeadersInit;        // HTTP headers including authentication
 }
-
-// Get address with specific VDOM
-const response = await fortios.getAddress('web-server-1', {
-  vdom: 'production'
-});
-
-// Get address with metadata
-const response = await fortios.getAddress('web-server-1', {
-  with_meta: true
-});
 ```
 
-#### `getAddresses(params?)`
+### Optional Parameters
 
-Retrieves a paginated list of IPv4 address objects with optional filtering.
+Supports standard `RequestInit` options from native fetch API:
+
+- `method` - HTTP method (automatically set by driver methods)
+- `body` - Request body (automatically set for POST/PUT/PATCH)
+- `headers` - Additional HTTP headers
+- `signal` - AbortSignal for request cancellation
+- `credentials` - CORS credentials mode
+- `cache` - Cache mode
+- `redirect` - Redirect mode
+- `referrer` - Referrer URL
+- `referrerPolicy` - Referrer policy
+- `integrity` - Subresource integrity
+- `keepalive` - Keep connection alive
+- `mode` - Request mode (cors, no-cors, same-origin)
+
+Additional driver-specific options:
+
+- `timeout` - Request timeout in milliseconds
+- `params` - Query parameters (e.g., `{ vdom: 'production' }`)
+- `auth` - Basic authentication credentials `{ username: string, password: string }`
+
+### Configuration Examples
 
 ```typescript
-async getAddresses(
-  params?: FortiOSParams
-): Promise<FortiOSResponse<FortiOSFirewallAddress>>>
-```
-
-**Examples:**
-
-```typescript
-// Get all IPv4 addresses
-const response = await fortios.getAddresses();
-if (response && response.results) {
-  const addresses = response.results;
-}
-
-// Get addresses with filtering
-const response = await fortios.getAddresses({
-  filter: 'subnet=@192.168.1.0/24',
-  count: 100
+// Bearer token authentication
+const fortios = new FortiOSDriver({
+  baseURL: 'https://fortigate.company.com',
+  headers: { 'Authorization': 'Bearer your-api-token' }
 });
 
-// Search addresses by name pattern
-const response = await fortios.getAddresses({
-  filter: 'name=@web-*',
-  sortby: 'name'
+// Basic authentication
+const fortios = new FortiOSDriver({
+  baseURL: 'https://fortigate.company.com',
+  auth: { username: 'admin', password: 'password' }
 });
 
-// Get addresses with pagination
-const response = await fortios.getAddresses({
-  start: 0,
-  count: 50
-});
-```
-
-#### `addAddress(address, params?)`
-
-Creates a new IPv4 address object.
-
-```typescript
-async addAddress(
-  address: FortiOSFirewallAddress,
-  params?: FortiOSParams
-): Promise<FortiOSResponse<FortiOSFirewallAddress>>>
-```
-
-**Examples:**
-
-```typescript
-// Example 1: Using string literals (quick prototyping)
-const webServer = await fortios.addAddress({
-  name: 'web-server-1',
-  type: 'ipmask',
-  subnet: '192.168.100.10/32',
-  comment: 'Primary web server'
-});
-
-// Example 2: Using type-safe enums (production recommended)
-const databaseServer = await fortios.addAddress({
-  name: 'database-server',
-  type: FortiOSFirewallAddressType.IP_Mask,
-  subnet: '192.168.100.50 255.255.255.0',
-  comment: 'Primary database server',
-  'allow-routing': CommonEnableDisable.Enable
-});
-```
-
-#### `deleteAddress(name, params?)`
-
-Deletes an IPv4 address object by name.
-
-```typescript
-async deleteAddress(
-  name: string,
-  params?: FortiOSParams
-): Promise<FortiOSResponse<FortiOSFirewallAddress>>>
-```
-
-#### `updateAddress(name, address, params?)`
-
-Updates an existing IPv4 address object.
-
-```typescript
-async updateAddress(
-  name: string,
-  address: Partial<FortiOSFirewallAddress>,
-  params?: FortiOSParams
-): Promise<FortiOSResponse<FortiOSFirewallAddress>>>
-```
-
-**Examples:**
-
-```typescript
-// Example 1: Using string literals (quick update)
-const updated = await fortios.updateAddress('web-server-1', {
-  subnet: '192.168.1.101/32',
-  comment: 'Updated IP address for web server'
-});
-
-// Example 2: Using type-safe enums and interfaces
-const secureUpdate = await fortios.updateAddress('database-server', {
-  type: FortiOSFirewallAddressType.IP_Mask,
-  subnet: '192.168.100.60 255.255.255.0',
-  'allow-routing': CommonEnableDisable.Disable,
-  'fabric-object': CommonEnableDisable.Enable,
-  comment: 'Secured database server with fabric sync'
-});
-```
-
-### IPv6 Address Management
-
-The IPv6 address management methods follow the same patterns as IPv4:
-
-#### `getAddress6(name, params?)` / `getAddresses6(params?)`
-
-Retrieve IPv6 address objects with full dual-stack support.
-
-#### `addAddress6(address, params?)`
-
-Create IPv6 address objects with enhanced addressing capabilities.
-
-```typescript
-// Create an IPv6 subnet address
-const ipv6Address = await fortios.addAddress6({
-  name: 'ipv6-server',
-  type: 'ipprefix',
-  ip6: '2001:db8::/128',
-  comment: 'IPv6 server address'
-});
-
-// Create an IPv6 range
-const ipv6Range = await fortios.addAddress6({
-  name: 'ipv6-dhcp-range',
-  type: 'iprange',
-  'start-ip': '2001:db8::100',
-  'end-ip': '2001:db8::200',
-  comment: 'IPv6 DHCP range'
-});
-```
-
-### Address Group Management
-
-#### `getAddressGroup(name, params?)` / `getAddressGroups(params?)`
-
-Retrieve IPv4 address groups with member information.
-
-#### `addAddressGroup(group, params?)`
-
-Create IPv4 address groups with multiple members.
-
-```typescript
-async addAddressGroup(
-  group: FortiOSFirewallAddrGrp,
-  params?: FortiOSParams
-): Promise<FortiOSResponse<FortiOSFirewallAddrGrp>>>
-```
-
-**Examples:**
-
-```typescript
-// Example 1: Using string literals (simple group)
-const webServers = await fortios.addAddressGroup({
-  name: 'web-servers',
-  type: 'default',
-  member: [
-    { name: 'web-server-1' },
-    { name: 'web-server-2' },
-    { name: 'web-server-3' }
-  ],
-  comment: 'Production web server cluster'
-});
-
-// Example 2: Using enums and advanced features
-const secureGroup = await fortios.addAddressGroup({
-  name: 'dmz-servers',
-  type: 'default',
-  member: [
-    { name: 'dmz-web' },
-    { name: 'dmz-app' }
-  ],
-  'fabric-object': CommonEnableDisable.Enable,
-  'allow-routing': CommonEnableDisable.Enable,
-  comment: 'DMZ server group with fabric sync'
-});
-```
-
-#### IPv6 Address Groups
-
-IPv6 address groups support the same functionality with `getAddressGroup6`, `addAddressGroup6`, etc.
-
-### Generic API Access
-
-#### `getByUrl<T>(url, params?)`
-
-Access any FortiOS API endpoint directly.
-
-```typescript
-async getByUrl<T>(
-  url: string,
-  params?: FortiOSParams
-): Promise<T>>
-```
-
-**Examples:**
-
-```typescript
-// Access firewall policies
-const policies = await fortios.getByUrl<FortiOSResponse<any>>(
-  '/api/v2/cmdb/firewall/policy'
-);
-
-// Get system status
-const status = await fortios.getByUrl<any>(
-  '/api/v2/monitor/system/status'
-);
-
-// Access specific VDOM configuration
-const vdomConfig = await fortios.getByUrl<any>(
-  '/api/v2/cmdb/system/vdom',
-  { vdom: 'production' }
-);
-```
-
-## Advanced Usage
-
-### Multi-VDOM Operations
-
-FortiOS driver supports Virtual Domain (VDOM) operations for enterprise deployments:
-
-```typescript
-// Target specific VDOM for all operations
+// VDOM-specific configuration
 const fortios = new FortiOSDriver({
   baseURL: 'https://fortigate.company.com',
   headers: { 'Authorization': 'Bearer token' },
-  params: { vdom: 'production' }  // Global VDOM setting
-});
-
-// Override VDOM for specific operations
-const devAddresses = await fortios.getAddresses({
-  vdom: 'development',  // Override global VDOM
-  count: 100
+  params: { vdom: 'production' }
 });
 ```
 
-### Security Fabric Integration
+## Basic Usage
 
 ```typescript
-// Create fabric objects that sync across Security Fabric
-const fabricAddress = await fortios.addAddress({
-  name: 'global-dns-server',
-  type: 'ipmask',
-  subnet: '8.8.8.8/32',
-  'fabric-object': 'enable',  // Sync across fabric members
-  comment: 'Global DNS server - fabric distributed'
-});
-
-// Create EMS tag-based dynamic addressing
-const emsTaggedGroup = await fortios.addAddressGroup({
-  name: 'ems-tagged-devices',
-  type: 'folder',
-  'fabric-object': 'enable',
-  'tag-detection': 'enable',
-  'tag-type': 'ems',
-  comment: 'Devices tagged by FortiClient EMS'
-});
-```
-
-### Bulk Operations
-
-```typescript
-// Bulk address creation for network segments
-async function createNetworkSegments() {
-  const segments = [
-    { name: 'users', subnet: '192.168.10.0/24' },
-    { name: 'servers', subnet: '192.168.20.0/24' },
-    { name: 'guest', subnet: '192.168.30.0/24' },
-    { name: 'iot', subnet: '192.168.40.0/24' }
-  ];
-
-  const createdAddresses = [];
-  for (const segment of segments) {
-    const address = await fortios.addAddress({
-      name: `network-${segment.name}`,
-      type: 'ipmask',
-      subnet: segment.subnet,
-      comment: `${segment.name} network segment`
-    });
-    createdAddresses.push(address.data);
-  }
-
-  // Create umbrella group for all segments
-  const allNetworks = await fortios.addAddressGroup({
-    name: 'all-internal-networks',
-    type: 'default',
-    member: createdAddresses.map(addr => ({ name: addr.results[0].name })),
-    comment: 'All internal network segments'
-  });
-
-  return allNetworks;
-}
-```
-
-### Error Handling and Validation
-
-```typescript
-import { HTTPError } from '@norskhelsenett/zeniki';
-
-try {
-  const address = await fortios.addAddress({
-    name: 'test-server',
-    type: 'ipmask',
-    subnet: '192.168.1.100/32'
-  });
-} catch (error) {
-  if (error instanceof HTTPError) {
-    if (error.code === 424) {
-      console.log('Object already exists or dependency failed');
-    } else if (error.code === 403) {
-      console.log('Insufficient permissions or read-only mode');
-    } else {
-      console.log(`FortiOS API error: ${error.code}`);
-      console.log(`Error details: ${error.message}`);
-    }
-  }
-}
-```
-
-### Configuration Backup and Restore
-
-```typescript
-// Export current address configuration
-async function backupAddressConfiguration() {
-  const addresses = await fortios.getAddresses({ count: 1000 });
-  const groups = await fortios.getAddressGroups({ count: 1000 });
-  
-  const backup = {
-    timestamp: new Date().toISOString(),
-    addresses: addresses.results,
-    groups: groups.results
-  };
-  
-  return backup;
-}
-
-// Restore configuration from backup
-async function restoreAddressConfiguration(backup: any) {
-  // Restore addresses first (dependencies)
-  for (const address of backup.addresses) {
-    try {
-      await fortios.addAddress(address);
-    } catch (error) {
-      console.log(`Failed to restore address ${address.name}:`, error);
-    }
-  }
-  
-  // Restore groups second
-  for (const group of backup.groups) {
-    try {
-      await fortios.addAddressGroup(group);
-    } catch (error) {
-      console.log(`Failed to restore group ${group.name}:`, error);
-    }
-  }
-}
-```
-
-## Examples
-
-### Complete Address Object CRUD Operations
-
-```typescript
-import { 
-  FortiOSDriver,
-  FortiOSFirewallAddressType,
-  CommonEnableDisable 
-} from '@norskhelsenett/zeniki';
+import { FortiOSDriver } from '@norskhelsenett/zeniki';
 
 const fortios = new FortiOSDriver({
   baseURL: 'https://fortigate.company.com',
   headers: { 'Authorization': 'Bearer token' }
 });
 
-async function manageAddressObjects() {
-  // CREATE: Add new address object
-  const webServers = await fortios.addAddress({
-    name: 'web-servers',
-    type: FortiOSFirewallAddressType.IP_Mask,
-    subnet: '192.168.10.0 255.255.255.0',
-    comment: 'Web server network segment',
-    'allow-routing': CommonEnableDisable.Enable
-  });
+// IPv4 address operations
+const address = await fortios.address.getAddress('web-server');
+await fortios.address.addAddress({
+  name: 'db-server',
+  type: 'ipmask',
+  subnet: '192.168.1.100/32',
+  comment: 'Database server'
+});
 
-  // READ: Get the created address object
-  const retrievedAddress = await fortios.getAddress('web-servers');
-  console.log(`Address: ${retrievedAddress.results.subnet}`);
+// IPv4 address group operations
+const group = await fortios.addrgrp.getAddressGroup('web-servers');
+await fortios.addrgrp.addAddressGroup({
+  name: 'servers',
+  type: 'default',
+  member: [{ name: 'web-server' }, { name: 'db-server' }]
+});
 
-  // UPDATE: Modify the address object
-  const updatedAddress = await fortios.updateAddress('web-servers', {
-    name: 'web-servers',
-    type: FortiOSFirewallAddressType.IP_Mask,
-    subnet: '192.168.10.0 255.255.255.0',
-    comment: 'Updated web server network segment',
-    'allow-routing': CommonEnableDisable.Enable
-  });
-
-  // DELETE: Remove the address object
-  await fortios.deleteAddress('web-servers');
-}
-```
-  });
-
-  const clientGroup = await fortios.addAddressGroup({
-    name: 'client-networks',
-    type: 'default', 
-    member: [{ name: 'user-network' }],
-    comment: 'Client access networks'
-  });
-
-  // 3. Create external service addresses
-  const externalApi = await fortios.addAddress({
-    name: 'external-payment-api',
-    type: 'fqdn',
-    fqdn: 'api.payment-processor.com',
-    comment: 'External payment processing API'
-  });
-
-  // 4. Create comprehensive network groups
-  const allInternal = await fortios.addAddressGroup({
-    name: 'all-internal-networks',
-    type: 'default',
-    member: [
-      { name: 'frontend-tier' },
-      { name: 'backend-tier' },
-      { name: 'client-networks' }
-    ],
-    comment: 'All internal network segments'
-  });
-
-  return {
-    addresses: [webServers, databases, users, externalApi],
-    groups: [frontendGroup, backendGroup, clientGroup, allInternal]
-  };
-}
+// VDOM operations
+const vdom = await fortios.vdoms.getVdom('production');
 ```
 
-### IPv6 Dual-Stack Configuration
+## Advanced Usage
 
 ```typescript
-async function setupDualStackNetwork() {
-  // IPv4 configuration
-  const ipv4Network = await fortios.addAddress({
-    name: 'dual-stack-ipv4',
+import { FortiOSDriver, HTTPError } from '@norskhelsenett/zeniki';
+
+const fortios = new FortiOSDriver({
+  baseURL: 'https://fortigate.company.com',
+  headers: { 'Authorization': 'Bearer token' },
+  params: { vdom: 'production' }  // Global VDOM setting
+});
+
+// Multi-component operations with error handling
+try {
+  // IPv4 and IPv6 dual-stack configuration
+  await fortios.address.addAddress({
+    name: 'web-server',
     type: 'ipmask',
-    subnet: '192.168.50.0/24',
-    comment: 'IPv4 side of dual-stack network'
+    subnet: '192.168.1.100/32',
+    'fabric-object': 'enable',
+    comment: 'Web server with fabric sync'
   });
 
-  // IPv6 configuration
-  const ipv6Network = await fortios.addAddress6({
-    name: 'dual-stack-ipv6',
+  await fortios.address6.addAddress6({
+    name: 'web-server-ipv6',
     type: 'ipprefix',
-    ip6: '2001:db8:50::/64',
-    comment: 'IPv6 side of dual-stack network'
+    ip6: '2001:db8::100/128',
+    comment: 'IPv6 web server'
   });
 
-  // Create dual-stack groups
-  const ipv4Group = await fortios.addAddressGroup({
-    name: 'dual-stack-ipv4-group',
+  // Create groups for both address families
+  await fortios.addrgrp.addAddressGroup({
+    name: 'web-tier',
     type: 'default',
-    member: [{ name: 'dual-stack-ipv4' }],
-    comment: 'IPv4 dual-stack addresses'
+    member: [{ name: 'web-server' }],
+    'fabric-object': 'enable'
   });
 
-  const ipv6Group = await fortios.addAddressGroup6({
-    name: 'dual-stack-ipv6-group', 
+  await fortios.addrgrp6.addAddressGroup6({
+    name: 'web-tier-ipv6',
     type: 'default',
-    member: [{ name: 'dual-stack-ipv6' }],
-    comment: 'IPv6 dual-stack addresses'
+    member: [{ name: 'web-server-ipv6' }]
   });
 
-  return {
-    ipv4: { address: ipv4Network, group: ipv4Group },
-    ipv6: { address: ipv6Network, group: ipv6Group }
-  };
+  // VDOM management
+  const vdoms = await fortios.vdoms.getVdoms();
+  console.log(`Total VDOMs: ${vdoms.count}`);
+
+  // Pagination for large datasets
+  const allAddresses = await fortios.getPaginatedByUrl(
+    '/cmdb/firewall/address',
+    { page_size: 100 },
+    true  // Follow pagination
+  );
+
+} catch (error) {
+  if (error instanceof HTTPError) {
+    console.error(`API Error ${error.code}: ${error.message}`);
+    if (error.code === 424) console.log('Object already exists');
+    if (error.code === 403) console.log('Insufficient permissions');
+  }
 }
 ```
 
-### Enterprise Compliance and Auditing
+## Components
 
-```typescript
-async function generateComplianceReport() {
-  // Get all address objects for compliance review
-  const allAddresses = await fortios.getAddresses({ count: 1000 });
-  const allGroups = await fortios.getAddressGroups({ count: 1000 });
+### Sub-Drivers
 
-  const report = {
-    timestamp: new Date().toISOString(),
-    summary: {
-      totalAddresses: allAddresses.count,
-      totalGroups: allGroups.count
-    },
-    findings: {
-      uncommentedObjects: [],
-      fabricObjects: [],
-      dynamicObjects: []
-    }
-  };
+**`address`** - FortiOSAddressSubDriver
+- `getAddress(name, params?)` - Retrieve IPv4 address by name
+- `getAddresses(params?)` - List all IPv4 addresses with filtering
+- `addAddress(address, params?)` - Create new IPv4 address
+- `updateAddress(name, address, params?)` - Update IPv4 address
+- `deleteAddress(name, params?)` - Delete IPv4 address
 
-  // Analyze addresses for compliance
-  for (const address of allAddresses.results) {
-    if (!address.comment || address.comment.trim() === '') {
-      report.findings.uncommentedObjects.push({
-        type: 'address',
-        name: address.name,
-        issue: 'Missing comment/description'
-      });
-    }
+**`address6`** - FortiOSAddress6SubDriver
+- `getAddress6(name, params?)` - Retrieve IPv6 address by name
+- `getAddresses6(params?)` - List all IPv6 addresses with filtering
+- `addAddress6(address, params?)` - Create new IPv6 address
+- `updateAddress6(name, address, params?)` - Update IPv6 address
+- `deleteAddress6(name, params?)` - Delete IPv6 address
 
-    if (address['fabric-object'] === 'enable') {
-      report.findings.fabricObjects.push({
-        type: 'address',
-        name: address.name,
-        feature: 'Security Fabric distribution enabled'
-      });
-    }
-  }
+**`addrgrp`** - FortiOSAddrgrpSubDriver
+- `getAddressGroup(name, params?)` - Retrieve IPv4 address group by name
+- `getAddressGroups(params?)` - List all IPv4 address groups
+- `addAddressGroup(group, params?)` - Create new IPv4 address group
+- `updateAddressGroup(name, group, params?)` - Update IPv4 address group
+- `deleteAddressGroup(name, params?)` - Delete IPv4 address group
 
-  // Analyze groups for compliance
-  for (const group of allGroups.results) {
-    if (!group.comment || group.comment.trim() === '') {
-      report.findings.uncommentedObjects.push({
-        type: 'group',
-        name: group.name,
-        issue: 'Missing comment/description'
-      });
-    }
+**`addrgrp6`** - FortiOSAddrgrp6SubDriver
+- `getAddressGroup6(name, params?)` - Retrieve IPv6 address group by name
+- `getAddressGroups6(params?)` - List all IPv6 address groups
+- `addAddressGroup6(group, params?)` - Create new IPv6 address group
+- `updateAddressGroup6(name, group, params?)` - Update IPv6 address group
+- `deleteAddressGroup6(name, params?)` - Delete IPv6 address group
 
-    if (group.type === 'folder') {
-      report.findings.dynamicObjects.push({
-        type: 'group',
-        name: group.name,
-        feature: 'Dynamic group membership'
-      });
-    }
-  }
+**`vdoms`** - FortiOSVdomsSubDriver
+- `getVdom(name, params?)` - Retrieve VDOM by name
+- `getVdoms(params?)` - List all VDOMs
+- `addVdom(vdom, params?)` - Create new VDOM
+- `updateVdom(name, vdom, params?)` - Update VDOM configuration
+- `deleteVdom(name, params?)` - Delete VDOM
 
-  return report;
-}
-```
+### Generic Methods
+
+- `getByUrl<T>(url, params?)` - Access any FortiOS API endpoint
+- `getPaginatedByUrl<T>(url, params?, follow?)` - Paginated endpoint access with auto-follow
 
 ## Type Definitions
 
-The FortiOS driver provides comprehensive TypeScript type definitions for all FortiOS API objects and responses.
+### Core Interfaces
 
-### FortiOSFirewallAddress
-
-IPv4 firewall address object supporting multiple address types:
-
+**FortiOSFirewallAddress** - IPv4 address object
 ```typescript
 interface FortiOSFirewallAddress {
-  name: string;                    // Unique address object name
-  type: string;                    // Address type: 'ipmask', 'iprange', 'fqdn', 'geography', etc.
-  subnet?: string;                 // IP subnet in CIDR notation (for ipmask type)
-  'start-ip'?: string;            // Start IP for range type
-  'end-ip'?: string;              // End IP for range type  
-  fqdn?: string;                  // Fully qualified domain name (for fqdn type)
-  country?: string;               // Country code (for geography type)
-  interface?: string;             // Interface name (for interface-subnet type)
-  comment?: string;               // Optional description
-  'fabric-object'?: string;       // Enable/disable Security Fabric distribution
-  'tag-detection'?: string;       // Enable/disable EMS tag detection
-  'tag-type'?: string;           // Tag type: 'ems', 'dynamic'
-  // ... and many more properties for advanced features
+  name: string;                    // Unique address name
+  type: string;                    // 'ipmask' | 'iprange' | 'fqdn' | 'geography' | 'wildcard' | 'dynamic'
+  subnet?: string;                 // CIDR notation (e.g., '192.168.1.0/24')
+  'start-ip'?: string;            // Range start IP
+  'end-ip'?: string;              // Range end IP
+  fqdn?: string;                  // Fully qualified domain name
+  country?: string;               // ISO country code
+  comment?: string;               // Description
+  'fabric-object'?: string;       // 'enable' | 'disable'
+  'allow-routing'?: string;       // 'enable' | 'disable'
+  'tag-detection'?: string;       // 'enable' | 'disable'
+  'tag-type'?: string;           // 'ems' | 'dynamic'
 }
 ```
 
-### FortiOSFirewallAddress6
-
-IPv6 firewall address object with enhanced IPv6 capabilities:
-
+**FortiOSFirewallAddress6** - IPv6 address object
 ```typescript
 interface FortiOSFirewallAddress6 {
-  name: string;                    // Unique address object name
-  type: string;                    // Address type: 'ipprefix', 'iprange', 'fqdn', etc.
-  ip6?: string;                   // IPv6 address/prefix
-  'start-ip'?: string;            // Start IPv6 for range
-  'end-ip'?: string;              // End IPv6 for range
-  fqdn?: string;                  // FQDN for IPv6 resolution
-  comment?: string;               // Optional description
-  'fabric-object'?: string;       // Security Fabric distribution
-  // ... additional IPv6-specific properties
+  name: string;                    // Unique address name
+  type: string;                    // 'ipprefix' | 'iprange' | 'fqdn' | 'dynamic' | 'template'
+  ip6?: string;                   // IPv6 prefix (e.g., '2001:db8::/64')
+  'start-ip'?: string;            // Range start IPv6
+  'end-ip'?: string;              // Range end IPv6
+  fqdn?: string;                  // FQDN
+  comment?: string;               // Description
+  'fabric-object'?: string;       // 'enable' | 'disable'
 }
 ```
 
-### FortiOSFirewallAddrGrp
-
-IPv4 address group supporting up to 600 members:
-
+**FortiOSFirewallAddrGrp** - IPv4 address group
 ```typescript
 interface FortiOSFirewallAddrGrp {
   name: string;                    // Unique group name
-  type: string;                    // Group type: 'default', 'folder'
-  member: Array<{                 // Group members (up to 600)
-    name: string;                 // Member address object name
-  }>;
-  comment?: string;               // Optional description
-  'fabric-object'?: string;       // Security Fabric distribution
-  exclude?: string;               // Enable/disable exclusion logic
-  'exclude-member'?: Array<{      // Excluded members
-    name: string;
-  }>;
-  // ... additional group management properties
+  type: string;                    // 'default' | 'folder'
+  member: Array<{ name: string }>; // Address members (max 600)
+  comment?: string;               // Description
+  'fabric-object'?: string;       // 'enable' | 'disable'
+  exclude?: string;               // 'enable' | 'disable'
+  'exclude-member'?: Array<{ name: string }>; // Excluded members
 }
 ```
 
-### FortiOSFirewallAddrGrp6
-
-IPv6 address group with same capabilities as IPv4 groups:
-
+**FortiOSFirewallAddrGrp6** - IPv6 address group
 ```typescript
 interface FortiOSFirewallAddrGrp6 {
   name: string;                    // Unique group name
-  type: string;                    // Group type: 'default', 'folder'
-  member: Array<{                 // IPv6 group members
-    name: string;                 // Member IPv6 address object name
-  }>;
-  comment?: string;               // Optional description
-  'fabric-object'?: string;       // Security Fabric distribution
-  // ... IPv6-specific group properties
+  type: string;                    // 'default' | 'folder'
+  member: Array<{ name: string }>; // IPv6 address members
+  comment?: string;               // Description
+  'fabric-object'?: string;       // 'enable' | 'disable'
 }
 ```
 
-### FortiOSParams
+**FortiOSSystemVDOM** - Virtual Domain configuration
+```typescript
+interface FortiOSSystemVDOM {
+  name: string;                    // VDOM name
+  'short-name'?: string;          // Short identifier
+  vcluster?: number;              // Virtual cluster ID
+  comment?: string;               // Description
+}
+```
 
-Query parameters for FortiOS API requests:
+### Request/Response Types
 
+**FortiOSParams** - Query parameters
 ```typescript
 interface FortiOSParams {
-  vdom?: string;                  // Target Virtual Domain
-  filter?: string;                // Filter expression
-  count?: number;                 // Maximum results to return
-  start?: number;                 // Starting index for pagination
+  vdom?: string;                  // Target VDOM
+  filter?: string;                // Filter expression (e.g., 'name=@web-*')
+  count?: number;                 // Max results
+  start?: number;                 // Pagination offset
   sortby?: string;                // Sort field
-  with_meta?: boolean;            // Include metadata in response
-  // ... additional query parameters
+  with_meta?: boolean;            // Include metadata
 }
 ```
 
-### FortiOSResponse
-
-Generic FortiOS API response wrapper:
-
+**FortiOSResponse<T>** - API response wrapper
 ```typescript
 interface FortiOSResponse<T> {
-  http_method: string;            // HTTP method used
-  results: T[];                   // Array of result objects
-  vdom: string;                   // Virtual Domain
+  http_method: string;            // HTTP method
+  results: T[];                   // Result objects
+  vdom: string;                   // VDOM name
   path: string;                   // API path
   name: string;                   // Object name
-  status: string;                 // Response status
+  status: string;                 // 'success' | 'error'
   http_status: number;            // HTTP status code
-  serial: string;                 // Device serial number
+  serial: string;                 // Device serial
   version: string;                // FortiOS version
-  build: number;                  // FortiOS build number
-  count?: number;                 // Total result count
-  // ... additional response metadata
+  build: number;                  // Build number
+  count?: number;                 // Total count
+}
+```
+
+**FortiOSRevisionResponse** - Modification response
+```typescript
+interface FortiOSRevisionResponse {
+  status: number;                 // HTTP status code
+  statusText: string;             // Status message
+  data?: string;                  // Response data
+}
+```
+
+### Enums
+
+**FortiOSFirewallAddressType**
+```typescript
+enum FortiOSFirewallAddressType {
+  IP_Mask = 'ipmask',
+  IP_Range = 'iprange',
+  FQDN = 'fqdn',
+  Geography = 'geography',
+  Wildcard = 'wildcard',
+  Dynamic = 'dynamic'
+}
+```
+
+**CommonEnableDisable**
+```typescript
+enum CommonEnableDisable {
+  Enable = 'enable',
+  Disable = 'disable'
+}
+```
+
+### Error Types
+
+**HTTPError** - HTTP error class
+```typescript
+class HTTPError extends Error {
+  code: number;                   // HTTP status code
+  response: Response;             // Fetch Response object
+  constructor(message: string, code: number, response: Response);
 }
 ```
 
 ## See Also
 
 - [FortiOS 7.4.x REST API Reference](https://docs.fortinet.com/document/fortigate/7.4.0/rest-api-reference)
-- [FortiOS Administration Guide](https://docs.fortinet.com/document/fortigate/7.4.0/administration-guide)
-- [Security Fabric Documentation](https://docs.fortinet.com/document/fortigate/7.4.0/administration-guide/154688/security-fabric)
 - [Main Zeniki Documentation](../../../../README.md)

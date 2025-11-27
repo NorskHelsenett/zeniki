@@ -12,6 +12,38 @@
 
 Zeniki is a modern TypeScript library that provides type-safe, well-documented drivers for network infrastructure platforms including NetBox IPAM, FortiGate firewalls, VMware NSX, and Network Architecture Management (NAM) v2. Features comprehensive type safety with NHN-specific custom field types, immutable API responses, and enterprise-grade network automation capabilities.
 
+## ⚠️ Breaking Changes in v0.5.0
+
+**SubDriver Architecture**: Version 0.5.0 introduces a new SubDriver architecture that changes how you access driver methods. 
+The last version supporting the old implementation is **0.4.x**.
+
+### Migration Guide
+
+**Old Implementation (v0.4.x and earlier):**
+```typescript
+const netbox = new NetboxDriver({ baseURL: '...', headers: {...} });
+
+// Methods called directly on driver instance
+const prefixes = await netbox.getPrefixes({ status: 'active' });
+const prefix = await netbox.addPrefix({ prefix: '10.0.0.0/24' });
+const devices = await netbox.getDevices({ site: 1 });
+```
+
+**New Implementation (v0.5.0+):**
+```typescript
+const netbox = new NetboxDriver({ baseURL: '...', headers: {...} });
+
+// Methods organized into sub-drivers by resource type
+const prefixes = await netbox.prefixes.getPrefixes({ status: 'active' });
+const prefix = await netbox.prefixes.addPrefix({ prefix: '10.0.0.0/24' });
+const devices = await netbox.devices.getDevices({ site: 1 });
+```
+
+**Key Changes:**
+- Access methods through resource-specific sub-drivers (e.g., `netbox.prefixes`, `netbox.devices`, `netbox.vlans`)
+- Better organization and discoverability of API methods
+- Improved type safety and IntelliSense support
+
 ## Installation
 
 ### Install from npm
@@ -49,13 +81,11 @@ import {
 
 const netbox = new NetboxDriver({
   baseURL: 'https://netbox.example.com/api',
-  headers: {
-    Authorization: 'Token your-api-token-here'
-  }
+  headers: { 'Authorization': 'Token your-api-token' }
 });
 
-// Create a new IP prefix with type-safe enums and NHN custom fields
-const prefix = await netbox.addPrefix({
+// Create prefix using sub-driver with type-safe enums
+const prefix = await netbox.prefixes.addPrefix({
   prefix: '192.168.1.0/24',
   description: 'Development Network',
   status: NetboxPrefixStatus.Active,
@@ -66,11 +96,15 @@ const prefix = await netbox.addPrefix({
   }
 });
 
-// Get all active prefixes
-const prefixes = await netbox.getPrefixes({
+// Get prefixes using sub-driver
+const prefixes = await netbox.prefixes.getPrefixes({
   status: 'active',
   family: 4
 });
+
+// Access other sub-drivers
+const devices = await netbox.devices.getDevices({ site: 1 });
+const vlans = await netbox.vlans.getVlans({ status: 'active' });
 
 console.log(`Created prefix: ${prefix.prefix}`);
 console.log(`Found ${prefixes.count} active prefixes`);
@@ -91,45 +125,12 @@ console.log(`Found ${prefixes.count} active prefixes`);
 - 📊 **[Winston HEC Logger](src/core/loggers/README.md)** - Splunk HTTP Event Collector transport
 
 ### Testing & Examples
-📝 **[Test Suite Documentation](test/README.md)** - Unit tests, integration tests, and examples
+- 📝 **[Test Suite Documentation](test/README.md)** - Unit tests, integration tests, and examples
+- 🎮 **[Playground](playground/README.md)** - Manual testing and driver verification
 
 ## Development
 
-### Building
-
-```bash
-# Install dependencies
-npm install
-
-# Build the library
-npm run build
-
-# Create distributable package
-npm pack
-
-# Run tests
-npm test
-```
-
-### Project Structure
-
-```
-src/
-├── core/                 # Core functionality
-│   ├── base/            # Base classes
-│   ├── tools/           # API drivers
-│   └── utils/           # Utility functions
-├── types/               # TypeScript definitions
-└── index.ts             # Main entry point
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+See [Development Guide](DEVELOPMENT.md) for building, testing, project structure, and contribution guidelines.
 
 ## License
 

@@ -4,23 +4,17 @@ export class HTTPError extends Error {
   public readonly code: number;
   public readonly response?: Response;
   /**
-   * HTTP error class for handling failed fetch API responses.
-   * Extends the native Error class with HTTP-specific properties.
+   * HTTP error for failed fetch API responses.
    * 
-   * @param message - HTTP status text or custom error message describing what went wrong
-   * @param code - HTTP status code (e.g., 404, 500, 403)
-   * @param response - Optional fetch Response object for additional context
-   * @param name - Optional error type identifier (e.g., "GET_RESPONSE_ERROR", "POST_FAILED")
+   * @param message - HTTP status text or error message
+   * @param code - HTTP status code
+   * @param response - Optional fetch Response object
+   * @param name - Optional error type identifier
    * 
    * @example
    * ```typescript
    * if (!response.ok) {
-   *   throw new HTTPError(
-   *     response.statusText,
-   *     response.status,
-   *     response,
-   *     "API_REQUEST_FAILED"
-   *   );
+   *   throw new HTTPError(response.statusText, response.status, response);
    * }
    * ```
    */
