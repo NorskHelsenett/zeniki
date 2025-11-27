@@ -3,64 +3,18 @@ import fs, { FSWatcher } from "node:fs";
 import process, { env } from "node:process";
 
 /**
- * EnvLoader class for loading and managing environment variables from configuration files.
- * Supports both JSON and YAML formats with singleton pattern for shared configuration state.
- * File watching functionality is temporarily disabled due to compatibility issues.
- * 
- * Features:
- * - Loads secrets and configuration from YAML or JSON files
- * - Singleton pattern ensures configuration is loaded once across the application
- * - Automatically sets environment variables from loaded files
- * - Graceful error handling in development and production modes
- * - Development mode logging: Set `process.env.NODE_ENV` or `process.env.DENO_ENV` to "development" to enable detailed error messages
- * - Clean disposal pattern to prevent memory leaks
- * 
- * File Structure Requirements:
- * - Example files are provided in the package: `examples/secrets.yaml.example` and `examples/config.yaml.example`
- * - Copy example files to your project with correct filenames:
- *   - `examples/secrets.yaml.example` → `./secrets/secrets.yaml`
- *   - `examples/config.yaml.example` → `./config/config.yaml`
- * - Create the directories if they don't exist: `./secrets/` and `./config/`
- * - Supported formats: `.yaml`, `.yml`, or `.json`
- * 
- * @class EnvLoader
- * @since 0.1.0
- * 
+ * EnvLoader for loading environment variables from YAML/JSON config and secrets files.
+ * Uses singleton pattern with automatic environment variable setting. Supports graceful error
+ * handling and development mode logging. File watching temporarily disabled.
+ *
  * @example
  * ```typescript
- * import { EnvLoader } from '@norskhelsenett/zeniki';
- * 
- * // Setup: Copy example files to correct locations with correct filenames
- * // mkdir -p secrets config
- * // cp node_modules/@norskhelsenett/zeniki/examples/secrets.yaml.example ./secrets/secrets.yaml
- * // cp node_modules/@norskhelsenett/zeniki/examples/config.yaml.example ./config/config.yaml
- * 
- * // Initialize with default paths (./secrets/secrets.yaml and ./config/config.yaml)
- * const loader = new EnvLoader();
- * 
- * // Initialize with custom paths
- * const loader = new EnvLoader('./secrets/prod.yaml', './config/prod.yaml');
- * 
- * // Enable development mode for detailed error logging
- * process.env.NODE_ENV = 'development';
- * const devLoader = new EnvLoader();
- * 
- * // Check if configuration was loaded
+ * const loader = new EnvLoader('./secrets/secrets.yaml', './config/config.yaml');
  * if (EnvLoader.isLoaded()) {
- *   console.log('Configuration loaded successfully');
+ *   const apiKey = process.env.MY_SECRET;
+ *   const config = EnvLoader.getConfig();
+ *   const secretKeys = EnvLoader.getSecretKeys();
  * }
- * 
- * // Access loaded environment variables
- * const apiKey = process.env.MY_SECRET; // From secrets.yaml
- * const endpoint = process.env.MY_API_ENDPOINT; // From config.yaml
- * 
- * // Get configuration
- * const config = EnvLoader.getConfig();
- * 
- * // Get secret keys (without values)
- * const secretKeys = EnvLoader.getSecretKeys();
- * 
- * // Clean up when done
  * loader.close();
  * ```
  */
@@ -75,48 +29,13 @@ export class EnvLoader {
   private _isDisposed: boolean = false;
 
   /**
-   * Creates a new EnvLoader instance and initializes environment loading.
-   * Uses singleton pattern - configuration is only loaded once even if multiple instances are created.
-   * Gracefully handles missing files and logs appropriate messages based on environment mode.
-   * 
-   * Setup Instructions:
-   * 1. Create directories and copy example files with correct filenames:
-   *    ```bash
-   *    mkdir -p secrets config
-   *    cp node_modules/@norskhelsenett/zeniki/examples/secrets.yaml.example ./secrets/secrets.yaml
-   *    cp node_modules/@norskhelsenett/zeniki/examples/config.yaml.example ./config/config.yaml
-   *    ```
-   * 2. Edit the copied files with your actual values:
-   *    - `./secrets/secrets.yaml`: Add sensitive values like API tokens, passwords
-   *    - `./config/config.yaml`: Add configuration like API endpoints, settings
-   * 3. Add to `.gitignore` to prevent committing secrets:
-   *    ```
-   *    secrets/secrets.yaml
-   *    config/config.yaml
-   *    ```
-   * 
-   * Error Logging Behavior:
-   * - Production: Only logs informational messages about missing files
-   * - Development: Logs detailed error messages when `process.env.NODE_ENV` or `process.env.DENO_ENV` is set to "development"
-   * 
-   * @param secretsPath - Path to the secrets file (default: "./secrets/secrets.yaml")
-   * @param configPath - Path to the configuration file (default: "./config/config.yaml")
-   * 
+   * Creates a new EnvLoader instance and initializes environment loading with singleton pattern.
+   * @param secretsPath - Path to secrets file (default: "./secrets/secrets.yaml")
+   * @param configPath - Path to config file (default: "./config/config.yaml")
    * @example
    * ```typescript
-   * // Default initialization (expects ./secrets/secrets.yaml and ./config/config.yaml)
-   * const loader = new EnvLoader();
-   * 
-   * // Custom paths with different file formats
    * const loader = new EnvLoader('./my-secrets.json', './my-config.yaml');
-   * 
-   * // Enable development mode for detailed error logging
-   * process.env.NODE_ENV = 'development';
-   * const devLoader = new EnvLoader(); // Will log detailed errors if files are missing
-   * 
-   * // Environment variables are now available
-   * const apiKey = process.env.MY_SECRET; // From secrets file
-   * const apiEndpoint = process.env.MY_API_ENDPOINT; // From config file
+   * const apiKey = process.env.MY_SECRET;
    * ```
    */
   constructor(
@@ -154,11 +73,7 @@ export class EnvLoader {
   }
 
   /**
-   * Loads and parses configuration and secrets files, then sets environment variables.
-   * This method reads both files synchronously and populates process.env.
-   * Uses singleton pattern - only loads once even if called multiple times.
-   * Logs the number of secrets loaded (without exposing values) and the full configuration.
-   * 
+   * Loads and parses config/secrets files, then sets environment variables.
    * @private
    */
   private load() {
@@ -186,14 +101,10 @@ export class EnvLoader {
   }
 
   /**
-   * Parses file contents as either JSON or YAML based on file extension.
-   * Supported extensions: .json, .yaml, .yml
-   * Logs parse errors to console and returns undefined on failure.
-   * 
+   * Parses file contents as JSON or YAML based on extension.
    * @private
    * @param path - The file path to read and parse
-   * @returns Parsed object as key-value pairs, or undefined if parsing fails
-   * @throws Will not throw - catches and logs errors internally
+   * @returns Parsed object or undefined on failure
    */
   private parse(path: string): Record<string, string> | undefined {
     try {
@@ -217,10 +128,8 @@ export class EnvLoader {
 
   /**
    * Sets up file system watchers for both configuration files.
-   * NOTE: Currently disabled in constructor due to compatibility issues.
-   * 
    * @private
-   * @deprecated Temporarily disabled - not called in current implementation
+   * @deprecated Temporarily disabled
    */
   private setupWatchers(): void {
     this.setupFileWatcher(this.secretsPath);
@@ -229,12 +138,9 @@ export class EnvLoader {
 
   /**
    * Sets up a file system watcher for a specific file.
-   * Automatically reloads configuration when file changes are detected.
-   * Handles errors gracefully and cleans up on failure.
-   * 
    * @private
    * @param filePath - Path to the file to watch
-   * @deprecated Temporarily disabled - not called in current implementation
+   * @deprecated Temporarily disabled
    */
   private setupFileWatcher(filePath: string): void {
     try {
@@ -263,16 +169,9 @@ export class EnvLoader {
 
   /**
    * Closes all file watchers and disposes of the EnvLoader instance.
-   * Prevents memory leaks by properly cleaning up file system watchers.
-   * Marks the instance as disposed to prevent further operations.
-   *
-   * @public
-   *
    * @example
    * ```typescript
-   * const loader = new EnvLoader('./secrets.yaml', './config.yaml');
-   * // ... use loader
-   * loader.close(); // Clean up when done
+   * loader.close();
    * ```
    */
   public close(): void {
@@ -300,15 +199,10 @@ export class EnvLoader {
 
   /**
    * Checks if the EnvLoader instance has been disposed.
-   *
-   * @returns True if the instance has been disposed
-   *
+   * @returns True if disposed
    * @example
    * ```typescript
-   * const loader = new EnvLoader();
-   * console.log(loader.isDisposed()); // false
-   * loader.close();
-   * console.log(loader.isDisposed()); // true
+   * if (loader.isDisposed()) console.log('Disposed');
    * ```
    */
   public isDisposed(): boolean {
@@ -316,17 +210,12 @@ export class EnvLoader {
   }
 
   /**
-   * Gets the loaded secrets keys (without exposing sensitive values).
-   * Returns only the keys, not the values, to avoid logging sensitive information.
-   * 
+   * Gets the loaded secrets keys (without exposing values).
    * @static
-   * @returns Array of secret keys, or empty array if secrets not loaded
-   * 
+   * @returns Array of secret keys or empty array
    * @example
    * ```typescript
    * const keys = EnvLoader.getSecretKeys();
-   * console.log(`Loaded secrets: ${keys.join(', ')}`);
-   * // Example output: "Loaded secrets: API_KEY, DB_PASSWORD, JWT_SECRET"
    * ```
    */
   public static getSecretKeys(): string[] {
@@ -335,18 +224,11 @@ export class EnvLoader {
 
   /**
    * Gets the loaded configuration.
-   * Returns a shallow copy to prevent external modifications to the singleton state.
-   * 
    * @static
-   * @returns Copy of loaded configuration as key-value pairs, or undefined if not loaded
-   * 
+   * @returns Copy of config or undefined
    * @example
    * ```typescript
    * const config = EnvLoader.getConfig();
-   * if (config) {
-   *   console.log(`API URL: ${config.API_URL}`);
-   *   console.log(`Environment: ${config.ENVIRONMENT}`);
-   * }
    * ```
    */
   public static getConfig(): Record<string, string> | undefined {
@@ -355,16 +237,11 @@ export class EnvLoader {
 
   /**
    * Checks if secrets and config have been loaded.
-   * Useful for validating that configuration is available before proceeding.
-   * 
    * @static
-   * @returns True if both secrets and config are loaded, false otherwise
-   * 
+   * @returns True if both loaded
    * @example
    * ```typescript
-   * if (!EnvLoader.isLoaded()) {
-   *   console.warn('Configuration not loaded, using defaults');
-   * }
+   * if (EnvLoader.isLoaded()) console.log('Ready');
    * ```
    */
   public static isLoaded(): boolean {

@@ -1,13 +1,19 @@
+/**
+ * ROR cluster IP address configuration.
+ * IPv4/IPv6 addresses for control plane or egress.
+ *
+ * @example
+ * ```typescript
+ * const ip: RORClusterControlPlaneMetadataIp = {
+ *   ipv4: '10.0.0.1',
+ *   ipv6: '2001:db8::1'
+ * };
+ * ```
+ */
 export interface RORClusterControlPlaneMetadataIp {
-  /**
-   * Unique name identifier for the IPv4 address object within the Cluster Control Plane MetaData.
-   * @required
-   */
+  /** IPv4 address. */
   ipv4: string | null;
 
-  /**
-   * Unique name identifier for the IPv4 address object within the luster Control Plane MetaData.
-   * @required
-   */
+  /** IPv6 address. */
   ipv6: string | null;
 }

@@ -1,29 +1,34 @@
 import { NetboxPartial } from "../shared/netbox-partial";
 
 /**
- * Represents a complete NetBox tag used for categorization and organization of entities.
- * Tags provide a flexible labeling system for grouping and filtering NetBox objects.
+ * NetBox tag for categorization and organization.
+ * Provides flexible labeling for grouping and filtering objects.
  *
- * This interface extends NetboxPartial, inheriting common properties like id, url, display,
- * description, comments, tags, custom_fields, created, and last_updated.
- *
- * @interface NetboxTag
- * @extends NetboxPartial
- * @see {@link https://netbox.readthedocs.io/en/stable/models/extras/tag/} NetBox Tag Documentation
+ * @example
+ * ```typescript
+ * const tag: NetboxTag = {
+ *   name: 'Production',
+ *   slug: 'production',
+ *   color: '#ff0000'
+ * };
+ * ```
  */
 export interface NetboxTag extends NetboxPartial {
-  /** Human-readable name of the tag (required) */
+  /** Tag name. */
   name: string;
 
-  /** URL-safe slug identifier for the tag, used in API endpoints and URLs (required) */
+  /** URL-safe slug identifier. */
   slug: string;
 
-  /** Hexadecimal color code for visual representation of the tag (e.g., "#ff0000") */
+  /** Hexadecimal color code. */
   color?: string;
 
-  /** List of object types that this tag can be applied to */
+  /** Object types this tag can be applied to. */
   object_types?: string[];
   
-  /** Total number of items tagged with this tag */
+  /**
+   * Number of items with this tag.
+   * @readonly
+   */
   readonly tagged_items?: number;
 }

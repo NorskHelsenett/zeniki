@@ -3,13 +3,9 @@ import { NAMApiEndpointTypes, NAMApiEndpointVendors } from "./shared/nam-api-end
 import { NAMDefaultFields } from "./shared/nam-default-fields";
 
 /**
- * NAM v2 API endpoint configuration interface for multi-vendor network device connectivity.
- * Extends NAMDefaultFields to provide MongoDB document tracking capabilities for API endpoint
- * management including authentication, SSL configuration, and vendor-specific settings.
- * 
- * @interface NAMAPIEndpoint
- * @since NAM v2.0
- * @context API endpoint configuration for network device management
+ * NAM v2 API endpoint configuration.
+ * Multi-vendor network device connectivity with authentication,
+ * SSL configuration, and vendor-specific settings.
  * 
  * @example
  * ```typescript
@@ -24,72 +20,36 @@ import { NAMDefaultFields } from "./shared/nam-default-fields";
  * ```
  */
 export interface NAMAPIEndpoint extends NAMDefaultFields {
-  /**
-   * Username for API authentication
-   * @optional
-   */
+  /** Username for authentication. */
   user?: string;
 
-  /**
-   * Password for API authentication
-   * @optional
-   */
+  /** Password for authentication. */
   pass?: string;
 
-  /**
-   * Description text providing contextual information about endpoint
-   * @optional
-   */
+  /** Description. */
   desc?: string;
 
-  /**
-   * Enable flag controlling endpoint active state
-   * @required
-   */
+  /** Endpoint is enabled. */
   enabled: boolean;
 
-  /**
-   * Base URL for API endpoint connectivity
-   * @required
-   */
+  /** Base API URL. */
   url: string;
 
-  /**
-   * Endpoint name identifier for configuration reference
-   * @optional
-   */
+  /** Endpoint name. */
   name?: string;
 
-  /**
-   * Vendor identifier for device type classification
-   * @optional
-   * @see NAMApiEndpointVendors
-   */
+  /** Vendor identifier. */
   vendor?: NAMApiEndpointVendors | string;
 
-  /**
-   * Device type specification for vendor-specific operations
-   * @optional
-   * @see NAMApiEndpointTypes
-   */
+  /** Device type. */
   type?: NAMApiEndpointTypes | string;
 
-  /**
-   * API key for token-based authentication
-   * @optional
-   */
+  /** API key for authentication. */
   key?: string;
 
-  /**
-   * API key expiration timestamp for token lifecycle management
-   * @optional
-   */
+  /** API key expiration. */
   keyExpires?: Date;
 
-  /**
-   * SSL configuration settings for secure connectivity
-   * @optional
-   * @see NAMAPIEndpointSSL
-   */
+  /** SSL configuration. */
   ssl?: NAMAPIEndpointSSL;
 }

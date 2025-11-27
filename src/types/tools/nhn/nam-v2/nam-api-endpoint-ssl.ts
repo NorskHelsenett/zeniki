@@ -1,64 +1,38 @@
 import { NAMDefaultFields } from "./shared/nam-default-fields";
 
 /**
- * NAM v2 API endpoint SSL configuration interface for secure network connectivity.
- * Extends NAMDefaultFields to provide MongoDB document tracking capabilities for SSL
- * certificate management supporting both inline certificates and file path references.
- * 
- * @interface NAMAPIEndpointSSL
- * @since NAM v2.0
- * @context SSL certificate configuration for secure API endpoints
+ * NAM v2 SSL configuration.
+ * Secure API endpoint certificate management
+ * with inline content or file path references.
  * 
  * @example
  * ```typescript
  * const sslConfig: NAMAPIEndpointSSL = {
  *   crt: '-----BEGIN CERTIFICATE-----...',
  *   key: '-----BEGIN PRIVATE KEY-----...',
- *   ca: '-----BEGIN CERTIFICATE-----...',
- *   pass: 'certificate-password'
+ *   ca: '-----BEGIN CERTIFICATE-----...'
  * };
  * ```
  */
 export interface NAMAPIEndpointSSL extends NAMDefaultFields {
-  /**
-   * Certificate content as inline string
-   * @optional
-   */
+  /** Certificate content. */
   crt?: string;
 
-  /**
-   * Private key content as inline string
-   * @optional
-   */
+  /** Private key content. */
   key?: string;
 
-  /**
-   * CA certificate content as inline string
-   * @optional
-   */
+  /** CA certificate content. */
   ca?: string;
 
-  /**
-   * Certificate file path for filesystem-based storage
-   * @optional
-   */
+  /** Certificate file path. */
   crtPath?: string;
 
-  /**
-   * Private key file path for filesystem-based storage
-   * @optional
-   */
+  /** Private key file path. */
   keyPath?: string;
 
-  /**
-   * CA certificate file path for filesystem-based storage
-   * @optional
-   */
+  /** CA certificate file path. */
   caPath?: string;
 
-  /**
-   * Certificate password for encrypted private keys
-   * @optional
-   */
+  /** Certificate password. */
   pass?: string;
 }

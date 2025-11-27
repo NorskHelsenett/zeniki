@@ -1,52 +1,43 @@
 import { RORClusterControlPlaneMetadataDatacenter } from "./ror-cluster-control-plane-metadata-datacenter";
 import { RORClusterControlPlaneMetadataIp } from "./ror-cluster-control-plane-metadata-ip";
 
+/**
+ * ROR cluster control plane metadata.
+ * Contains cluster configuration, networking, and datacenter information.
+ *
+ * @example
+ * ```typescript
+ * const metadata: RORClusterControlPlaneMetaData = {
+ *   clusterId: 'cluster-123',
+ *   clusterName: 'prod-k8s-01',
+ *   environment: 'production',
+ *   controlPlaneEndpoint: { ip: '10.0.0.1' },
+ *   datacenter: { name: 'DC01' }
+ * };
+ * ```
+ */
 export interface RORClusterControlPlaneMetaData {
-  /**
-   * ClusterId of the cluster within the ROR Cluster Control Plane MetaData.
-   * @required
-   */
+  /** Cluster identifier. */
   clusterId: string;
 
-  /**
-   * Name of the cluster within the ROR Cluster Control Plane MetaData.
-   * @required
-   */
+  /** Cluster name. */
   clusterName: string;
 
-  /**
-   * Environment within the ROR Cluster Control Plane MetaData.
-   * @required
-   */
+  /** Environment. */
   environment: string;
 
-  /**
-   * Project name within the ROR Cluster Control Plane MetaData.
-   * @required
-   */
+  /** Project name. */
   projectName: string | null;
 
-  /**
-   * Control plane endpoint within the ROR Cluster Control Plane MetaData.
-   * @required
-   */
+  /** Control plane endpoint IP. */
   controlPlaneEndpoint: RORClusterControlPlaneMetadataIp;
 
-  /**
-   * Control plane endpoint port within the ROR Cluster Control Plane MetaData.
-   * @required
-   */
+  /** Control plane endpoint port. */
   controlPlaneEndpointPort: string | null;
 
-  /**
-   * Egress IP within the ROR Cluster Control Plane MetaData.
-   * @required
-   */
+  /** Egress IP. */
   egress: RORClusterControlPlaneMetadataIp;
 
-  /**
-   * Datacenter information within the ROR Cluster Control Plane MetaData.
-   * @required
-   */
+  /** Datacenter information. */
   datacenter: RORClusterControlPlaneMetadataDatacenter;
 }

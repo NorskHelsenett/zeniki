@@ -1,8 +1,3 @@
-/**
- * @fileoverview Type definitions and interfaces for Zeniki library.
- * Exports all TypeScript types, interfaces, and enums used across the library.
- */
-
 // ===== COMMON TYPES =====
 export * from "./common/common-types";
 export * from "./common/common-nhn-types";

@@ -27,106 +27,78 @@ import {
  */
 export interface FortiOSFirewallAddrGrp6 {
   /**
-   * Unique name identifier for the IPv6 address group.
+   * Unique address group name.
    * @maxLength 79
-   * @required
    */
   name: string;
 
   /**
-   * UUID for object tracking and Security Fabric synchronization.
+   * UUID for Security Fabric tracking.
    * @readonly
-   * @optional
    */
   readonly uuid?: string;
 
   /**
-   * IPv6 address objects contained within the group (up to 600 members).
+   * Address objects in group (up to 600 members).
    * @maxItems 600
-   * @required
    */
   member:  {
       /**
-       * IPv6 address object name reference.
+       * Address object name reference.
        * @maxLength 79
-       * @required
        */
       name: string;
     }[];
 
   /**
-   * Administrative comment for IPv6 address group documentation and management.
+   * Administrative comment.
    * @maxLength 255
-   * @optional
    */
   comment?: string;
 
-  /**
-   * Enable exclusion logic for advanced IPv6 address group filtering.
-   * @values "enable" | "disable"
-   * @optional
-   */
+  /** Enable exclusion logic. */
   exclude?: CommonEnableDisables | CommonEnableDisable;
 
-  /**
-   * IPv6 address exclusion members for advanced filtering and security policy control.
-   * @requires exclude must be enabled
-   * @optional
-   */
+  /** Address exclusion members. */
   "exclude-member"?: {
     /**
-     * IPv6 address object name for exclusion.
+     * Address object name for exclusion.
      * @maxLength 79
-     * @optional
      */
     name?: string;
   }[];
 
   /**
-   * GUI color identifier for visual IPv6 address group management and organization.
+   * GUI color code (0-32).
    * @minimum 0
    * @maximum 32
-   * @optional
    */
   color?: number;
 
-  /**
-   * Enhanced tagging system for IPv6 address group organization and automation.
-   * @optional
-   */
+  /** Administrative tagging system. */
   tagging?: {
     /**
-     * Descriptive name for the tagging entry grouping.
+     * Tagging entry name.
      * @maxLength 63
-     * @optional
      */
     name?: string;
 
     /**
-     * Tag category for organizational hierarchy and filtering.
+     * Tag category.
      * @maxLength 63
-     * @optional
      */
     category?: string;
 
-    /**
-     * Collection of individual tags within the category.
-     * @required
-     */
+    /** Collection of tags. */
     tags: {
       /**
-       * Individual tag name providing specific classification detail.
+       * Tag name.
        * @maxLength 79
-       * @optional
        */
       name?: string;
     }[];
   }[];
 
-  /**
-   * Security Fabric global object distribution control for IPv6 address group synchronization.
-   * @values "enable" | "disable"
-   * @optional
-   */
+  /** Security Fabric object sync. */
   "fabric-object"?: CommonEnableDisables | CommonEnableDisable;
 }

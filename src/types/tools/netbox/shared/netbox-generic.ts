@@ -1,29 +1,37 @@
 /**
- * @fileoverview Generic NetBox entity interface for simple objects.
- * Provides a minimal structure for basic NetBox entities with name and slug.
- */
-
-/**
- * Generic interface for simple NetBox entities that have basic identification properties.
- * This is used for entities that don't require the full NetboxPartial structure
- * but need basic identification and naming capabilities.
- * 
- * @interface NetboxGeneric
- * @see {@link https://netbox.readthedocs.io/en/stable/rest-api/} NetBox REST API Documentation
+ * Generic NetBox entity with basic identification.
+ * Minimal structure for entities with name and slug.
+ *
+ * @example
+ * ```typescript
+ * const entity: NetboxGeneric = {
+ *   name: 'Entity Name',
+ *   slug: 'entity-name'
+ * };
+ * ```
  */
 export interface NetboxGeneric {
-  /** Unique identifier for the entity in NetBox database */
+  /**
+   * Unique identifier.
+   * @readonly
+   */
   readonly id?: number;
   
-  /** REST API URL endpoint for this specific entity resource */
+  /**
+   * REST API URL.
+   * @readonly
+   */
   readonly url?: string;
   
-  /** Human-readable display representation of the entity */
+  /**
+   * Display representation.
+   * @readonly
+   */
   readonly display?: string;
   
-  /** Human-readable name of the entity (required) */
+  /** Entity name. */
   name: string;
   
-  /** URL-safe slug identifier for the entity, used in API endpoints and URLs (required) */
+  /** URL-safe slug identifier. */
   slug: string;
 }

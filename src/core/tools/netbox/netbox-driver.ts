@@ -82,7 +82,7 @@ export class NetboxDriver extends ZenikiCoreDriver {
   async getByUrl<T>(
     url: string,
     params?: { [key: string]: any } | NetboxParams | URLSearchParams
-  ): Promise<T | undefined> {
+  ): Promise<T> {
     // If URL is already absolute, use it directly; otherwise prepend baseURL
     const fullUrl = url.startsWith("http") ? url : this.config.baseURL + url;
     const response = await this.get<T>(
@@ -122,7 +122,7 @@ export class NetboxDriver extends ZenikiCoreDriver {
     url: string,
     params?: { [key: string]: any } | NetboxParams | URLSearchParams,
     follow: boolean = false
-  ): Promise<T | undefined> {
+  ): Promise<T> {
     if (follow) {
       const response = await this.next<T>(url, params);
 

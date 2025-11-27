@@ -45,7 +45,7 @@ export class NetboxTenantsSubDriver extends ZenikiCoreDriver {
   async getTenant(
     id: number,
     params?: { [key: string]: any } | NetboxParams | URLSearchParams
-  ): Promise<NetboxTenant | undefined> {
+  ): Promise<NetboxTenant> {
     const response = await this.get<NetboxTenant>(
       this.config.baseURL +
         `/tenancy/tenants/${id}/` +
@@ -77,7 +77,7 @@ export class NetboxTenantsSubDriver extends ZenikiCoreDriver {
   async getTenants(
     params?: { [key: string]: any } | NetboxParams | URLSearchParams,
     follow: boolean = false
-  ): Promise<NetboxPaginated<NetboxTenant> | undefined> {
+  ): Promise<NetboxPaginated<NetboxTenant>> {
     if (follow) {
       const response = await this.next<NetboxPaginated<NetboxTenant>>(
         `/tenancy/tenants/`,
@@ -118,7 +118,7 @@ export class NetboxTenantsSubDriver extends ZenikiCoreDriver {
   async addTenant(
     tenant: NetboxTenant,
     id?: number
-  ): Promise<NetboxTenant | undefined> {
+  ): Promise<NetboxTenant> {
     const response = await this.post<NetboxTenant>(
       this.config.baseURL +
         (id ? `/tenancy/tenants/${id}/` : `/tenancy/tenants/`),
@@ -147,7 +147,7 @@ export class NetboxTenantsSubDriver extends ZenikiCoreDriver {
    */
   async deleteTenant(
     tenant: Partial<NetboxTenant>
-  ): Promise<NetboxTenant | undefined> {
+  ): Promise<NetboxTenant> {
     const response = await this.delete<NetboxTenant>(
       this.config.baseURL + `/tenancy/tenants/`,
       {
@@ -177,7 +177,7 @@ export class NetboxTenantsSubDriver extends ZenikiCoreDriver {
    *
    * @throws {HTTPError} When the tenant is not found (404) or other API errors occur
    */
-  async deleteTenantById(id: number): Promise<NetboxTenant | undefined> {
+  async deleteTenantById(id: number): Promise<NetboxTenant> {
     const response = await this.delete<NetboxTenant>(
       this.config.baseURL + `/tenancy/tenants/${id}/`,
       {
@@ -210,7 +210,7 @@ export class NetboxTenantsSubDriver extends ZenikiCoreDriver {
   async patchTenant(
     tenant: Partial<NetboxTenant>,
     id?: number
-  ): Promise<NetboxTenant | undefined> {
+  ): Promise<NetboxTenant> {
     const response = await this.patch<NetboxTenant>(
       this.config.baseURL +
         (id ? `/tenancy/tenants/${id}/` : `/tenancy/tenants/`),
@@ -241,7 +241,7 @@ export class NetboxTenantsSubDriver extends ZenikiCoreDriver {
   async updateTenant(
     tenant?: NetboxTenant,
     id?: number
-  ): Promise<NetboxTenant | undefined> {
+  ): Promise<NetboxTenant> {
     const response = await this.put<NetboxTenant>(
       this.config.baseURL +
         (id ? `/tenancy/tenants/${id}/` : `/tenancy/tenants/`),

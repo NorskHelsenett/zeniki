@@ -4,11 +4,11 @@
 
 NAM (Network Architecture Management) v2 driver provides enterprise-grade integration with NHN's network infrastructure orchestration system. Manages centralized automation for NetBox IPAM synchronization, multi-vendor firewall configurations (FortiGate), and VMware NSX security groups with MongoDB-backed persistence.
 
-Features comprehensive CRUD operations for NetBox integrators and API endpoints, priority-based synchronization scheduling, multi-tenant support with organizational isolation, and NHN-specific custom field filtering (environment, domain, infrastructure, purpose). Supports VDOM-aware FortiGate operations and NSX micro-segmentation.
+Features comprehensive CRUD operations through specialized sub-drivers: `netbox_integrators` for NetBox integration management, `ror_integrators` for ROR synchronization, and `api_endpoints` for vendor API configuration. Supports priority-based scheduling, multi-tenant isolation, NHN-specific custom field filtering (environment, domain, infrastructure, purpose), VDOM-aware FortiGate operations, and NSX micro-segmentation.
 
-API access through specialized methods: `nam.getNetboxIntegrator()`, `nam.addNetboxIntegrator()`, `nam.getApiEndpoint()`, `nam.addApiEndpoint()` with MongoDB ObjectId references for document relationships.
+Sub-driver architecture enables modular resource management with consistent CRUD patterns. Access via `nam.netbox_integrators.*`, `nam.ror_integrators.*`, and `nam.api_endpoints.*` methods. Generic endpoint access through `nam.getByUrl()` and `nam.getPaginatedByUrl()` for custom operations.
 
-Built on native fetch API with HTTPError exception handling, type-safe interfaces for all operations, and automatic pagination support. Implements SSL/TLS configuration management and API key expiration tracking.
+Built on native fetch API with HTTPError exception handling, type-safe TypeScript interfaces, and automatic pagination support. Implements MongoDB ObjectId references for document relationships, SSL/TLS configuration management, and API key expiration tracking.
 
 ## Table of Contents
 
@@ -78,18 +78,12 @@ const nam = new NAMv2Driver({
   }
 });
 
-// Get integrator by ID
-const integrator = await nam.getNetboxIntegrator('674d7b2c8f1e4a1b2c3d4e5f');
-console.log(`Integrator: ${integrator.name}, Priority: ${integrator.sync_priority}`);
+// NetBox integrator operations
+const integrator = await nam.netbox_integrators.getNetboxIntegrator('674d7b2c8f1e4a1b2c3d4e5f');
+const integrators = await nam.netbox_integrators.getNetboxIntegrators({ enabled: true });
 
-// List integrators with filtering
-const response = await nam.getNetboxIntegrators({ enabled: true, sync_priority: 'high' });
-console.log(`Found ${response.count} active integrators`);
-
-// Create basic NetBox integrator
-const newIntegrator = await nam.addNetboxIntegrator({
+await nam.netbox_integrators.addNetboxIntegrator({
   name: 'datacenter-sync',
-  desc: 'Basic datacenter synchronization',
   sync_priority: 'medium',
   enabled: true,
   address_family: '4',
@@ -103,142 +97,121 @@ const newIntegrator = await nam.addNetboxIntegrator({
   }]
 });
 
-// Update integrator
-const updated = await nam.patchNetboxIntegrator('674d7b2c8f1e4a1b2c3d4e5f', {
-  desc: 'Updated sync configuration',
-  mask_lte: 26
-});
+// ROR integrator operations
+const rorIntegrator = await nam.ror_integrators.getRorIntegrator('674d7b2c8f1e4a1b2c3d4e5f');
+await nam.ror_integrators.patchRorIntegrator('674d7b2c8f1e4a1b2c3d4e5f', { enabled: false });
 
-// Delete integrator
-await nam.deleteNetboxIntegrator('674d7b2c8f1e4a1b2c3d4e5f');
+// API endpoint operations
+const endpoint = await nam.api_endpoints.getApiEndpoint('674d7b2c8f1e4a1b2c3d4e5f');
+await nam.api_endpoints.deleteApiEndpoint('674d7b2c8f1e4a1b2c3d4e5f');
 ```
 
 ## Advanced Usage
 
 ```typescript
-import { 
-  NAMv2Driver,
-  NHN_CommonNetboxExtraChoicesEnvironments,
-  NHN_CommonNetboxExtraChoicesDomains,
-  HTTPError
-} from '@norskhelsenett/zeniki';
+import { NAMv2Driver, NHN_CommonNetboxExtraChoicesEnvironments, HTTPError } from '@norskhelsenett/zeniki';
 
-// Multi-vendor integration with NHN custom fields
-async function setupEnterpriseAutomation() {
-  const nam = new NAMv2Driver({
-    baseURL: 'https://nam.company.com/api/v2',
-    headers: { 'Authorization': 'Bearer token' }
-  });
+const nam = new NAMv2Driver({
+  baseURL: 'https://nam.company.com/api/v2',
+  headers: { 'Authorization': 'Bearer token' }
+});
 
-  // Create API endpoints
-  const netboxEP = await nam.addApiEndpoint({
-    name: 'netbox-primary',
-    url: 'https://netbox.company.com/api',
-    vendor: 'generic',
-    type: 'api',
-    key: 'netbox-token',
-    enabled: true
-  });
+// Create multi-vendor API endpoints
+const netboxEP = await nam.api_endpoints.addApiEndpoint({
+  name: 'netbox-primary',
+  url: 'https://netbox.company.com/api',
+  vendor: 'generic',
+  type: 'api',
+  key: 'netbox-token',
+  enabled: true
+});
 
-  const fortigateEP = await nam.addApiEndpoint({
-    name: 'fortigate-cluster',
-    url: 'https://fortigate.company.com/api/v2',
-    vendor: 'fortinet',
-    type: 'fw',
-    user: 'admin',
-    pass: 'password',
-    enabled: true
-  });
+const fortigateEP = await nam.api_endpoints.addApiEndpoint({
+  name: 'fortigate-cluster',
+  url: 'https://fortigate.company.com/api/v2',
+  vendor: 'fortinet',
+  type: 'fw',
+  user: 'admin',
+  pass: 'password',
+  enabled: true
+});
 
-  const nsxEP = await nam.addApiEndpoint({
-    name: 'nsx-manager',
-    url: 'https://nsx.company.com',
-    vendor: 'vmware_nsx-t',
-    type: 'manager',
-    user: 'admin',
-    pass: 'password',
-    enabled: true
-  });
+// Create integrator with NHN custom fields and multi-VDOM support
+const integrator = await nam.netbox_integrators.addNetboxIntegrator({
+  name: 'production-automation',
+  sync_priority: 'high',
+  enabled: true,
+  address_family: '4',
+  depth: 3,
+  mask_lte: 28,
+  environments: [
+    { name: 'prod' as NHN_CommonNetboxExtraChoicesEnvironments },
+    { name: 'mgmt' as NHN_CommonNetboxExtraChoicesEnvironments }
+  ],
+  tenants: [{ id: 1, name: 'Production', slug: 'production' }],
+  create_fg_group: true,
+  fg_group_name: 'Auto_{{tenant}}_{{environment}}',
+  netbox_endpoint: netboxEP._id,
+  fortigate_endpoints: [{
+    endpoint: fortigateEP._id,
+    vdoms: [
+      { name: 'production', enabled: true },
+      { name: 'dmz', enabled: true }
+    ]
+  }]
+});
 
-  // Create comprehensive integrator with NHN custom fields
-  const integrator = await nam.addNetboxIntegrator({
-    name: 'production-automation',
-    desc: 'Enterprise production automation with custom field filtering',
-    sync_priority: 'high',
-    enabled: true,
-    address_family: '4',
-    depth: 3,
-    mask_lte: 28,
-    mask_gte: 16,
-    
-    // NHN-specific custom field filtering
-    environments: [
-      { name: 'prod' as NHN_CommonNetboxExtraChoicesEnvironments },
-      { name: 'mgmt' as NHN_CommonNetboxExtraChoicesEnvironments }
-    ],
-    domains: [
-      { name: 'nhn.local' as NHN_CommonNetboxExtraChoicesDomains },
-      { name: 'prod.drift.nhn.no' as NHN_CommonNetboxExtraChoicesDomains }
-    ],
-    
-    // Traditional NetBox filtering
-    tenants: [{ id: 1, name: 'Production', slug: 'production' }],
-    sites: [{ id: 10, name: 'DC-East', slug: 'dc-east' }],
-    
-    // Multi-vendor integration
-    create_fg_group: true,
-    create_nsx_group: true,
-    fg_group_name: 'Auto_{{tenant}}_{{site}}_{{role}}',
-    nsx_group_name: 'NetBox_{{environment}}_{{purpose}}',
-    nsx_group_scope: '/infra/domains/production',
-    
-    netbox_endpoint: netboxEP._id,
-    fortigate_endpoints: [{
-      endpoint: fortigateEP._id,
-      vdoms: [
-        { name: 'production', enabled: true },
-        { name: 'dmz', enabled: true }
-      ]
-    }],
-    nsx_endpoints: [nsxEP._id]
-  });
-
-  // Error handling
-  try {
-    await nam.patchNetboxIntegrator(integrator._id, { sync_priority: 'critical' });
-  } catch (error) {
-    if (error instanceof HTTPError) {
-      console.error(`NAM API error ${error.code}: ${error.message}`);
-    }
+// Error handling with HTTPError
+try {
+  await nam.netbox_integrators.patchNetboxIntegrator(integrator._id, { sync_priority: 'critical' });
+} catch (error) {
+  if (error instanceof HTTPError) {
+    console.error(`API error ${error.code}: ${error.message}`);
   }
-
-  return { endpoints: [netboxEP, fortigateEP, nsxEP], integrator };
 }
+
+// Generic endpoint access with pagination
+const customData = await nam.getPaginatedByUrl('/vendors/custom/resource', {}, true);
 ```
 
-## API Methods
+## Components
 
-### NetBox Integrator Management
+### NetBox Integrators Sub-Driver (`nam.netbox_integrators`)
 
-- **`getNetboxIntegrator(id, params?)`** - Get integrator by MongoDB ObjectId
-- **`getNetboxIntegrators(params?)`** - List integrators with pagination and filtering
-- **`addNetboxIntegrator(integrator, params?)`** - Create new integrator configuration
-- **`patchNetboxIntegrator(id, integrator, params?)`** - Partial update of integrator
-- **`updateNetboxIntegrator(id, integrator, params?)`** - Complete integrator replacement
-- **`deleteNetboxIntegrator(id, params?)`** - Delete integrator configuration
+Manages NetBox IPAM integrator configurations for automated synchronization.
 
-### API Endpoint Management
+- **`getNetboxIntegrator(id, params?)`** - Retrieve single integrator by ObjectId
+- **`getNetboxIntegrators(params?)`** - List integrators with filtering/pagination
+- **`addNetboxIntegrator(integrator, params?)`** - Create new integrator
+- **`patchNetboxIntegrator(id, integrator, params?)`** - Partial update
+- **`updateNetboxIntegrator(id, integrator, params?)`** - Complete replacement
+- **`deleteNetboxIntegrator(id, params?)`** - Delete integrator
 
-- **`getApiEndpoint(id, params?)`** - Get endpoint by MongoDB ObjectId
-- **`getApiEndpoints(params?)`** - List endpoints with pagination and filtering
-- **`addApiEndpoint(endpoint, params?)`** - Create new endpoint configuration
-- **`patchApiEndpoint(id, endpoint, params?)`** - Partial update of endpoint
-- **`updateApiEndpoint(id, endpoint, params?)`** - Complete endpoint replacement
-- **`deleteApiEndpoint(id, params?)`** - Delete endpoint configuration
+### ROR Integrators Sub-Driver (`nam.ror_integrators`)
 
-### Generic Access
+Manages ROR (Regional Operational Registry) integrator configurations.
 
-- **`getByUrl<T>(url, params?)`** - Access any NAM v2 API endpoint directly
+- **`getRorIntegrator(id, params?)`** - Retrieve single ROR integrator by ObjectId
+- **`getRorIntegrators(params?)`** - List ROR integrators with filtering/pagination
+- **`addRorIntegrator(integrator, params?)`** - Create new ROR integrator
+- **`patchRorIntegrator(id, integrator, params?)`** - Partial update
+- **`updateRorIntegrator(id, integrator, params?)`** - Complete replacement
+- **`deleteRorIntegrator(id, params?)`** - Delete ROR integrator
+
+### API Endpoints Sub-Driver (`nam.api_endpoints`)
+
+Manages vendor API endpoint configurations (NetBox, FortiGate, NSX).
+
+- **`getApiEndpoint(id, params?)`** - Retrieve single endpoint by ObjectId
+- **`getApiEndpoints(params?)`** - List endpoints with filtering/pagination
+- **`addApiEndpoint(endpoint, params?)`** - Create new endpoint
+- **`patchApiEndpoint(id, endpoint, params?)`** - Partial update
+- **`updateApiEndpoint(id, endpoint, params?)`** - Complete replacement
+- **`deleteApiEndpoint(id, params?)`** - Delete endpoint
+
+### Generic Methods (Main Driver)
+
+- **`getByUrl<T>(url, params?)`** - Access custom NAM v2 endpoints directly
 - **`getPaginatedByUrl<T>(url, params?, follow?)`** - Paginated requests with auto-aggregation
 
 ## Type Definitions

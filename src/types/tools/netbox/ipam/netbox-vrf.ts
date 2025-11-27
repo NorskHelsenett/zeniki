@@ -2,12 +2,9 @@ import { NetboxTenant } from "../tenancy/netbox-tenant";
 import { NetboxPartial } from "../shared/netbox-partial";
 
 /**
- * Represents a Virtual Routing and Forwarding (VRF) instance in NetBox.
- * 
- * VRFs provide network segmentation and isolation for routing tables and IP address
- * spaces. Supports BGP/MPLS VPN with Route Distinguisher configuration, multi-tenant
- * isolation, IP address uniqueness enforcement, and BGP route target management.
- * Extends NetboxPartial for common properties including timestamps and custom fields.
+ * NetBox Virtual Routing and Forwarding instance.
+ * Provides network segmentation for routing tables and IP address spaces
+ * with BGP/MPLS VPN support, multi-tenant isolation, and route target management.
  * 
  * @example
  * ```typescript
@@ -19,31 +16,35 @@ import { NetboxPartial } from "../shared/netbox-partial";
  *   import_targets: [1, 2, 3]
  * };
  * ```
- * 
- * @see {@link https://netbox.readthedocs.io/en/stable/models/ipam/vrf/} NetBox VRF Documentation
  */
 export interface NetboxVrf extends NetboxPartial {
-  /** Human-readable name of the VRF instance. */
+  /** VRF name. */
   name: string;
 
-  /** Route Distinguisher (RD) for BGP/MPLS VPN (format: ASN:ID or IP:ID). */
+  /** Route Distinguisher for BGP/MPLS VPN. */
   rd?: string | null;
   
-  /** Tenant that owns or manages this VRF. */
+  /** Tenant owner. */
   tenant?: number | Readonly<Partial<NetboxTenant>> | null;
   
-  /** Whether to enforce unique IP addresses within this VRF. */
+  /** Enforce unique IP addresses. */
   enforce_unique?: boolean;
   
-  /** List of import target IDs for BGP route import. */
+  /** Import target IDs. */
   import_targets?: number[];
   
-  /** List of export target IDs for BGP route export. */
+  /** Export target IDs. */
   export_targets?: number[];
   
-  /** Total number of IP addresses within this VRF. */
+  /**
+   * IP address count.
+   * @readonly
+   */
   readonly ipaddress_count?: number;
   
-  /** Total number of IP prefixes within this VRF. */
+  /**
+   * Prefix count.
+   * @readonly
+   */
   readonly prefix_count?: number;
 }

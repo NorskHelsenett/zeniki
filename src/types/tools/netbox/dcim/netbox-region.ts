@@ -1,38 +1,37 @@
 import { NetboxPartial } from "../shared/netbox-partial";
 
 /**
- * @fileoverview NetBox region interface for geographical organization.
- * Regions provide hierarchical geographical organization of sites.
- */
-
-/**
- * Represents a geographical region in NetBox for organizing sites.
- * Regions can be hierarchical with parent-child relationships to model
- * geographical organization (e.g., Continent > Country > State/Province).
- * 
- * This interface extends NetboxPartial, inheriting common properties like id, url, display,
- * description, comments, tags, custom_fields, created, and last_updated.
- * 
- * @interface NetboxRegion
- * @extends NetboxPartial
- * @see {@link https://netbox.readthedocs.io/en/stable/models/dcim/region/} NetBox Region Documentation
+ * NetBox geographical region.
+ * Provides hierarchical organization of sites with parent-child relationships.
+ *
+ * @example
+ * ```typescript
+ * const region: NetboxRegion = {
+ *   name: 'North America',
+ *   slug: 'north-america',
+ *   parent: null
+ * };
+ * ```
  */
 export interface NetboxRegion extends NetboxPartial {
-  /** Human-readable name of the region (e.g., "North America", "Europe") (required) */
+  /** Region name. */
   name: string;
   
-  /** URL-safe slug identifier for the region, used in API endpoints and URLs (required) */
+  /** URL-safe slug identifier. */
   slug: string;
   
-  /** Parent region ID for hierarchical organization (null for top-level regions) */
+  /** Parent region for hierarchy. */
   parent?: number | null;
   
-  /** Total number of sites within this region and its sub-regions */
+  /**
+   * Site count in region and sub-regions.
+   * @readonly
+   */
   readonly site_count?: number;
   
-  /** 
-   * Hierarchical depth level in the region tree structure.
-   * Used for organizing regions in a tree-like hierarchy.
+  /**
+   * Hierarchical depth level.
+   * @readonly
    */
   readonly _depth?: number;
 }

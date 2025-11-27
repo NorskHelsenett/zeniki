@@ -6,12 +6,9 @@ import { NetboxPartial } from "../shared/netbox-partial";
 import { NetboxValueLabel } from "../shared/netbox-value-label";
 
 /**
- * Represents a Virtual LAN (VLAN) in NetBox network infrastructure.
- * 
- * VLANs provide Layer 2 network segmentation and traffic isolation with IEEE 802.1Q
- * compliance. Supports site/tenant associations, hierarchical organization through
- * VLAN groups, role-based categorization, and L2VPN integration. Extends NetboxPartial
- * for common properties including timestamps and custom fields.
+ * NetBox Virtual LAN for Layer 2 network segmentation.
+ * Provides IEEE 802.1Q compliant traffic isolation with site/tenant associations,
+ * VLAN groups, role-based categorization, and L2VPN integration.
  * 
  * @example
  * ```typescript
@@ -23,51 +20,51 @@ import { NetboxValueLabel } from "../shared/netbox-value-label";
  *   role: { id: 3, name: 'User Networks' }
  * };
  * ```
- * 
- * @see {@link https://netbox.readthedocs.io/en/stable/models/ipam/vlan/} NetBox VLAN Documentation
  */
 export interface NetboxVlan extends NetboxPartial {
-  /** VLAN ID number, must be between 1-4094 as per IEEE 802.1Q standard. */
+  /** VLAN ID (1-4094 per IEEE 802.1Q). */
   vid: number;
 
-  /** Human-readable name of the VLAN, maximum 64 characters. */
+  /**
+   * VLAN name.
+   * @maxLength 64
+   */
   name: string;
 
-  /** Site where this VLAN is deployed. */
+  /** Site where VLAN is deployed. */
   site?: number | Readonly<Partial<NetboxSite>> | null;
   
-  /** VLAN group for organizational purposes. */
+  /** VLAN group for organization. */
   group?: number | Readonly<Partial<NetboxGeneric>> | null;
   
-  /** Tenant that owns or manages this VLAN. */
+  /** Tenant that owns this VLAN. */
   tenant?: number | Readonly<Partial<NetboxTenant>> | null;
   
-  /** Operational status of the VLAN (active, reserved, deprecated). */
+  /** Operational status. */
   status?: NetboxVlanStatuses | NetboxVlanStatus | Readonly<NetboxValueLabel<NetboxVlanStatuses, string>>;
   
-  /** Role or purpose of this VLAN. */
+  /** Role or purpose. */
   role?: number | Readonly<Partial<NetboxRole>> | null;
   
-  /** L2VPN termination associated with this VLAN. */
+  /**
+   * L2VPN termination.
+   * @readonly
+   */
   readonly l2vpn_termination?: number | Partial<NetboxGeneric> | null;
   
-  /** Total number of IP prefixes associated with this VLAN. */
+  /**
+   * Number of associated IP prefixes.
+   * @readonly
+   */
   readonly prefix_count?: number;
 }
 
-/**
- * Status values for VLANs in NetBox.
- */
+// VLAN status enumeration
 export enum NetboxVlanStatus {
-  /** VLAN is actively in use */
   Active = "active",
-  /** VLAN is reserved for future use */
   Reserved = "reserved",
-  /** VLAN is deprecated and should not be used */
   Deprecated = "deprecated",
 }
 
-/**
- * String literal type alias for VLAN status values.
- */
+// String literal union for VLAN status values
 export type NetboxVlanStatuses = "active" | "reserved" | "deprecated";

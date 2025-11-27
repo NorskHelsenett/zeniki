@@ -6,412 +6,299 @@ import {
 import { FortiOSFirewallAddrMeta } from "../../shared/fortios-firewall-addr-meta";
 
 /**
- * FortiOS IPv4 firewall address object configuration for enterprise network security.
- *
- * Supports IPv4 mask, range, FQDN, geographic, wildcard, dynamic cloud, interface subnet,
- * and MAC address types with comprehensive Security Fabric integration, Zero Trust Network
- * Access, SDN connectivity, AI-powered threat intelligence, and multi-cloud environments.
+ * FortiOS IPv4 firewall address object for network security policies.
+ * Supports ipmask, iprange, FQDN, geography, wildcard, dynamic cloud, interface subnet,
+ * and MAC types with Security Fabric, SDN, and multi-cloud integration.
  *
  * @example
  * ```typescript
  * const address: FortiOSFirewallAddress = {
- *   name: 'internal-web-servers',
- *   type: FortiOSFirewallAddressType.IP_Mask,
+ *   name: 'web-servers',
+ *   type: 'ipmask',
  *   subnet: '192.168.100.0 255.255.255.0',
- *   comment: 'Internal web server subnet',
- *   color: 3,
- *   'allow-routing': CommonEnableDisable.Enable,
- *   'fabric-object': CommonEnableDisable.Enable,
+ *   comment: 'Web server subnet',
+ *   'allow-routing': 'enable',
  *   'associated-interface': 'internal',
- *   tagging: [{ name: 'Production', category: 'Environment', tags: [{ name: 'Critical' }] }],
- *   uuid: '550e8400-e29b-41d4-a716-446655440000'
+ *   tagging: [{ name: 'Production', category: 'Environment', tags: [{ name: 'Critical' }] }]
  * };
  * ```
  */
 export interface FortiOSFirewallAddress extends FortiOSFirewallAddrMeta {
   /**
-   * Unique name identifier for the IPv4 address object within the FortiGate configuration.
+   * Unique address object name.
    * @maxLength 79
-   * @required
    */
   name: string;
 
   /**
-   * UUID for object tracking and Security Fabric synchronization.
+   * UUID for Security Fabric tracking.
    * @readonly
-   * @optional
    */
   uuid?: string;
 
-  /**
-   * Primary IPv4 address specification in format appropriate for the address type.
-   * @required
-   */
+  /** Primary IPv4 address specification. */
   subnet: string;
 
-  /**
-   * IPv4 address type defining how the address object is interpreted and used.
-   * @required
-   * @see FortiOSFirewallAddressType
-   */
+  /** Address type defining interpretation. */
   type: FortiOSFirewallAddressTypes | FortiOSFirewallAddressType;
 
-  /**
-   * Sub-type classification for advanced address integration scenarios.
-   * @requires dynamic address types
-   * @optional
-   */
+  /** Sub-type for advanced integration. */
   "sub-type"?: FortiOSFirewallAddressSubTypes | FortiOSFirewallAddressSubType;
 
   /**
-   * Route tag identifier for routing policy integration and traffic engineering.
+   * Route tag for routing policy.
    * @minimum 1
    * @maximum 4294967295
-   * @optional
    */
   "route-tag"?: number;
 
-  /**
-   * ClearPass System Posture Token value for device compliance assessment.
-   * @requires sub-type must be 'clearpass-spt'
-   * @optional
-   */
+  /** ClearPass SPT compliance value. */
   "clearpass-spt"?:
     | FortiOSFirewallAddressClearpassSPTs
     | FortiOSFirewallAddressClearpassSPT;
 
   /**
-   * Collection of MAC addresses and ranges for Layer 2 device identification.
-   * @requires type must be 'mac'
+   * MAC address collection for Layer 2.
    * @maxLength 127
-   * @optional
    */
   macaddr?: {
     /**
-     * MAC address or range specification for device identification.
+     * MAC address or range specification.
      * @maxLength 127
-     * @required
      */
     macaddr: string;
   }[];
 
-  /**
-   * Starting IPv4 address for IP range address types (inclusive).
-   * @requires type must be 'iprange'
-   * @optional
-   */
+  /** Start IP for range type. */
   "start-ip"?: string;
 
-  /**
-   * Ending IPv4 address for IP range address types (inclusive).
-   * @requires type must be 'iprange'
-   * @optional
-   */
+  /** End IP for range type. */
   "end-ip"?: string;
 
   /**
-   * Fully Qualified Domain Name for DNS-based address resolution.
+   * FQDN for DNS resolution.
    * @maxLength 255
-   * @requires type must be 'fqdn'
-   * @optional
    */
   fqdn?: string;
 
   /**
-   * ISO 3166-1 alpha-2 country code for geographic address filtering.
+   * ISO country code for geography.
    * @maxLength 2
-   * @requires type must be 'geography'
-   * @optional
    */
   country?: string;
 
   /**
-   * Wildcard FQDN pattern for flexible domain matching with wildcard characters.
+   * Wildcard FQDN pattern.
    * @maxLength 255
-   * @optional
    */
   "wildcard-fqdn"?: string;
 
   /**
-   * Minimum TTL for FQDN DNS resolution caching in seconds.
+   * DNS cache TTL in seconds.
    * @minimum 0
    * @maximum 86400
-   * @requires type must be 'fqdn'
-   * @optional
    */
   "cache-ttl"?: number;
 
-  /**
-   * IPv4 address with wildcard subnet mask for flexible network matching.
-   * @requires type must be 'wildcard'
-   * @optional
-   */
+  /** Wildcard subnet mask. */
   wildcard?: string;
 
   /**
-   * SDN connector name for dynamic cloud integration.
+   * SDN connector name.
    * @maxLength 35
-   * @requires sub-type must be 'sdn' and type must be 'dynamic'
-   * @optional
    */
   sdn?: string;
 
-  /**
-   * FSSO group mappings for user-based security policies.
-   * @requires sub-type must be 'fsso'
-   * @optional
-   */
+  /** FSSO group mappings. */
   "fsso-group"?: {
     /**
-     * FSSO group name from authentication directory service.
+     * FSSO group name.
      * @maxLength 511
-     * @required
      */
     name: string;
   }[];
 
   /**
-   * Network interface name for interface-based dynamic addressing.
+   * Interface for subnet addressing.
    * @maxLength 35
-   * @requires type must be 'interface-subnet'
-   * @optional
    */
   interface?: string;
 
   /**
-   * Multi-tenant identifier for cloud SDN environments.
+   * Cloud tenant identifier.
    * @maxLength 35
-   * @optional
    */
   tenant?: string;
 
   /**
-   * Organization identifier for cloud service integration.
+   * Cloud organization identifier.
    * @maxLength 35
-   * @optional
    */
   organization?: string;
 
   /**
-   * Endpoint Group name for ACI integration.
+   * ACI Endpoint Group name.
    * @maxLength 255
-   * @optional
    */
   "epg-name"?: string;
 
   /**
-   * Cloud subnet name identifier for subnet-specific filtering.
+   * Cloud subnet name.
    * @maxLength 255
-   * @optional
    */
   "subnet-name"?: string;
 
   /**
-   * SDN-specific tag identifier for object filtering and selection.
+   * SDN tag identifier.
    * @maxLength 15
-   * @optional
    */
   "sdn-tag"?: string;
 
   /**
-   * Policy group identifier for advanced SDN integration scenarios.
+   * Policy group identifier.
    * @maxLength 15
-   * @optional
    */
   "policy-group"?: string;
 
   /**
-   * Dynamic object tag for runtime object identification and filtering.
+   * Dynamic object tag.
    * @maxLength 255
-   * @optional
    */
   "obj-tag"?: string;
 
-  /**
-   * Object type specification for dynamic address object classification.
-   * @see FortiOSFirewallAddressObjectType
-   * @optional
-   */
+  /** Object type for dynamic classification. */
   "obj-type"?:
     | FortiOSFirewallAddressObjectTypes
     | FortiOSFirewallAddressObjectType;
 
   /**
-   * Tag detection sensitivity level for dynamic object monitoring.
+   * Tag detection sensitivity.
    * @maxLength 15
-   * @optional
    */
   "tag-detection-level"?: string;
 
   /**
-   * Tag type specification for advanced dynamic address object categorization.
+   * Tag type specification.
    * @maxLength 63
-   * @optional
    */
   "tag-type"?: string;
 
   /**
-   * Hardware vendor identification for dynamic address object device classification.
+   * Hardware vendor identifier.
    * @maxLength 35
-   * @optional
    */
   "hw-vendor"?: string;
 
   /**
-   * Hardware model identification for granular device classification and policy control.
+   * Hardware model identifier.
    * @maxLength 35
-   * @optional
    */
   "hw-model"?: string;
 
   /**
-   * Operating system identification for OS-specific security policies and compliance.
+   * Operating system identifier.
    * @maxLength 35
-   * @optional
    */
   os?: string;
 
   /**
-   * Software version identification for version-specific security policies and compliance.
+   * Software version identifier.
    * @maxLength 35
-   * @optional
    */
   "sw-version"?: string;
 
   /**
-   * Administrative comment for documentation and management purposes.
+   * Administrative comment.
    * @maxLength 255
-   * @optional
    */
   comment?: string;
 
   /**
-   * Network interface association for policy optimization and traffic flow control.
+   * Associated interface for optimization.
    * @maxLength 35
-   * @optional
    */
   "associated-interface"?: string;
 
   /**
-   * GUI color code for visual identification and categorization in management interfaces.
+   * GUI color code (0-32).
    * @minimum 0
    * @maximum 32
-   * @optional
    */
   color?: number;
 
   /**
-   * Advanced filter expression for dynamic address object selection and matching.
+   * Advanced filter expression.
    * @maxLength 2047
-   * @optional
    */
   filter?: string;
 
-  /**
-   * Address collection scope for cloud and SDN dynamic address resolution.
-   * @see FortiOSFirewallAddressCollectionType
-   * @optional
-   */
+  /** Address collection scope. */
   "sdn-addr-type"?:
     | FortiOSFirewallAddressCollectionTypes
     | FortiOSFirewallAddressCollectionType;
 
-  /**
-   * Kubernetes node address collection restriction control.
-   * @values "enable" | "disable"
-   * @optional
-   */
+  /** Kubernetes node restriction. */
   "node-ip-only"?: CommonEnableDisables | CommonEnableDisable;
 
   /**
-   * VMware NSX object identifier for precise SDN object targeting.
+   * VMware NSX object ID.
    * @maxLength 255
-   * @optional
    */
   "obj-id"?: string;
 
-  /**
-   * Explicit IP address list for custom address object definitions.
-   * @optional
-   */
+  /** Explicit IP address list. */
   list?: {
     /**
-     * Individual IP address entry in the address list.
+     * Individual IP address entry.
      * @maxLength 35
-     * @required
      */
     ip: string;
   }[];
 
-  /**
-   * Administrative tagging system for enhanced organization and policy management.
-   * @optional
-   */
+  /** Administrative tagging system. */
   tagging?: {
     /**
-     * Descriptive name for the tagging entry grouping.
+     * Tagging entry name.
      * @maxLength 63
-     * @required
      */
     name: string;
 
     /**
-     * Tag category for organizational hierarchy and filtering.
+     * Tag category.
      * @maxLength 63
-     * @required
      */
     category: string;
 
-    /**
-     * Collection of individual tags within the category.
-     * @required
-     */
+    /** Collection of tags. */
     tags: {
       /**
-       * Individual tag name providing specific classification detail.
+       * Tag name.
        * @maxLength 79
-       * @required
        */
       name: string;
     }[];
   }[];
 
-  /**
-   * Static routing integration control for address object utilization.
-   * @values "enable" | "disable"
-   * @optional
-   */
+  /** Static routing integration. */
   "allow-routing"?: CommonEnableDisables | CommonEnableDisable;
 
-  /**
-   * Security Fabric global object distribution and synchronization control.
-   * @values "enable" | "disable"
-   * @optional
-   */
+  /** Security Fabric object sync. */
   "fabric-object"?: CommonEnableDisables | CommonEnableDisable;
 }
 
-// FortiOS IPv4 firewall address type enumeration for type-safe configuration
+// IPv4 firewall address type enumeration
 export enum FortiOSFirewallAddressType {
-  // Standard IPv4 address with subnet mask notation in dotted decimal format
   IP_Mask = "ipmask",
-  // Contiguous range of IPv4 addresses between specified start and end points (inclusive)
   IP_Range = "iprange",
-  // Fully Qualified Domain Name with IPv4 A-record DNS resolution capabilities
   FQDN = "fqdn",
-  // Geographic region or country-based IPv4 address collections with threat intelligence
   Geography = "geography",
-  // IPv4 wildcard subnet mask for complex non-contiguous matching patterns
   Wildcard = "wildcard",
-  // Dynamic IPv4 address object with external cloud platform integration
   Dynamic = "dynamic",
-  // IPv4 interface-based addressing that tracks interface IP configuration
   Interface_Subnet = "interface-subnet",
-  // MAC address-based identification for Layer 2 policies with IPv4 correlation
   MAC = "mac",
 }
 
-// String literal type union for FortiOS IPv4 firewall address types
+// String literal union for address types
 export type FortiOSFirewallAddressTypes =
   | "ipmask"
   | "iprange"
@@ -422,25 +309,18 @@ export type FortiOSFirewallAddressTypes =
   | "interface-subnet"
   | "mac";
 
-// Specialized sub-type classifications for advanced FortiOS address integration scenarios
+// Address sub-type enumeration for advanced integration
 export enum FortiOSFirewallAddressSubType {
-  // Software Defined Networking (SDN) connector integration
   SDN = "sdn",
-  // ClearPass System Posture Token (SPT) integration
   ClearPass_SPT = "clearpass-spt",
-  // Fortinet Single Sign-On (FSSO) user group integration
   FSSO = "fsso",
-  // FortiClient Endpoint Management Server (EMS) tag integration
   EMS_Tag = "ems-tag",
-  // FortiVoice tag integration for VoIP security policies
   FortiVoice_Tag = "fortivoice-tag",
-  // FortiNAC (Network Access Control) tag integration
   FortiNAC_Tag = "fortinac-tag",
-  // Switch Controller NAC (Network Access Control) policy tag
   SWC_Tag = "swc-tag",
 }
 
-// String literal type union for FortiOS firewall address sub-types
+// String literal union for address sub-types
 export type FortiOSFirewallAddressSubTypes =
   | "sdn"
   | "clearpass-spt"
@@ -450,23 +330,17 @@ export type FortiOSFirewallAddressSubTypes =
   | "fortinac-tag"
   | "swc-tag";
 
-// ClearPass System Posture Token (SPT) values for endpoint compliance assessment
+// ClearPass SPT compliance value enumeration
 export enum FortiOSFirewallAddressClearpassSPT {
-  // Device posture status cannot be determined or is under evaluation
   Unknown = "unknown",
-  // Device meets all security compliance requirements and policies
   Healthy = "healthy",
-  // Device has security issues requiring network access restrictions
   Quarantine = "quarantine",
-  // Device requires security assessment, updates, or policy compliance check
   Checkup = "checkup",
-  // Temporary state during posture evaluation or transition process
   Transient = "transient",
-  // Device is compromised and requires immediate network isolation
   Infected = "infected",
 }
 
-// String literal type union for ClearPass SPT values
+// String literal union for ClearPass SPT values
 export type FortiOSFirewallAddressClearpassSPTs =
   | "unknown"
   | "healthy"
@@ -475,28 +349,23 @@ export type FortiOSFirewallAddressClearpassSPTs =
   | "transient"
   | "infected";
 
-// Dynamic address object type classification for resolution targeting
+// Dynamic address object type enumeration
 export enum FortiOSFirewallAddressObjectType {
-  // IP address-based dynamic objects for Layer 3 network policies
   IP = "ip",
-  // MAC address-based dynamic objects for Layer 2 device identification
   MAC = "mac",
 }
 
-// String literal type union for dynamic address object types
+// String literal union for object types
 export type FortiOSFirewallAddressObjectTypes = "ip" | "mac";
 
-// Address collection scope for cloud and SDN dynamic address resolution
+// Address collection scope enumeration
 export enum FortiOSFirewallAddressCollectionType {
-  // Collect RFC 1918 private IP addresses only
   Private = "private",
-  // Collect public (internet-routable) IP addresses only
   Public = "public",
-  // Collect both private and public IP addresses comprehensively
   All = "all",
 }
 
-// String literal type union for address collection types
+// String literal union for collection types
 export type FortiOSFirewallAddressCollectionTypes =
   | "private"
   | "public"

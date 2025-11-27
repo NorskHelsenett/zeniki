@@ -46,7 +46,7 @@ export class NetboxPrefixesSubDriver extends ZenikiCoreDriver {
   async getPrefix(
     id: number,
     params?: { [key: string]: any } | NetboxParams | URLSearchParams
-  ): Promise<NetboxPrefix | undefined> {
+  ): Promise<NetboxPrefix> {
     const response = await this.get<NetboxPrefix>(
       this.config.baseURL +
         `/ipam/prefixes/${id}/` +
@@ -78,7 +78,7 @@ export class NetboxPrefixesSubDriver extends ZenikiCoreDriver {
   async getPrefixes(
     params?: { [key: string]: any } | NetboxParams | URLSearchParams,
     follow: boolean = false
-  ): Promise<NetboxPaginated<NetboxPrefix> | undefined> {
+  ): Promise<NetboxPaginated<NetboxPrefix>> {
     if (follow) {
       const response = await this.next<NetboxPaginated<NetboxPrefix>>(
         `/ipam/prefixes/`,
@@ -160,7 +160,7 @@ export class NetboxPrefixesSubDriver extends ZenikiCoreDriver {
     json_fields?: { [key: string]: any },
     custom_fields?: { [key: string]: string },
     params?: { [key: string]: any } | NetboxParams | URLSearchParams
-  ): Promise<NetboxPrefix[] | undefined> {
+  ): Promise<NetboxPrefix[]> {
     const response = await this.post<NetboxPrefix[]>(
       this.config.baseURL +
         `/ipam/prefixes/${id}/available-prefixes/` +
@@ -255,7 +255,7 @@ export class NetboxPrefixesSubDriver extends ZenikiCoreDriver {
    *
    * @throws {HTTPError} When the prefix is not found (404) or other API errors occur
    */
-  async deletePrefixById(id: number): Promise<NetboxPrefix | undefined> {
+  async deletePrefixById(id: number): Promise<NetboxPrefix> {
     const response = await this.delete<NetboxPrefix>(
       this.config.baseURL + `/ipam/prefixes/${id}/`,
       {

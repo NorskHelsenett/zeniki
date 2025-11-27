@@ -1,4 +1,24 @@
+/**
+ * VMware NSX tag for resource metadata and filtering.
+ * 
+ * @example
+ * ```typescript
+ * const tag: VMWareNSXTag = {
+ *   scope: 'environment',
+ *   tag: 'production'
+ * };
+ * ```
+ */
 export interface VMWareNSXTag {
-  scope?: string; // maxLength: 128, default: ""
-  tag?: string; // maxLength: 256
+  /**
+   * Tag scope for categorization.
+   * @maxLength 128
+   */
+  scope?: string;
+  
+  /**
+   * Tag value.
+   * @maxLength 256
+   */
+  tag?: string;
 }

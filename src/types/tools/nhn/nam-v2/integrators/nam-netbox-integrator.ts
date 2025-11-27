@@ -13,13 +13,9 @@ import { NAMDefaultFields } from "../shared/nam-default-fields";
 import { NHN_CommonNetboxExtraChoicesDomain, NHN_CommonNetboxExtraChoicesDomains, NHN_CommonNetboxExtraChoicesEnvironment, NHN_CommonNetboxExtraChoicesEnvironments, NHN_CommonNetboxExtraChoicesInfrastructure, NHN_CommonNetboxExtraChoicesInfrastructures, NHN_CommonNetboxExtraChoicesPurpose, NHN_CommonNetboxExtraChoicesPurposes } from "../../../../common/common-nhn-types";
 
 /**
- * NAM v2 NetBox integrator configuration for automated network synchronization between NetBox IPAM and multi-vendor infrastructure.
- * Supports FortiGate firewall and VMware NSX integration with priority-based scheduling and custom field filtering.
- * 
- * @interface NAMNetboxIntegrator
- * @since NAM v2.0
- * @context NetBox IPAM integration and multi-vendor network automation
- * @see NAMDefaultFields
+ * NAM v2 NetBox integrator configuration.
+ * Automated network synchronization between NetBox IPAM and multi-vendor infrastructure
+ * with FortiGate/VMware NSX support and priority-based scheduling.
  * 
  * @example
  * ```typescript
@@ -28,202 +24,109 @@ import { NHN_CommonNetboxExtraChoicesDomain, NHN_CommonNetboxExtraChoicesDomains
  *   sync_priority: 'high',
  *   enabled: true,
  *   address_family: '4',
- *   create_fg_group: true,
- *   netbox_endpoint: new ObjectId('507f1f77bcf86cd799439011'),
- *   fortigate_endpoints: [{ endpoint: new ObjectId('507f1f77bcf86cd799439012'), vdoms: [{ name: 'root', enabled: true }] }]
+ *   netbox_endpoint: new ObjectId('...'),
+ *   fortigate_endpoints: [{ endpoint: {...}, vdoms: [...] }]
  * };
  * ```
  */
 export interface NAMNetboxIntegrator extends NAMDefaultFields {
-  /**
-   * Integrator name identifier for configuration reference
-   * @required
-   */
+  /** Integrator name. */
   name: string;
 
-  /**
-   * Description text providing contextual information about integrator purpose
-   * @optional
-   */
+  /** Description. */
   desc?: string;
 
-  /**
-   * Synchronization priority level determining execution order
-   * @required
-   * @see SyncPriorities
-   */
+  /** Synchronization priority. */
   sync_priority: SyncPriorities;
 
-  /**
-   * Enable flag controlling integrator active state
-   * @required
-   */
+  /** Integrator is enabled. */
   enabled: Boolean;
 
-  /**
-   * NetBox tenant objects array for multi-tenant filtering
-   * @optional
-   * @see NetboxTenant
-   */
+  /** NetBox tenants for filtering. */
   tenants?: NetboxTenant[];
 
-  /**
-   * NetBox role object for prefix role-based filtering
-   * @optional
-   * @see NetboxRole
-   */
+  /** NetBox role for filtering. */
   role?: NetboxRole;
 
-  /**
-   * NetBox site objects array for geographic filtering
-   * @optional
-   * @see NetboxSite
-   */
+  /** NetBox sites for filtering. */
   sites?: NetboxSite[];
 
-  /**
-   * NetBox prefix status filter for operational state selection
-   * @optional
-   * @see NetboxPrefixStatuses
-   */
+  /** NetBox prefix status filter. */
   status?: NetboxPrefixStatuses | NetboxPrefixStatus;
 
-  /**
-   * IP address family specification for protocol-specific operations
-   * @optional
-   * @see IPVersionString
-   */
+  /** IP address family. */
   address_family?: IPVersionString;
 
-  /**
-   * NetBox VRF object for virtual routing context
-   * @optional
-   * @see NetboxVrf
-   */
+  /** NetBox VRF. */
   vrf?: NetboxVrf;
 
   /**
-   * Hierarchy depth level for nested prefix traversal
-   * @optional
+   * Hierarchy depth level.
    * @minimum 0
    * @maximum 10
    */
   depth?: number;
 
   /**
-   * Maximum subnet mask length for prefix size constraints
-   * @optional
+   * Maximum subnet mask length.
    * @minimum 0
    * @maximum 32
    */
   mask_lte?: number;
 
   /**
-   * Minimum subnet mask length for prefix size constraints
-   * @optional
+   * Minimum subnet mask length.
    * @minimum 0
    * @maximum 32
    */
   mask_gte?: number;
 
-  /**
-   * Enable FortiGate address group creation during sync
-   * @optional
-   */
+  /** Create FortiGate address group. */
   create_fg_group?: boolean;
 
-  /**
-   * Enable VMware NSX address group creation during sync
-   * @optional
-   */
+  /** Create VMware NSX address group. */
   create_nsx_group?: boolean;
 
-  /**
-   * FortiGate address group name template
-   * @optional
-   */
+  /** FortiGate group name template. */
   fg_group_name?: string;
 
-  /**
-   * VMware NSX address group name template
-   * @optional
-   */
+  /** VMware NSX group name template. */
   nsx_group_name?: string;
 
-  /**
-   * NSX group scope definition for security policy
-   * @optional
-   */
+  /** NSX group scope. */
   nsx_group_scope?: string;
 
-  /**
-   * NSX group tag identifier for categorization
-   * @optional
-   */
+  /** NSX group tag. */
   nsx_group_tag?: string;
 
   /**
-   * Auto-generated NetBox API query string
-   * @optional
+   * NetBox API query string.
    * @readonly
    */
   query?: string;
 
-  /**
-   * NetBox API endpoint configuration for connectivity
-   * @required
-   * @see NAMAPIEndpoint
-   */
+  /** NetBox API endpoint. */
   netbox_endpoint: NAMAPIEndpoint | ObjectId | string;
 
-  /**
-   * FortiGate API endpoints array with VDOM mappings
-   * @required
-   * @minItems 1
-   * @see NAMAPIEndpoint
-   */
+  /** FortiGate endpoints with VDOMs. */
   fortigate_endpoints: { endpoint: NAMAPIEndpoint; vdoms: NAMFortiOSVdom[] }[];
 
-  /**
-   * VMware NSX API endpoints array for multi-environment deployment
-   * @optional
-   * @see NAMAPIEndpoint
-   */
+  /** VMware NSX endpoints. */
   nsx_endpoints?: NAMAPIEndpoint[] | ObjectId[] | string[];
 
-  /**
-   * NetBox environment custom field choice values
-   * @optional
-   * @see CommonKeyValueStore
-   */
+  /** Environment custom field values. */
   environments?: CommonKeyValueStore<"name", NHN_CommonNetboxExtraChoicesEnvironments | NHN_CommonNetboxExtraChoicesEnvironment | string>[];
 
-  /**
-   * NetBox domain custom field choice values
-   * @optional
-   * @see CommonKeyValueStore
-   */
+  /** Domain custom field values. */
   domains?: CommonKeyValueStore<"name", NHN_CommonNetboxExtraChoicesDomains | NHN_CommonNetboxExtraChoicesDomain | string>[];
 
-  /**
-   * NetBox infrastructure custom field choice values
-   * @optional
-   * @see CommonKeyValueStore
-   */
+  /** Infrastructure custom field values. */
   infrastructures?: CommonKeyValueStore<"name", NHN_CommonNetboxExtraChoicesInfrastructures | NHN_CommonNetboxExtraChoicesInfrastructure| string>[];
 
-  /**
-   * NetBox purpose custom field choice values
-   * @optional
-   * @see CommonKeyValueStore
-   */
+  /** Purpose custom field values. */
   purposes?: CommonKeyValueStore<"name", NHN_CommonNetboxExtraChoicesPurposes | NHN_CommonNetboxExtraChoicesPurpose | string>[];
 
-  /**
-   * NetBox tag objects array for metadata filtering
-   * @optional
-   * @see NetboxTag
-   */
+  /** NetBox tags for filtering. */
   tags?: NetboxTag[];
 }
 
