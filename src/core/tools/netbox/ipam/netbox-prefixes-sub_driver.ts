@@ -57,7 +57,7 @@ export class NetboxPrefixesSubDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(response.statusText, response.status, response);
+      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
     }
   }
 
@@ -96,7 +96,7 @@ export class NetboxPrefixesSubDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(response.statusText, response.status, response);
+      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
     }
   }
 
@@ -129,7 +129,7 @@ export class NetboxPrefixesSubDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(response.statusText, response.status, response);
+      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
     }
   }
 
@@ -181,7 +181,7 @@ export class NetboxPrefixesSubDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(response.statusText, response.status, response);
+      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
     }
   }
 
@@ -208,7 +208,7 @@ export class NetboxPrefixesSubDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(response.statusText, response.status, response);
+      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
     }
   }
 
@@ -238,7 +238,7 @@ export class NetboxPrefixesSubDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(response.statusText, response.status, response);
+      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
     }
   }
 
@@ -267,7 +267,7 @@ export class NetboxPrefixesSubDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(response.statusText, response.status, response);
+      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
     }
   }
 
@@ -297,7 +297,7 @@ export class NetboxPrefixesSubDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(response.statusText, response.status, response);
+      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
     }
   }
 
@@ -324,7 +324,7 @@ export class NetboxPrefixesSubDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(response.statusText, response.status, response);
+      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
     }
   }
 

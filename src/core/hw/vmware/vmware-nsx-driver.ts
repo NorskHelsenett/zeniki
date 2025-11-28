@@ -13,40 +13,21 @@ import { VMWareNSXGroupsSubDriver } from "./groups/vmware-nsx-groups-sub_driver"
 
 /**
  * VMware NSX-T driver for policy-based network security and micro-segmentation.
- * Provides type-safe NSX Policy API operations via sub-drivers (groups) and generic methods.
- * Supports local/global manager deployments, multi-domain environments, automatic pagination,
- * and comprehensive CRUD operations. Access groups via `nsx.groups.*` or use generic methods
- * `getByUrl()` and `getPaginatedByUrl()` for direct Policy API access.
+ * Provides type-safe NSX Policy API operations via sub-drivers and generic methods.
  *
  * @extends ZenikiCoreDriver
  * @example
  * ```typescript
- * const nsx = new VMWareNSXDriver({
- *   baseURL: 'https://nsx.example.com',
- *   auth: { username: 'admin', password: 'pass' },
- *   timeout: 30000
- * });
+ * const authString = btoa('admin:VMware123!');
+ * const nsx = new VMWareNSXDriver({ baseURL: 'https://nsx.example.com', headers: { 'Authorization': `Basic ${authString}`, 'Content-Type': 'application/json' } });
  * const group = await nsx.groups.getGroup('web-servers', 'default');
- * await nsx.groups.addGroup('app-servers', 'default', {
- *   display_name: 'App Servers',
- *   expression: [{ resource_type: 'Condition', member_type: 'VirtualMachine', value: 'app' }]
- * });
+ * await nsx.groups.addGroup('app-servers', 'default', { display_name: 'App Servers', resource_type: 'Group', expression: [{ resource_type: 'Condition', member_type: 'VirtualMachine', key: 'Tag', value: 'app' }] });
  * const domains = await nsx.getByUrl('/policy/api/v1/infra/domains');
  * ```
  */
 export class VMWareNSXDriver extends ZenikiCoreDriver {
   public groups: VMWareNSXGroupsSubDriver;
-  /**
-   * Initialize VMware NSX driver with connection configuration.
-   * @param config - Request configuration for NSX manager connection
-   * @example
-   * ```typescript
-   * new VMWareNSXDriver({
-   *   baseURL: 'https://nsx.example.com',
-   *   auth: { username: 'admin', password: 'pass' }
-   * });
-   * ```
-   */
+
   constructor(public config: RequestConfig) {
     super(config);
     this.groups = new VMWareNSXGroupsSubDriver(config);
@@ -54,13 +35,14 @@ export class VMWareNSXDriver extends ZenikiCoreDriver {
 
   /**
    * Execute HTTP GET request to any NSX Policy API endpoint.
+   *
    * @template T - Expected response data type
    * @param url - NSX API endpoint URL
    * @param params - Optional query parameters
    * @returns Promise resolving to typed NSX response
    * @example
    * ```typescript
-   * await nsx.getByUrl('/policy/api/v1/infra/domains');
+   * const domains = await nsx.getByUrl('/policy/api/v1/infra/domains', { page_size: 100 });
    * ```
    */
   async getByUrl<T>(url: string, params?: { [key: string]: any }): Promise<T> {
@@ -72,20 +54,22 @@ export class VMWareNSXDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(response.statusText, response.status, response);
+      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
     }
   }
 
   /**
    * Execute paginated HTTP GET request with optional automatic result aggregation.
+   *
    * @template T - Expected response data type
    * @param url - NSX API endpoint URL
    * @param params - Optional query parameters (page_size, cursor)
-   * @param follow - Enable automatic pagination (default: false)
+   * @param follow - Enable automatic pagination
+   * @default false
    * @returns Promise resolving to paginated NSX response
    * @example
    * ```typescript
-   * await nsx.getPaginatedByUrl('/policy/api/v1/infra/domains', { page_size: 50 }, true);
+   * const policies = await nsx.getPaginatedByUrl('/policy/api/v1/infra/domains/default/security-policies', { page_size: 50 }, true);
    * ```
    */
   async getPaginatedByUrl<T>(
@@ -98,7 +82,7 @@ export class VMWareNSXDriver extends ZenikiCoreDriver {
       if (response.ok) {
         return await response.json();
       } else {
-        throw new HTTPError(response.statusText, response.status, response);
+        throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
       }
     }
     const response = await this.get<T>(
@@ -109,12 +93,13 @@ export class VMWareNSXDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(response.statusText, response.status, response);
+      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
     }
   }
 
   /**
    * Internal pagination handler for NSX API response aggregation.
+   *
    * @template T - Expected response data type
    * @param url - NSX API endpoint URL
    * @param params - Optional pagination parameters (count, skip)
@@ -122,7 +107,7 @@ export class VMWareNSXDriver extends ZenikiCoreDriver {
    * @protected
    * @example
    * ```typescript
-   * await this.next('/policy/api/v1/infra/domains', { count: 100 });
+   * const response = await this.next('/policy/api/v1/infra/domains', { count: 100, skip: 1 });
    * ```
    */
   protected async next<T>(
