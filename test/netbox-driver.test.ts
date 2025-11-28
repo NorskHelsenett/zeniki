@@ -78,7 +78,7 @@ describe('NetboxDriver - Prefix Methods', () => {
         headers: new Headers({ 'content-type': 'application/json' }),
       });
 
-      const result = await driver.getPrefix(42);
+      const result = await driver.prefixes.getPrefix(42);
 
       expect(mockFetch).toHaveBeenCalledTimes(1);
       expect(mockFetch).toHaveBeenCalledWith(
@@ -114,7 +114,7 @@ describe('NetboxDriver - Prefix Methods', () => {
       });
 
       const params = { brief: true };
-      const result = await driver.getPrefix(42, params);
+      const result = await driver.prefixes.getPrefix(42, params);
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('brief=true'),
@@ -132,7 +132,7 @@ describe('NetboxDriver - Prefix Methods', () => {
         headers: new Headers({ 'content-type': 'application/json' }),
       });
 
-      await expect(driver.getPrefix(9999)).rejects.toThrow('Not Found');
+      await expect(driver.prefixes.getPrefix(9999)).rejects.toThrow('Not Found');
     });
   });
 
@@ -181,7 +181,7 @@ describe('NetboxDriver - Prefix Methods', () => {
         headers: new Headers({ 'content-type': 'application/json' }),
       });
 
-      const result = await driver.getPrefixes();
+      const result = await driver.prefixes.getPrefixes();
 
       expect(mockFetch).toHaveBeenCalledTimes(1);
       expect(result?.count).toBe(2);
@@ -227,7 +227,7 @@ describe('NetboxDriver - Prefix Methods', () => {
         ordering: 'prefix',
       };
 
-      const result = await driver.getPrefixes(params, false);
+      const result = await driver.prefixes.getPrefixes(params, false);
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('q=production'),
@@ -305,7 +305,7 @@ describe('NetboxDriver - Prefix Methods', () => {
           headers: new Headers({ 'content-type': 'application/json' }),
         });
 
-      const result = await driver.getPrefixes({ limit: 2 }, true);
+      const result = await driver.prefixes.getPrefixes({ limit: 2 }, true);
 
       expect(mockFetch).toHaveBeenCalledTimes(2);
       expect(result?.count).toBe(3);
@@ -336,8 +336,9 @@ describe('NetboxDriver - Prefix Methods', () => {
         headers: new Headers({ 'content-type': 'application/json' }),
       });
 
-      const result = await driver.getNextAvailablePrefix(42);
+      const result = await driver.prefixes.getNextAvailablePrefix(42);
 
+      expect(mockFetch).toHaveBeenCalledTimes(1);
       expect(mockFetch).toHaveBeenCalledWith(
         'https://netbox.test.nhn.no/api/ipam/prefixes/42/available-prefixes/',
         expect.any(Object)
@@ -364,7 +365,7 @@ describe('NetboxDriver - Prefix Methods', () => {
       });
 
       const params = { prefix_length: 24 };
-      const result = await driver.getNextAvailablePrefix(42, params);
+      const result = await driver.prefixes.getNextAvailablePrefix(42, params);
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('prefix_length=24'),
@@ -383,7 +384,7 @@ describe('NetboxDriver - Prefix Methods', () => {
         headers: new Headers({ 'content-type': 'application/json' }),
       });
 
-      await expect(driver.getNextAvailablePrefix(42)).rejects.toThrow('Bad Request');
+      await expect(driver.prefixes.getNextAvailablePrefix(42)).rejects.toThrow('Bad Request');
     });
   });
 
@@ -417,7 +418,7 @@ describe('NetboxDriver - Prefix Methods', () => {
         headers: new Headers({ 'content-type': 'application/json' }),
       });
 
-      const result = await driver.registerNextAvailablePrefix(
+      const result = await driver.prefixes.registerNextAvailablePrefix(
         42,
         25,
         100,
@@ -471,7 +472,7 @@ describe('NetboxDriver - Prefix Methods', () => {
         headers: new Headers({ 'content-type': 'application/json' }),
       });
 
-      const result = await driver.registerNextAvailablePrefix(42, 24);
+      const result = await driver.prefixes.registerNextAvailablePrefix(42, 24);
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('/available-prefixes/'),
@@ -524,7 +525,7 @@ describe('NetboxDriver - Prefix Methods', () => {
         headers: new Headers({ 'content-type': 'application/json' }),
       });
 
-      const result = await driver.addPrefix(newPrefix);
+      const result = await driver.prefixes.addPrefix(newPrefix);
 
       expect(mockFetch).toHaveBeenCalledWith(
         'https://netbox.test.nhn.no/api/ipam/prefixes/',
@@ -570,7 +571,7 @@ describe('NetboxDriver - Prefix Methods', () => {
         headers: new Headers({ 'content-type': 'application/json' }),
       });
 
-      const result = await driver.addPrefix(newPrefix);
+      const result = await driver.prefixes.addPrefix(newPrefix);
 
       expect(result?.prefix).toBe('2001:db8::/64');
       expect(result?.family?.value).toBe(6);
@@ -608,7 +609,7 @@ describe('NetboxDriver - Prefix Methods', () => {
         headers: new Headers({ 'content-type': 'application/json' }),
       });
 
-      const result = await driver.updatePrefix(updatePrefix, 42);
+      const result = await driver.prefixes.updatePrefix(updatePrefix, 42);
 
       expect(mockFetch).toHaveBeenCalledWith(
         'https://netbox.test.nhn.no/api/ipam/prefixes/42/',
@@ -634,7 +635,7 @@ describe('NetboxDriver - Prefix Methods', () => {
         headers: new Headers({ 'content-type': 'application/json' }),
       });
 
-      await expect(driver.addPrefix(newPrefix)).rejects.toThrow('Bad Request');
+      await expect(driver.prefixes.addPrefix(newPrefix)).rejects.toThrow('Bad Request');
     });
   });
 });
