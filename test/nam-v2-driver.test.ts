@@ -51,7 +51,7 @@ describe('NAMv2Driver', () => {
         };
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        const result = await driver.getNetboxIntegrator('674d7b2c8f1e4a1b2c3d4e5f');
+        const result = await driver.netbox_integrators.getNetboxIntegrator('674d7b2c8f1e4a1b2c3d4e5f');
 
         expect(fetch).toHaveBeenCalledWith(
           `${mockBaseURL}/vendors/netbox/netbox-integrators/674d7b2c8f1e4a1b2c3d4e5f/`,
@@ -75,7 +75,7 @@ describe('NAMv2Driver', () => {
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
         const params: NAMParams = { expand: 1, expand_fields: ['endpoints'] };
-        await driver.getNetboxIntegrator('674d7b2c8f1e4a1b2c3d4e5f', params);
+        await driver.netbox_integrators.getNetboxIntegrator('674d7b2c8f1e4a1b2c3d4e5f', params);
 
         expect(fetch).toHaveBeenCalledWith(
           `${mockBaseURL}/vendors/netbox/netbox-integrators/674d7b2c8f1e4a1b2c3d4e5f/?expand=1&expand_fields=endpoints`,
@@ -92,7 +92,7 @@ describe('NAMv2Driver', () => {
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
         await expect(
-          driver.getNetboxIntegrator('invalid-id')
+          driver.netbox_integrators.getNetboxIntegrator('invalid-id')
         ).rejects.toThrow(HTTPError);
       });
     });
@@ -112,7 +112,7 @@ describe('NAMv2Driver', () => {
         };
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        const result = await driver.getNetboxIntegrators();
+        const result = await driver.netbox_integrators.getNetboxIntegrators();
 
         expect(fetch).toHaveBeenCalledWith(
           `${mockBaseURL}/vendors/netbox/netbox-integrators/`,
@@ -132,7 +132,7 @@ describe('NAMv2Driver', () => {
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
         const params: NAMParams = { q: 'high', pageSize: 50 };
-        await driver.getNetboxIntegrators(params);
+        await driver.netbox_integrators.getNetboxIntegrators(params);
 
         expect(fetch).toHaveBeenCalledWith(
           `${mockBaseURL}/vendors/netbox/netbox-integrators/?q=high&pageSize=50`,
@@ -159,7 +159,7 @@ describe('NAMv2Driver', () => {
         };
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        const result = await driver.addNetboxIntegrator(newIntegrator);
+        const result = await driver.netbox_integrators.addNetboxIntegrator(newIntegrator);
 
         expect(fetch).toHaveBeenCalledWith(
           `${mockBaseURL}/vendors/netbox/netbox-integrators/`,
@@ -180,7 +180,7 @@ describe('NAMv2Driver', () => {
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
         await expect(
-          driver.addNetboxIntegrator({} as NAMNetboxIntegrator)
+          driver.netbox_integrators.addNetboxIntegrator({} as NAMNetboxIntegrator)
         ).rejects.toThrow(HTTPError);
       });
     });
@@ -198,7 +198,7 @@ describe('NAMv2Driver', () => {
         };
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        const result = await driver.patchNetboxIntegrator('674d7b2c8f1e4a1b2c3d4e5f', updates);
+        const result = await driver.netbox_integrators.patchNetboxIntegrator('674d7b2c8f1e4a1b2c3d4e5f', updates);
 
         expect(fetch).toHaveBeenCalledWith(
           `${mockBaseURL}/vendors/netbox/netbox-integrators/674d7b2c8f1e4a1b2c3d4e5f/`,
@@ -227,7 +227,7 @@ describe('NAMv2Driver', () => {
         };
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        const result = await driver.updateNetboxIntegrator('674d7b2c8f1e4a1b2c3d4e5f', replacement);
+        const result = await driver.netbox_integrators.updateNetboxIntegrator('674d7b2c8f1e4a1b2c3d4e5f', replacement);
 
         expect(fetch).toHaveBeenCalledWith(
           `${mockBaseURL}/vendors/netbox/netbox-integrators/674d7b2c8f1e4a1b2c3d4e5f/`,
@@ -250,7 +250,7 @@ describe('NAMv2Driver', () => {
         };
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        const result = await driver.deleteNetboxIntegrator('674d7b2c8f1e4a1b2c3d4e5f');
+        const result = await driver.netbox_integrators.deleteNetboxIntegrator('674d7b2c8f1e4a1b2c3d4e5f');
 
         expect(fetch).toHaveBeenCalledWith(
           `${mockBaseURL}/vendors/netbox/netbox-integrators/674d7b2c8f1e4a1b2c3d4e5f/`,
@@ -268,7 +268,7 @@ describe('NAMv2Driver', () => {
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
         await expect(
-          driver.deleteNetboxIntegrator('invalid-id')
+          driver.netbox_integrators.deleteNetboxIntegrator('invalid-id')
         ).rejects.toThrow(HTTPError);
       });
     });
@@ -295,7 +295,7 @@ describe('NAMv2Driver', () => {
         };
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        const result = await driver.getApiEndpoint('674d7b2c8f1e4a1b2c3d4e70');
+        const result = await driver.api_endpoints.getApiEndpoint('674d7b2c8f1e4a1b2c3d4e70');
 
         expect(fetch).toHaveBeenCalledWith(
           `${mockBaseURL}/settings/api-endpoints/674d7b2c8f1e4a1b2c3d4e70/`,
@@ -321,7 +321,7 @@ describe('NAMv2Driver', () => {
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
         const params: NAMParams = { q: 'netbox' };
-        const result = await driver.getApiEndpoints(params);
+        const result = await driver.api_endpoints.getApiEndpoints(params);
 
         expect(fetch).toHaveBeenCalledWith(
           `${mockBaseURL}/settings/api-endpoints/?q=netbox`,
@@ -349,7 +349,7 @@ describe('NAMv2Driver', () => {
         };
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        const result = await driver.addApiEndpoint(newEndpoint);
+        const result = await driver.api_endpoints.addApiEndpoint(newEndpoint);
 
         expect(fetch).toHaveBeenCalledWith(
           `${mockBaseURL}/settings/api-endpoints/`,
@@ -375,7 +375,7 @@ describe('NAMv2Driver', () => {
         };
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        const result = await driver.patchApiEndpoint('674d7b2c8f1e4a1b2c3d4e70', updates);
+        const result = await driver.api_endpoints.patchApiEndpoint('674d7b2c8f1e4a1b2c3d4e70', updates);
 
         expect(fetch).toHaveBeenCalledWith(
           `${mockBaseURL}/settings/api-endpoints/674d7b2c8f1e4a1b2c3d4e70/`,
@@ -403,7 +403,7 @@ describe('NAMv2Driver', () => {
         };
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        const result = await driver.updateApiEndpoint('674d7b2c8f1e4a1b2c3d4e70', replacement);
+        const result = await driver.api_endpoints.updateApiEndpoint('674d7b2c8f1e4a1b2c3d4e70', replacement);
 
         expect(fetch).toHaveBeenCalledWith(
           `${mockBaseURL}/settings/api-endpoints/674d7b2c8f1e4a1b2c3d4e70/`,
@@ -426,7 +426,7 @@ describe('NAMv2Driver', () => {
         };
         (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        const result = await driver.deleteApiEndpoint('674d7b2c8f1e4a1b2c3d4e70');
+        const result = await driver.api_endpoints.deleteApiEndpoint('674d7b2c8f1e4a1b2c3d4e70');
 
         expect(fetch).toHaveBeenCalledWith(
           `${mockBaseURL}/settings/api-endpoints/674d7b2c8f1e4a1b2c3d4e70/`,
@@ -559,12 +559,12 @@ describe('NAMv2Driver', () => {
       (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
       try {
-        await driver.getNetboxIntegrator('test-id');
+        await driver.netbox_integrators.getNetboxIntegrator('test-id');
         fail('Should have thrown HTTPError');
       } catch (error) {
         expect(error).toBeInstanceOf(HTTPError);
         expect((error as HTTPError).code).toBe(500);
-        expect((error as HTTPError).message).toBe('Internal Server Error');
+        expect((error as HTTPError).message).toBe('500 Internal Server Error');
       }
     });
 
@@ -577,7 +577,7 @@ describe('NAMv2Driver', () => {
       (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
       await expect(
-        driver.getApiEndpoints()
+        driver.api_endpoints.getApiEndpoints()
       ).rejects.toThrow(HTTPError);
     });
   });
@@ -593,7 +593,7 @@ describe('NAMv2Driver', () => {
       };
       (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      await driver.getNetboxIntegrators(params);
+      await driver.netbox_integrators.getNetboxIntegrators(params);
 
       expect(fetch).toHaveBeenCalledWith(
         `${mockBaseURL}/vendors/netbox/netbox-integrators/?q=active&pageSize=50`,
@@ -610,7 +610,7 @@ describe('NAMv2Driver', () => {
       };
       (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      await driver.getNetboxIntegrators({});
+      await driver.netbox_integrators.getNetboxIntegrators({});
 
       expect(fetch).toHaveBeenCalledWith(
         `${mockBaseURL}/vendors/netbox/netbox-integrators/`,

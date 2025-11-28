@@ -41,6 +41,9 @@ jobs:
       - name: Update package.json version
         run: |
           npm version ${{ steps.version.outputs.version }} --no-git-tag-version
+      
+      - name: Update package lock
+        run: npm install --package-lock-only
 
       - name: Commit version updates
         run: |
