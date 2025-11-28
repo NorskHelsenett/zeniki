@@ -14,7 +14,7 @@ export class HTTPError extends Error {
    * @example
    * ```typescript
    * if (!response.ok) {
-   *   throw new HTTPError(response.statusText, response.status, response);
+   *   throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
    * }
    * ```
    */
