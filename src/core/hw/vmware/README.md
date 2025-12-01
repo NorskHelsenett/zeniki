@@ -220,7 +220,7 @@ try {
 
 **VMwareNSXGroup** - Security group with expression-based membership
 ```typescript
-interface VMwareNSXGroup extends VMwareNSXPartial {
+interface VMwareNSXGroup extends VMwareNSXPolicyConfigResource {
   expression?: VMWareExpression[];              // Membership criteria expressions
   extended_expression?: VMWareExpression[];     // Extended context (AD groups for IDFW)
   resource_type?: VmwareResourceTypes;          // Resource type identifier
@@ -233,7 +233,7 @@ interface VMwareNSXGroup extends VMwareNSXPartial {
 
 **VMWareExpression** - Dynamic group membership criteria
 ```typescript
-interface VMWareExpression extends VMwareNSXPartial {
+interface VMWareExpression extends VMwareNSXPolicyConfigResource {
   resource_type?: VmwareExpressionResourceTypes;    // Expression type
   value?: string;                                   // Match value (max 1024 chars)
   key?: VmwareExpressionKeyTypes;                   // Condition key type

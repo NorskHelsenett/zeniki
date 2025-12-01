@@ -7,7 +7,7 @@ import {
   VmwareExpressionScopeOperatorTypes,
   VmwareExternalIDExpressionTypes,
 } from "./vmware-nsx-common";
-import { VMwareNSXPartial } from "./vmware-nsx-partial";
+import { VMwareNSXPolicyConfigResource } from "./vmware-nsx-policy-config-resource";
 import { VMWareNSXTag } from "./vmware-nsx-tag";
 
 /**
@@ -26,7 +26,7 @@ import { VMWareNSXTag } from "./vmware-nsx-tag";
  * };
  * ```
  */
-export interface VMWareExpression extends VMwareNSXPartial {
+export interface VMWareExpression extends Partial<VMwareNSXPolicyConfigResource> {
   /** Expression resource type defining matching behavior. */
   resource_type?: VmwareExpressionResourceTypes;
   
