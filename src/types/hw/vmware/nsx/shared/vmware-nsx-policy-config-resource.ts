@@ -7,7 +7,7 @@ import { VmwareGroupTypes, VmwareProtectionStatuses, VmwareRealizationState, Vmw
  * 
  * @example
  * ```typescript
- * const nsxObject: VMwareNSXPartial = {
+ * const nsxObject: VMwareNSXPolicyConfigResource = {
  *   display_name: 'production-firewall',
  *   description: 'Production firewall rules',
  *   id: 'fw-prod-001',
@@ -16,7 +16,7 @@ import { VmwareGroupTypes, VmwareProtectionStatuses, VmwareRealizationState, Vmw
  * };
  * ```
  */
-export interface VMwareNSXPartial {
+export interface VMwareNSXPolicyConfigResource {
   /**
    * Resource creation timestamp.
    * @readonly
