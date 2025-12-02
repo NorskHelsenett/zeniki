@@ -4,19 +4,18 @@ import {
   ResponseGeneric,
 } from "../../../base/zeniki-core-driver";
 import { NAMResponse } from "../../../../types/tools/nhn/nam-v2/shared/nam-response";
-import {
-  HTTPError,
-} from "../../../../types";
+import { HTTPError } from "../../../../types";
 import { NAMParams } from "../../../../types/tools/nhn/nam-v2/shared/nam-params";
 import { ObjectId } from "mongodb";
 import { queryBuilderSync } from "../../../utils";
 import { NAMNetboxIntegratorsSubDriver } from "./vendors/nam-netbox-integrators-sub_driver";
 import { NAMRorIntegratorsSubDriver } from "./vendors/nam-ror-integrators-sub_driver";
+import { NAMNsxIntegratorsSubDriver } from "./vendors/nam-nsx-integrators-sub_driver";
 import { NAMAPIEndpointsSubDriver } from "./settings/nam-api-endpoints-sub_driver";
 
 /**
  * NAM v2 driver for network architecture management with specialized sub-drivers.
- * Manages NetBox integrators, ROR integrators, and API endpoints through dedicated
+ * Manages NetBox integrators, ROR integrators, NSX integrators, and API endpoints through dedicated
  * sub-drivers. Supports MongoDB ObjectId operations, automated pagination, and enterprise-grade
  * network orchestration.
  *
@@ -29,12 +28,14 @@ import { NAMAPIEndpointsSubDriver } from "./settings/nam-api-endpoints-sub_drive
  * });
  * await nam.netbox_integrators.getNetboxIntegrators();
  * await nam.ror_integrators.getRorIntegrators();
+ * await nam.nsx_integrators.getNsxIntegrators();
  * await nam.api_endpoints.getApiEndpoints();
  * ```
  */
 export class NAMv2Driver extends ZenikiCoreDriver {
   public netbox_integrators: NAMNetboxIntegratorsSubDriver;
   public ror_integrators: NAMRorIntegratorsSubDriver;
+  public nsx_integrators: NAMNsxIntegratorsSubDriver;
   public api_endpoints: NAMAPIEndpointsSubDriver;
 
   /**
@@ -52,9 +53,9 @@ export class NAMv2Driver extends ZenikiCoreDriver {
     super(config);
     this.netbox_integrators = new NAMNetboxIntegratorsSubDriver(config);
     this.ror_integrators = new NAMRorIntegratorsSubDriver(config);
+    this.nsx_integrators = new NAMNsxIntegratorsSubDriver(config);
     this.api_endpoints = new NAMAPIEndpointsSubDriver(config);
   }
-
 
   /**
    * Retrieve data from custom NAM v2 API URL.

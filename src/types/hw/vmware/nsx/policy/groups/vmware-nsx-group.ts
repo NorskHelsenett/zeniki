@@ -2,16 +2,16 @@ import {
   VmwareGroupTypes,
   VmwareRealizationState,
   VmwareRealizationStates,
-  VmwareResourceTypes,
+  VMwareResourceTypes,
 } from "../../shared/vmware-nsx-common";
 import { VMWareExpression } from "../../shared/vmware-nsx-expression";
 import { VMwareNSXPolicyConfigResource } from "../../shared/vmware-nsx-policy-config-resource";
-import { VMWareNSXTag } from "../../shared/vmware-nsx-tag";
+import { VMwareNSXTag } from "../../shared/vmware-nsx-tag";
 
 /**
  * VMware NSX group for policy-based security management.
  * Provides grouping with expression-based membership, identity context, and references.
- * 
+ *
  * @example
  * ```typescript
  * const group: VMwareNSXGroup = {
@@ -35,7 +35,7 @@ export interface VMwareNSXGroup extends Partial<VMwareNSXPolicyConfigResource> {
   extended_expression?: VMWareExpression[];
 
   /** Resource type identifier. */
-  resource_type?: VmwareResourceTypes;
+  resource_type?: VMwareResourceTypes;
 
   /**
    * Group type for entity membership constraints.
@@ -49,7 +49,6 @@ export interface VMwareNSXGroup extends Partial<VMwareNSXPolicyConfigResource> {
    */
   readonly reference?: boolean;
 
-
   /**
    * Current realization state.
    * @readonly
@@ -60,5 +59,5 @@ export interface VMwareNSXGroup extends Partial<VMwareNSXPolicyConfigResource> {
    * Tag collection for metadata and filtering.
    * @maxItems 30
    */
-  tags?: VMWareNSXTag[] | [];
+  tags?: VMwareNSXTag[] | [];
 }

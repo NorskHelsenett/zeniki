@@ -13,7 +13,7 @@ import {
  *
  * @example
  * ```typescript
- * const nsxObject: VMwareNSXPolicyConfigResource = {
+ * const nsxObject: VMwareNSXPartial = {
  *   display_name: 'production-firewall',
  *   description: 'Production firewall rules',
  *   id: 'fw-prod-001',
@@ -22,7 +22,7 @@ import {
  * };
  * ```
  */
-export interface VMwareNSXPolicyConfigResource {
+export interface VMwareNSXPartial {
   /**
    * Resource creation timestamp.
    * @readonly
