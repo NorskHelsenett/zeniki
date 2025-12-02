@@ -89,7 +89,7 @@ export class FortiOSDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(response.statusText, response.status, response);
+      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
     }
   }
 
@@ -115,7 +115,7 @@ export class FortiOSDriver extends ZenikiCoreDriver {
       if (response.ok) {
         return await response.json();
       } else {
-        throw new HTTPError(response.statusText, response.status, response);
+        throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
       }
     }
     const response = await this.get<T>(
@@ -126,7 +126,7 @@ export class FortiOSDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(response.statusText, response.status, response);
+      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
     }
   }
 

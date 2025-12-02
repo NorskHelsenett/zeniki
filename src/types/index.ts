@@ -56,7 +56,7 @@ export * from "./hw/fortios/shared/fortios-revision-response";
 export * from "./hw/fortios/shared/fortios-firewall-addr-meta";
 
 // ===== VMWARE NSX TYPES =====
-export * from "./hw/vmware/nsx/shared/vmware-nsx-partial";
+export * from "./hw/vmware/nsx/shared/vmware-nsx-policy-config-resource";
 export * from "./hw/vmware/nsx/shared/vmware-nsx-expression";
 export * from "./hw/vmware/nsx/shared/vmware-nsx-tag";
 export * from "./hw/vmware/nsx/shared/vmware-nsx-common";

@@ -5,7 +5,7 @@ import {
   VmwareResourceTypes,
 } from "../../shared/vmware-nsx-common";
 import { VMWareExpression } from "../../shared/vmware-nsx-expression";
-import { VMwareNSXPartial } from "../../shared/vmware-nsx-partial";
+import { VMwareNSXPolicyConfigResource } from "../../shared/vmware-nsx-policy-config-resource";
 import { VMWareNSXTag } from "../../shared/vmware-nsx-tag";
 
 /**
@@ -24,7 +24,7 @@ import { VMWareNSXTag } from "../../shared/vmware-nsx-tag";
  * };
  * ```
  */
-export interface VMwareNSXGroup extends VMwareNSXPartial {
+export interface VMwareNSXGroup extends Partial<VMwareNSXPolicyConfigResource> {
   /** Expression list defining group membership criteria. */
   expression?: VMWareExpression[];
 
@@ -48,6 +48,7 @@ export interface VMwareNSXGroup extends VMwareNSXPartial {
    * @readonly
    */
   readonly reference?: boolean;
+
 
   /**
    * Current realization state.
