@@ -1,8 +1,8 @@
 import {
-  VmwareGroupTypes,
-  VmwareProtectionStatuses,
-  VmwareRealizationState,
-  VmwareRealizationStates,
+  VMwareGroupTypes,
+  VMwareProtectionStatuses,
+  VMwareRealizationState,
+  VMwareRealizationStates,
   VMwareResourceTypes,
 } from "./vmware-nsx-common";
 
@@ -27,7 +27,7 @@ export interface VMwareNSXPartial {
    * Resource creation timestamp.
    * @readonly
    */
-  readonly _create_time?: Date;
+  readonly _create_time?: number;
 
   /**
    * User ID who created this resource.
@@ -39,7 +39,7 @@ export interface VMwareNSXPartial {
    * Last modification timestamp.
    * @readonly
    */
-  readonly _last_modified_time?: Date;
+  readonly _last_modified_time?: number;
 
   /**
    * User ID who last modified this resource.
@@ -57,7 +57,7 @@ export interface VMwareNSXPartial {
    * Protection status controlling modifications.
    * @readonly
    */
-  readonly _protection?: VmwareProtectionStatuses;
+  readonly _protection?: VMwareProtectionStatuses;
 
   /** Current revision number for concurrency control. */
   _revision?: number;

@@ -28,7 +28,7 @@ export { NetboxDriver } from "./core/tools/netbox/netbox-driver";
 export { NAMv2Driver } from "./core/tools/nhn/nam-v2/nam-v2-driver";
 export { RORv1Driver } from "./core/tools/nhn/ror-v1/ror-v1-driver";
 export { FortiOSDriver } from "./core/hw/fortinet/fortios-driver";
-export { VMWareNSXDriver } from "./core/hw/vmware/vmware-nsx-driver";
+export { VMwareNSXDriver } from "./core/hw/vmware/vmware-nsx-driver";
 export { Zeniki } from "./core/zeniki";
 
 // ===== ERROR CLASSES =====

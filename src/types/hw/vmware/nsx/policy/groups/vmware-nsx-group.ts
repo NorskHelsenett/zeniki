@@ -1,10 +1,10 @@
 import {
-  VmwareGroupTypes,
-  VmwareRealizationState,
-  VmwareRealizationStates,
+  VMwareGroupTypes,
+  VMwareRealizationState,
+  VMwareRealizationStates,
   VMwareResourceTypes,
 } from "../../shared/vmware-nsx-common";
-import { VMWareExpression } from "../../shared/vmware-nsx-expression";
+import { VMwareExpression } from "../../shared/vmware-nsx-expression";
 import { VMwareNSXPolicyConfigResource } from "../../shared/vmware-nsx-policy-config-resource";
 import { VMwareNSXTag } from "../../shared/vmware-nsx-tag";
 
@@ -26,13 +26,13 @@ import { VMwareNSXTag } from "../../shared/vmware-nsx-tag";
  */
 export interface VMwareNSXGroup extends Partial<VMwareNSXPolicyConfigResource> {
   /** Expression list defining group membership criteria. */
-  expression?: VMWareExpression[];
+  expression?: VMwareExpression[];
 
   /**
    * Extended expression for higher-level context.
    * @maxItems 1
    */
-  extended_expression?: VMWareExpression[];
+  extended_expression?: VMwareExpression[];
 
   /** Resource type identifier. */
   resource_type?: VMwareResourceTypes;
@@ -41,7 +41,7 @@ export interface VMwareNSXGroup extends Partial<VMwareNSXPolicyConfigResource> {
    * Group type for entity membership constraints.
    * @maxItems 1
    */
-  group_type?: VmwareGroupTypes[];
+  group_type?: VMwareGroupTypes[];
 
   /**
    * Indicates if group is a remote reference.
@@ -53,7 +53,7 @@ export interface VMwareNSXGroup extends Partial<VMwareNSXPolicyConfigResource> {
    * Current realization state.
    * @readonly
    */
-  readonly state?: VmwareRealizationStates | VmwareRealizationState;
+  readonly state?: VMwareRealizationStates | VMwareRealizationState;
 
   /**
    * Tag collection for metadata and filtering.

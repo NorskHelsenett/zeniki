@@ -25,7 +25,7 @@ export { NAMv2Driver } from "./tools/nhn/nam-v2/nam-v2-driver";
 
 // ===== HARDWARE DRIVERS =====
 export { FortiOSDriver } from "./hw/fortinet/fortios-driver";
-export { VMWareNSXDriver } from "./hw/vmware/vmware-nsx-driver";
+export { VMwareNSXDriver } from "./hw/vmware/vmware-nsx-driver";
 
 // ===== LOGGERS =====
 export { WinstonHecLogger } from "./loggers/winston-hec-logger";

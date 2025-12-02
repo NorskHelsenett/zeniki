@@ -55,7 +55,7 @@ const password = 'VMware123!';
 const authString = `${username}:${password}`;
 const encodedAuth = btoa(authString);
 
-const nsx = new VMWareNSXDriver({
+const nsx = new VMwareNSXDriver({
   baseURL: 'https://nsx-manager.company.com',
   headers: {
     'User-Agent': 'MyApp/1.0',
@@ -65,7 +65,7 @@ const nsx = new VMWareNSXDriver({
 });
 
 // With request timeout
-const nsx = new VMWareNSXDriver({
+const nsx = new VMwareNSXDriver({
   baseURL: 'https://nsx-manager.company.com',
   headers: {
     'Authorization': `Basic ${encodedAuth}`,
@@ -78,14 +78,14 @@ const nsx = new VMWareNSXDriver({
 ## Basic Usage
 
 ```typescript
-import { VMWareNSXDriver } from '@norskhelsenett/zeniki';
+import { VMwareNSXDriver } from '@norskhelsenett/zeniki';
 
 // Encode credentials for Basic authentication
 const username = 'admin';
 const password = 'password';
 const encodedAuth = btoa(`${username}:${password}`);
 
-const nsx = new VMWareNSXDriver({
+const nsx = new VMwareNSXDriver({
   baseURL: 'https://nsx-manager.company.com',
   headers: {
     'Authorization': `Basic ${encodedAuth}`,
@@ -121,14 +121,14 @@ const searchResults = await nsx.search.query({ query: 'web-servers', resource_ty
 ## Advanced Usage
 
 ```typescript
-import { VMWareNSXDriver, HTTPError } from '@norskhelsenett/zeniki';
+import { VMwareNSXDriver, HTTPError } from '@norskhelsenett/zeniki';
 
 // Encode credentials for Basic authentication
 const username = 'admin';
 const password = 'password';
 const encodedAuth = btoa(`${username}:${password}`);
 
-const nsx = new VMWareNSXDriver({
+const nsx = new VMwareNSXDriver({
   baseURL: 'https://nsx-manager.company.com',
   headers: {
     'Authorization': `Basic ${encodedAuth}`,
@@ -204,7 +204,7 @@ try {
     if (error.code === 409) console.log('Group already exists');
 ### Sub-Drivers
 
-**`groups`** - VMWareNSXGroupsSubDriver
+**`groups`** - VMwareNSXGroupsSubDriver
 - `getGroup(group_id, domain_id?, params?, global_manager?)` - Retrieve security group by ID
 - `getGroups(domain_id?, params?, global_manager?)` - List all security groups with pagination
 - `addGroup(group_id, domain_id?, group, params?)` - Create new security group (upsert)
@@ -212,7 +212,7 @@ try {
 - `patchGroup(group_id, domain_id?, group, params?)` - Partial update of security group
 - `deleteGroup(group_id, domain_id?, params?)` - Delete security group
 
-**`search`** - VMWareNSXSearchSubDriver
+**`search`** - VMwareNSXSearchSubDriver
 - `query<T>(params)` - Execute unified search query across NSX resources
 
 ### Generic Methodsd, domain_id?, params?, global_manager?)` - Retrieve security group by ID
@@ -234,28 +234,96 @@ try {
 **VMwareNSXGroup** - Security group with expression-based membership
 ```typescript
 interface VMwareNSXGroup extends VMwareNSXPolicyConfigResource {
-  expression?: VMWareExpression[];              // Membership criteria expressions
-  extended_expression?: VMWareExpression[];     // Extended context (AD groups for IDFW)
-  resource_type?: VmwareResourceTypes;          // Resource type identifier
-  group_type?: VmwareGroupTypes[];              // Entity membership constraints
+  expression?: VMwareExpression[];              // Membership criteria expressions
+  extended_expression?: VMwareExpression[];     // Extended context (AD groups for IDFW)
+  resource_type?: VMwareResourceTypes;          // Resource type identifier
+  group_type?: VMwareGroupTypes[];              // Entity membership constraints
   readonly reference?: boolean;                 // Remote reference indicator
-  readonly state?: VmwareRealizationStates;     // Realization state
-  tags?: VMWareNSXTag[];                        // Metadata tags (max 30)
+  readonly state?: VMwareRealizationStates;     // Realization state
+  tags?: VMwareNSXTag[];                        // Metadata tags (max 30)
 }
 ```
 
-**VMWareExpression** - Dynamic group membership criteria
+**VMwareExpression** - Dynamic group membership criteria
 ```typescript
-interface VMWareExpression extends VMwareNSXPolicyConfigResource {
-  resource_type?: VmwareExpressionResourceTypes;    // Expression type
+interface VMwareExpression extends VMwareNSXPolicyConfigResource {
+  resource_type?: VMwareExpressionResourceTypes;    // Expression type
   value?: string;                                   // Match value (max 1024 chars)
-  key?: VmwareExpressionKeyTypes;                   // Condition key type
-  member_type?: VmwareExpressionMemberTypes;        // Member entity type
-  operator?: VmwareExpressionOperatorTypes;         // Comparison operator
-  scope_operator?: VmwareExpressionScopeOperatorTypes; // Scope operator
-  conjunction_operator?: VmwareExpressionConjunctionOperatorTypes; // Logical operator
+  key?: VMwareExpressionKeyTypes;                   // Condition key type
+  member_type?: VMwareExpressionMemberTypes;        // Member entity type
+  operator?: VMwareExpressionOperatorTypes;         // Comparison operator
+  scope_operator?: VMwareExpressionScopeOperatorTypes; // Scope operator
+  conjunction_operator?: VMwareExpressionConjunctionOperatorTypes; // Logical operator
   ip_addresses?: string[];                          // IP addresses (1-2000 items)
-  tags?: VMWareNSXTag[];                           // Expression tags (max 30)
+  tags?: VMwareNSXTag[];                           // Expression tags (max 30)
+}
+```
+
+**VMwareNSXPartial** - Base NSX policy object properties
+```typescript
+interface VMwareNSXPartial {
+  readonly _create_time?: number;                   // Resource creation timestamp
+  readonly _create_user?: string;                   // User who created resource
+  readonly _last_modified_time?: number;            // Last modification timestamp
+  readonly _last_modified_user?: string;            // User who last modified
+  readonly _protection?: VMwareProtectionStatuses;  // Protection status
+  readonly _revision?: number;                      // Revision number for optimistic locking
+  readonly _system_owned?: boolean;                 // System-owned resource flag
+  description?: string;                             // Resource description (max 1024 chars)
+  display_name?: string;                            // Display name (max 255 chars)
+  id?: string;                                      // Unique identifier (max 255 chars)
+  resource_type?: VMwareResourceTypes;              // Resource type identifier
+  tags?: VMwareNSXTag[];                           // Metadata tags (max 30)
+  children?: any[];                                 // Child resources
+  marked_for_delete?: boolean;                      // Deletion pending flag
+  parent_path?: string;                             // Parent resource path
+  path?: string;                                    // Absolute resource path
+  relative_path?: string;                           // Relative resource path
+  remote_path?: string;                             // Remote location path
+  unique_id?: string;                               // Globally unique identifier
+}
+```
+
+**VMwareNSXDiscoveredResource** - Auto-discovered resource base
+```typescript
+interface VMwareNSXDiscoveredResource {
+  readonly _last_sync_time?: number;                // Last synchronization timestamp
+  readonly _links?: VMwareNSXResourceLink[];        // Resource links
+  readonly _schema?: string;                        // Schema URL
+  readonly _self?: VMwareNSXSelfResourceLink;       // Self-reference link
+  description?: string;                             // Resource description (max 1024 chars)
+  display_name?: string;                            // Display name (max 255 chars)
+  id?: string;                                      // Unique identifier (max 255 chars)
+  resource_type?: VMwareResourceTypes;              // Resource type
+  scope?: VMwareNSXDiscoveredResourceScope[];       // Resource scopes
+  tags?: VMwareNSXTag[];                           // Metadata tags (max 30)
+}
+```
+
+**VMwareNSXResourceReference** - Resource reference with validation
+```typescript
+interface VMwareNSXResourceReference {
+  readonly is_valid?: boolean;                      // Resource validity status
+  readonly target_display_name?: string;            // Referenced resource display name
+  readonly target_id?: string;                      // Referenced resource ID
+  readonly target_type?: string;                    // Referenced resource type
+}
+```
+
+**VMwareNSXVirtualMachine** - Virtual machine in NSX inventory
+```typescript
+interface VMwareNSXVirtualMachine extends Partial<VMwareNSXDiscoveredResource> {
+  readonly _meta?: VMwareNSXVirtualMachineMeta;     // VM metadata
+  compute_ids: string[];                            // External compute IDs
+  external_id: string;                              // Current external ID
+  readonly guest_info?: VMwareNSXGuestInfo;         // Guest OS information
+  host_id?: string;                                 // Host system ID
+  local_id_on_host: string;                         // Local VM identifier
+  power_state: VMwareNSXVirtualMachinePowerStates;  // VM power state
+  readonly runtime_info?: VMwareNSXVirtualMachineRuntimeInfo; // Runtime details
+  source?: VMwareNSXResourceReference;              // Source reference
+  type?: VMwareNSXVirtualMachineTypes;              // VM type
+  readonly uptv2_enabled?: boolean;                 // UPTv2 status
 }
 ```
 
@@ -289,27 +357,27 @@ interface VMwareNSXResponse<T> {
 
 ### Enums
 
-**VmwareResourceTypes**
+**VMwareResourceTypes**
 ```typescript
-type VmwareResourceTypes = "Group" | "NSGroup" | "VirtualMachine" | "TagBulkOperation" | "Rule" | "Expression";
+type VMwareResourceTypes = "Group" | "NSGroup" | "VirtualMachine" | "TagBulkOperation" | "Rule" | "Expression";
 ```
 
-**VmwareGroupTypes**
+**VMwareGroupTypes**
 ```typescript
-type VmwareGroupTypes = "IPAddress" | "ANTREA";
+type VMwareGroupTypes = "IPAddress" | "ANTREA";
 ```
 
-**VmwareExpressionResourceTypes**
+**VMwareExpressionResourceTypes**
 ```typescript
-type VmwareExpressionResourceTypes = 
+type VMwareExpressionResourceTypes = 
   | "Condition" | "ConjunctionOperator" | "NestedExpression"
   | "IPAddressExpression" | "MACAddressExpression" | "ExternalIDExpression"
   | "PathExpression" | "IdentityGroupExpression";
 ```
 
-**VmwareExpressionMemberTypes**
+**VMwareExpressionMemberTypes**
 ```typescript
-type VmwareExpressionMemberTypes = 
+type VMwareExpressionMemberTypes = 
   | "IPSet" | "VirtualMachine" | "LogicalPort" | "LogicalSwitch"
   | "Segment" | "SegmentPort" | "Pod" | "Service" | "Namespace"
   | "TransportNode" | "Group" | "DVPG" | "DVPort" | "IPAddress"
@@ -318,28 +386,51 @@ type VmwareExpressionMemberTypes =
   | "KubernetesGateway" | "KubernetesService" | "KubernetesNode" | "VpcSubnetPort";
 ```
 
-**VmwareExpressionOperatorTypes**
+**VMwareExpressionOperatorTypes**
 ```typescript
-type VmwareExpressionOperatorTypes = 
+type VMwareExpressionOperatorTypes = 
   | "EQUALS" | "CONTAINS" | "STARTSWITH" | "ENDSWITH"
   | "NOTEQUALS" | "NOTIN" | "MATCHES" | "IN";
 ```
 
-**VmwareExpressionConjunctionOperatorTypes**
+**VMwareExpressionConjunctionOperatorTypes**
 ```typescript
-type VmwareExpressionConjunctionOperatorTypes = "AND" | "OR";
+type VMwareExpressionConjunctionOperatorTypes = "AND" | "OR";
 ```
 
-**VmwareExpressionKeyTypes**
+**VMwareExpressionKeyTypes**
 ```typescript
-type VmwareExpressionKeyTypes = 
+type VMwareExpressionKeyTypes = 
   | "Tag" | "Name" | "OSName" | "ComputerName" | "NodeType"
   | "GroupType" | "ALL" | "IPAddress" | "PodCidr";
 ```
 
-**VmwareRealizationStates**
+**VMwareRealizationStates**
 ```typescript
-type VmwareRealizationStates = "IN_PROGRESS" | "SUCCESS" | "FAILURE";
+type VMwareRealizationStates = "IN_PROGRESS" | "SUCCESS" | "FAILURE";
+```
+
+**VMwareProtectionStatuses**
+```typescript
+type VMwareProtectionStatuses = 
+  | "PROTECTED" | "NOT_PROTECTED" | "REQUIRE_OVERRIDE" | "UNKNOWN";
+```
+
+**VMwareNSXVirtualMachinePowerStates**
+```typescript
+type VMwareNSXVirtualMachinePowerStates = 
+  | "VM_RUNNING" | "VM_STOPPED" | "VM_SUSPENDED" | "UNKNOWN";
+```
+
+**VMwareNSXVirtualMachineTypes**
+```typescript
+type VMwareNSXVirtualMachineTypes = 
+  | "BFMS" | "EXTERNAL" | "REGULAR" | "EDGE" | "SVM";
+```
+
+**VMwareNSXScopeTypes**
+```typescript
+type VMwareNSXScopeTypes = "CONTAINER_CLUSTER" | "VPC";
 ```
 
 ### Error Types
