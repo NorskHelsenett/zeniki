@@ -9,8 +9,8 @@ import { VMwareNSXParams } from "../../../types/hw/vmware/nsx/shared/vmware-nsx-
 import { VMwareNsxModifyResponse } from "../../../types";
 import { queryBuilderSync } from "../../utils";
 import { HTTPError } from "../../../types/shared/errors/http-error";
-import { VMWareNSXGroupsSubDriver } from "./groups/vmware-nsx-groups-sub_driver";
-import { VMWareNSXSearchSubDriver } from "./search/vmware-nsx-search-sub_driver";
+import { VMwareNSXGroupsSubDriver } from "./groups/vmware-nsx-groups-sub_driver";
+import { VMwareNSXSearchSubDriver } from "./search/vmware-nsx-search-sub_driver";
 
 /**
  * VMware NSX-T driver for policy-based network security and micro-segmentation.
@@ -20,19 +20,19 @@ import { VMWareNSXSearchSubDriver } from "./search/vmware-nsx-search-sub_driver"
  * @example
  * ```typescript
  * const authString = btoa('admin:VMware123!');
- * const nsx = new VMWareNSXDriver({ baseURL: 'https://nsx.example.com', headers: { 'Authorization': `Basic ${authString}`, 'Content-Type': 'application/json' } });
+ * const nsx = new VMwareNSXDriver({ baseURL: 'https://nsx.example.com', headers: { 'Authorization': `Basic ${authString}`, 'Content-Type': 'application/json' } });
  * const group = await nsx.groups.getGroup('web-servers', 'default');
  * await nsx.groups.addGroup('app-servers', 'default', { display_name: 'App Servers', resource_type: 'Group', expression: [{ resource_type: 'Condition', member_type: 'VirtualMachine', key: 'Tag', value: 'app' }] });
  * const domains = await nsx.getByUrl('/policy/api/v1/infra/domains');
  * ```
  */
-export class VMWareNSXDriver extends ZenikiCoreDriver {
-  public groups: VMWareNSXGroupsSubDriver;
-  public search: VMWareNSXSearchSubDriver;
+export class VMwareNSXDriver extends ZenikiCoreDriver {
+  public groups: VMwareNSXGroupsSubDriver;
+  public search: VMwareNSXSearchSubDriver;
   constructor(public config: RequestConfig) {
     super(config);
-    this.groups = new VMWareNSXGroupsSubDriver(config);
-    this.search = new VMWareNSXSearchSubDriver(config);
+    this.groups = new VMwareNSXGroupsSubDriver(config);
+    this.search = new VMwareNSXSearchSubDriver(config);
   }
 
   /**

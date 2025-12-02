@@ -1,11 +1,11 @@
 import {
-  VmwareExpressionConjunctionOperatorTypes,
-  VmwareExpressionKeyTypes,
-  VmwareExpressionMemberTypes,
-  VmwareExpressionOperatorTypes,
-  VmwareExpressionResourceTypes,
-  VmwareExpressionScopeOperatorTypes,
-  VmwareExternalIDExpressionTypes,
+  VMwareExpressionConjunctionOperatorTypes,
+  VMwareExpressionKeyTypes,
+  VMwareExpressionMemberTypes,
+  VMwareExpressionOperatorTypes,
+  VMwareExpressionResourceTypes,
+  VMwareExpressionScopeOperatorTypes,
+  VMwareExternalIDExpressionTypes,
   VMwareNSXScopeTypes,
 } from "./vmware-nsx-common";
 import { VMwareNSXIdentityGroupInfo } from "./vmware-nsx-identity-group-info";
@@ -18,7 +18,7 @@ import { VMwareNSXTag } from "./vmware-nsx-tag";
  *
  * @example
  * ```typescript
- * const expression: VMWareExpression = {
+ * const expression: VMwareExpression = {
  *   display_name: 'web-tier-condition',
  *   resource_type: 'Condition',
  *   key: 'Tag',
@@ -28,10 +28,10 @@ import { VMwareNSXTag } from "./vmware-nsx-tag";
  * };
  * ```
  */
-export interface VMWareExpression
+export interface VMwareExpression
   extends Partial<VMwareNSXPolicyConfigResource> {
   /** Expression resource type defining matching behavior. */
-  resource_type?: VmwareExpressionResourceTypes;
+  resource_type?: VMwareExpressionResourceTypes;
 
   /**
    * Value for condition expression matching.
@@ -40,19 +40,19 @@ export interface VMWareExpression
   value?: string;
 
   /** Key type for condition expression evaluation. */
-  key?: VmwareExpressionKeyTypes;
+  key?: VMwareExpressionKeyTypes;
 
   /** Member type for expressions. */
-  member_type?: VmwareExpressionMemberTypes | VmwareExternalIDExpressionTypes;
+  member_type?: VMwareExpressionMemberTypes | VMwareExternalIDExpressionTypes;
 
   /** Operator for condition expression logic. */
-  operator?: VmwareExpressionOperatorTypes;
+  operator?: VMwareExpressionOperatorTypes;
 
   /** Scope operator for condition evaluation. */
-  scope_operator?: VmwareExpressionScopeOperatorTypes;
+  scope_operator?: VMwareExpressionScopeOperatorTypes;
 
   /** Conjunction operator for logic combination. */
-  conjunction_operator?: VmwareExpressionConjunctionOperatorTypes;
+  conjunction_operator?: VMwareExpressionConjunctionOperatorTypes;
 
   /**
    * IP address collection for matching (use when resource_type is "IPAddressExpression").
@@ -90,7 +90,7 @@ export interface VMWareExpression
    * Expression collection for matching (use when resource type is "NestedExpression")
    * @minItems 1
    */
-  expressions?: VMWareExpression[];
+  expressions?: VMwareExpression[];
 
   /**
    * Paths collection for matching (use when resource type is "PathExpression")

@@ -1,15 +1,15 @@
 // VMware NSX realization state enumeration
-export enum VmwareRealizationState {
+export enum VMwareRealizationState {
   IN_PROGRESS = "IN_PROGRESS",
   SUCCESS = "SUCCESS",
   FAILURE = "FAILURE",
 }
 
 // String literal union for realization states
-export type VmwareRealizationStates = "IN_PROGRESS" | "SUCCESS" | "FAILURE";
+export type VMwareRealizationStates = "IN_PROGRESS" | "SUCCESS" | "FAILURE";
 
 // VMware NSX resource type enumeration
-export enum VmwareResourceType {}
+export enum VMwareResourceType {}
 
 // String literal union for resource types
 export type VMwareResourceTypes =
@@ -21,11 +21,11 @@ export type VMwareResourceTypes =
   | "Expression";
 
 // String literal union for group types
-export type VmwareGroupTypes = "IPAddress" | "ANTREA";
+export type VMwareGroupTypes = "IPAddress" | "ANTREA";
 
 // String literal union for expression resource types
 // HEAD
-export type VmwareExpressionResourceTypes =
+export type VMwareExpressionResourceTypes =
   | "Condition"
   | "ConjunctionOperator"
   | "NestedExpression"
@@ -37,7 +37,7 @@ export type VmwareExpressionResourceTypes =
   | "GroupScopeExpression";
 
 // String literal union for condition expression member types
-export type VmwareExpressionMemberTypes =
+export type VMwareExpressionMemberTypes =
   | "IPSet"
   | "VirtualMachine"
   | "LogicalPort"
@@ -63,14 +63,14 @@ export type VmwareExpressionMemberTypes =
   | "KubernetesNode"
   | "VpcSubnetPort";
 // String literal union for external ID expression types
-export type VmwareExternalIDExpressionTypes =
+export type VMwareExternalIDExpressionTypes =
   | "VirtualMachine"
   | "VirtualNetworkInterface"
   | "CloudNativeServiceInstance"
   | "PhysicalServer";
 
 // String literal union for expression operators
-export type VmwareExpressionOperatorTypes =
+export type VMwareExpressionOperatorTypes =
   | "EQUALS"
   | "CONTAINS"
   | "STARTSWITH"
@@ -81,13 +81,13 @@ export type VmwareExpressionOperatorTypes =
   | "IN";
 
 // String literal union for expression scope operators
-export type VmwareExpressionScopeOperatorTypes = "EQUALS" | "NOTEQUALS";
+export type VMwareExpressionScopeOperatorTypes = "EQUALS" | "NOTEQUALS";
 
 // String literal union for conjunction operators
-export type VmwareExpressionConjunctionOperatorTypes = "AND" | "OR";
+export type VMwareExpressionConjunctionOperatorTypes = "AND" | "OR";
 
 // String literal union for expression key types
-export type VmwareExpressionKeyTypes =
+export type VMwareExpressionKeyTypes =
   | "Tag"
   | "Name"
   | "OSName"
@@ -98,14 +98,14 @@ export type VmwareExpressionKeyTypes =
   | "IPAddress"
   | "PodCidr";
 
-export type VmwareProtectionStatuses =
+export type VMwareProtectionStatuses =
   | "PROTECTED"
   | "NOT_PROTECTED"
   | "REQUIRE_OVERRIDE"
   | "UNKNOWN";
 
 // String literal union for virtual machine power state
-export type VmwareNSXVirtualMachinePowerStates =
+export type VMwareNSXVirtualMachinePowerStates =
   | "VM_RUNNING"
   | "VM_STOPPED"
   | "VM_SUSPENDED"

@@ -3,7 +3,7 @@
  *
  * @example
  * ```typescript
- * const resourceLink: VMWareNSXResourceLink = {
+ * const resourceLink: VMwareNSXResourceLink = {
  *   href: "/api/v1/logical-ports/port-123",
  *   rel: "self"
  * };

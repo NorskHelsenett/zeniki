@@ -3,7 +3,7 @@
  *
  * @example
  * ```typescript
- * const tag: VMWareNSXTag = {
+ * const tag: VMwareNSXTag = {
  *   scope: 'environment',
  *   tag: 'production'
  * };
