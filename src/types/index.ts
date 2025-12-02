@@ -56,15 +56,25 @@ export * from "./hw/fortios/shared/fortios-revision-response";
 export * from "./hw/fortios/shared/fortios-firewall-addr-meta";
 
 // ===== VMWARE NSX TYPES =====
-export * from "./hw/vmware/nsx/shared/vmware-nsx-policy-config-resource";
-export * from "./hw/vmware/nsx/shared/vmware-nsx-expression";
-export * from "./hw/vmware/nsx/shared/vmware-nsx-tag";
 export * from "./hw/vmware/nsx/shared/vmware-nsx-common";
-export * from "./hw/vmware/nsx/shared/vmware-nsx-params";
-export * from "./hw/vmware/nsx/shared/vmware-nsx-response";
+export * from "./hw/vmware/nsx/shared/vmware-nsx-discovered-resource";
+export * from "./hw/vmware/nsx/shared/vmware-nsx-discovered-resource-scope";
+export * from "./hw/vmware/nsx/shared/vmware-nsx-expression";
 export * from "./hw/vmware/nsx/shared/vmware-nsx-modify-response";
+export * from "./hw/vmware/nsx/shared/vmware-nsx-params";
+export * from "./hw/vmware/nsx/shared/vmware-nsx-partial";
+export * from "./hw/vmware/nsx/shared/vmware-nsx-policy-config-resource";
+export * from "./hw/vmware/nsx/shared/vmware-nsx-resource-link";
+export * from "./hw/vmware/nsx/shared/vmware-nsx-resource-reference";
+export * from "./hw/vmware/nsx/shared/vmware-nsx-response";
+export * from "./hw/vmware/nsx/shared/vmware-nsx-self-resource-link";
+export * from "./hw/vmware/nsx/shared/vmware-nsx-tag";
 export * from "./hw/vmware/nsx/policy/groups/vmware-nsx-group";
+export * from "./hw/vmware/nsx/policy/virtual_machines/vmare-nsx-virtual-machine-meta";
+export * from "./hw/vmware/nsx/policy/virtual_machines/vmware-nsx-guest-info";
 export * from "./hw/vmware/nsx/policy/virtual_machines/vmware-nsx-virtual-machine";
+export * from "./hw/vmware/nsx/policy/virtual_machines/vmware-nsx-virtual-machine-runtime-info";
+export * from "./hw/vmware/nsx/policy/virtual_machines/vmware-nsx-virtual-network-interface-runtime-info";
 
 // ===== NAM V2 TYPES =====
 export * from "./tools/nhn/nam-v2/nam-api-endpoint";
