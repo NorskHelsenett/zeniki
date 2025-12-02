@@ -6,7 +6,7 @@ import {
   VmwareExpressionResourceTypes,
   VmwareExpressionScopeOperatorTypes,
   VmwareExternalIDExpressionTypes,
-  VMwareScopeTypes,
+  VMwareNSXScopeTypes,
 } from "./vmware-nsx-common";
 import { VMwareNSXIdentityGroupInfo } from "./vmware-nsx-identity-group-info";
 import { VMwareNSXPolicyConfigResource } from "./vmware-nsx-policy-config-resource";
@@ -78,7 +78,7 @@ export interface VMWareExpression
   scope_path?: string;
 
   /** Group scope type for matching (use when resource_type is "GroupScopeExpression"). */
-  scope_type?: VMwareScopeTypes;
+  scope_type?: VMwareNSXScopeTypes;
 
   /**
    * Identity group collection for matching (use when resource type is "IdentityGroupExpression")
