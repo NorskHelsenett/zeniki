@@ -20,7 +20,7 @@ export type VmwareResourceTypes = "Group" | "NSGroup" | "VirtualMachine" | "TagB
 export type VmwareGroupTypes = "IPAddress" | "ANTREA";
 
 // String literal union for expression resource types
-export type VmwareExpressionResourceTypes = "Condition" | "ConjunctionOperator" | "NestedExpression" | "IPAddressExpression" | "MACAddressExpression" | "ExternalIDExpression" | "PathExpression" | "IdentityGroupExpression";
+export type VmwareExpressionResourceTypes = "Condition" | "ConjunctionOperator" | "NestedExpression" | "IPAddressExpression" | "MACAddressExpression" | "ExternalIDExpression" | "PathExpression" | "IdentityGroupExpression" | "GroupScopeExpression";
 
 // String literal union for condition expression member types
 export type VmwareExpressionMemberTypes = "IPSet" | "VirtualMachine" | "LogicalPort" | "LogicalSwitch" | "Segment" | "SegmentPort" | "Pod" | "Service" | "Namespace" | "TransportNode" | "Group" | "DVPG" | "DVPort" | "IPAddress" | "VpcSubnet" | "KubernetesCluster" | "KubernetesNamespace" | "AntreaEgress" | "AntreaIPPool" | "KubernetesIngress" | "KubernetesGateway" | "KubernetesService" | "KubernetesNode" | "VpcSubnetPort";
@@ -41,3 +41,5 @@ export type VmwareExpressionKeyTypes = "Tag" | "Name" | "OSName" | "ComputerName
 
 // String literal union for protection statuses
 export type VmwareProtectionStatuses = "PROTECTED" | "NOT_PROTECTED" | "REQUIRE_OVERRIDE" | "UNKNOWN";
+
+export type VMwareScopeTypes = "PROJECT" | "VPC";

@@ -6,7 +6,9 @@ import {
   VmwareExpressionResourceTypes,
   VmwareExpressionScopeOperatorTypes,
   VmwareExternalIDExpressionTypes,
+  VMwareScopeTypes,
 } from "./vmware-nsx-common";
+import { VMwareNSXIdentityGroupInfo } from "./vmware-nsx-identity-group-info";
 import { VMwareNSXPolicyConfigResource } from "./vmware-nsx-policy-config-resource";
 import { VMWareNSXTag } from "./vmware-nsx-tag";
 
@@ -26,10 +28,11 @@ import { VMWareNSXTag } from "./vmware-nsx-tag";
  * };
  * ```
  */
-export interface VMWareExpression extends Partial<VMwareNSXPolicyConfigResource> {
+export interface VMWareExpression
+  extends Partial<VMwareNSXPolicyConfigResource> {
   /** Expression resource type defining matching behavior. */
   resource_type?: VmwareExpressionResourceTypes;
-  
+
   /**
    * Value for condition expression matching.
    * @maxLength 1024
@@ -52,11 +55,48 @@ export interface VMWareExpression extends Partial<VMwareNSXPolicyConfigResource>
   conjunction_operator?: VmwareExpressionConjunctionOperatorTypes;
 
   /**
-   * IP address collection for matching.
+   * IP address collection for matching (use when resource_type is "IPAddressExpression").
    * @minItems 1
    * @maxItems 2000
    */
   ip_addresses?: string[];
+
+  /**
+   * MAC address collection for matching (use when resource_type is "MACAddressExpression").
+   * @minItems 1
+   * @maxItems 4000
+   */
+  mac_addresses?: string[];
+
+  /**
+   * External ID collection for matching (use when resource_type is "ExternalIDExpression").
+   * @minItems 1
+   */
+  external_ids?: string[];
+
+  /** Group scope path for matching (use when resource_type is "GroupScopeExpression"). */
+  scope_path?: string;
+
+  /** Group scope type for matching (use when resource_type is "GroupScopeExpression"). */
+  scope_type?: VMwareScopeTypes;
+
+  /**
+   * Identity group collection for matching (use when resource type is "IdentityGroupExpression")
+   * @minItems 1
+   */
+  identity_groups?: Partial<VMwareNSXIdentityGroupInfo>[];
+
+  /**
+   * Expression collection for matching (use when resource type is "NestedExpression")
+   * @minItems 1
+   */
+  expressions?: VMWareExpression[];
+
+  /**
+   * Paths collection for matching (use when resource type is "PathExpression")
+   * @minItems 1
+   */
+  paths?: string[];
 
   /**
    * Tag collection for matching and filtering.
