@@ -259,6 +259,74 @@ interface VMwareExpression extends VMwareNSXPolicyConfigResource {
 }
 ```
 
+**VMwareNSXPartial** - Base NSX policy object properties
+```typescript
+interface VMwareNSXPartial {
+  readonly _create_time?: number;                   // Resource creation timestamp
+  readonly _create_user?: string;                   // User who created resource
+  readonly _last_modified_time?: number;            // Last modification timestamp
+  readonly _last_modified_user?: string;            // User who last modified
+  readonly _protection?: VMwareProtectionStatuses;  // Protection status
+  readonly _revision?: number;                      // Revision number for optimistic locking
+  readonly _system_owned?: boolean;                 // System-owned resource flag
+  description?: string;                             // Resource description (max 1024 chars)
+  display_name?: string;                            // Display name (max 255 chars)
+  id?: string;                                      // Unique identifier (max 255 chars)
+  resource_type?: VMwareResourceTypes;              // Resource type identifier
+  tags?: VMwareNSXTag[];                           // Metadata tags (max 30)
+  children?: any[];                                 // Child resources
+  marked_for_delete?: boolean;                      // Deletion pending flag
+  parent_path?: string;                             // Parent resource path
+  path?: string;                                    // Absolute resource path
+  relative_path?: string;                           // Relative resource path
+  remote_path?: string;                             // Remote location path
+  unique_id?: string;                               // Globally unique identifier
+}
+```
+
+**VMwareNSXDiscoveredResource** - Auto-discovered resource base
+```typescript
+interface VMwareNSXDiscoveredResource {
+  readonly _last_sync_time?: number;                // Last synchronization timestamp
+  readonly _links?: VMwareNSXResourceLink[];        // Resource links
+  readonly _schema?: string;                        // Schema URL
+  readonly _self?: VMwareNSXSelfResourceLink;       // Self-reference link
+  description?: string;                             // Resource description (max 1024 chars)
+  display_name?: string;                            // Display name (max 255 chars)
+  id?: string;                                      // Unique identifier (max 255 chars)
+  resource_type?: VMwareResourceTypes;              // Resource type
+  scope?: VMwareNSXDiscoveredResourceScope[];       // Resource scopes
+  tags?: VMwareNSXTag[];                           // Metadata tags (max 30)
+}
+```
+
+**VMwareNSXResourceReference** - Resource reference with validation
+```typescript
+interface VMwareNSXResourceReference {
+  readonly is_valid?: boolean;                      // Resource validity status
+  readonly target_display_name?: string;            // Referenced resource display name
+  readonly target_id?: string;                      // Referenced resource ID
+  readonly target_type?: string;                    // Referenced resource type
+}
+```
+
+**VMwareNSXVirtualMachine** - Virtual machine in NSX inventory
+```typescript
+interface VMwareNSXVirtualMachine extends Partial<VMwareNSXDiscoveredResource> {
+  readonly _meta?: VMwareNSXVirtualMachineMeta;     // VM metadata
+  compute_ids: string[];                            // External compute IDs
+  external_id: string;                              // Current external ID
+  readonly guest_info?: VMwareNSXGuestInfo;         // Guest OS information
+  host_id?: string;                                 // Host system ID
+  local_id_on_host: string;                         // Local VM identifier
+  power_state: VMwareNSXVirtualMachinePowerStates;  // VM power state
+  readonly runtime_info?: VMwareNSXVirtualMachineRuntimeInfo; // Runtime details
+  source?: VMwareNSXResourceReference;              // Source reference
+  type?: VMwareNSXVirtualMachineTypes;              // VM type
+  readonly uptv2_enabled?: boolean;                 // UPTv2 status
+}
+```
+
 ### Request/Response Types
 
 **VMwareNSXParams** - Query parameters
@@ -340,6 +408,29 @@ type VMwareExpressionKeyTypes =
 **VMwareRealizationStates**
 ```typescript
 type VMwareRealizationStates = "IN_PROGRESS" | "SUCCESS" | "FAILURE";
+```
+
+**VMwareProtectionStatuses**
+```typescript
+type VMwareProtectionStatuses = 
+  | "PROTECTED" | "NOT_PROTECTED" | "REQUIRE_OVERRIDE" | "UNKNOWN";
+```
+
+**VMwareNSXVirtualMachinePowerStates**
+```typescript
+type VMwareNSXVirtualMachinePowerStates = 
+  | "VM_RUNNING" | "VM_STOPPED" | "VM_SUSPENDED" | "UNKNOWN";
+```
+
+**VMwareNSXVirtualMachineTypes**
+```typescript
+type VMwareNSXVirtualMachineTypes = 
+  | "BFMS" | "EXTERNAL" | "REGULAR" | "EDGE" | "SVM";
+```
+
+**VMwareNSXScopeTypes**
+```typescript
+type VMwareNSXScopeTypes = "CONTAINER_CLUSTER" | "VPC";
 ```
 
 ### Error Types
