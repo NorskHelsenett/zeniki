@@ -10,6 +10,7 @@ import { VMwareNsxModifyResponse } from "../../../types";
 import { queryBuilderSync } from "../../utils";
 import { HTTPError } from "../../../types/shared/errors/http-error";
 import { VMWareNSXGroupsSubDriver } from "./groups/vmware-nsx-groups-sub_driver";
+import { VMWareNSXSearchSubDriver } from "./search/vmware-nsx-search-sub_driver";
 
 /**
  * VMware NSX-T driver for policy-based network security and micro-segmentation.
@@ -27,10 +28,11 @@ import { VMWareNSXGroupsSubDriver } from "./groups/vmware-nsx-groups-sub_driver"
  */
 export class VMWareNSXDriver extends ZenikiCoreDriver {
   public groups: VMWareNSXGroupsSubDriver;
-
+  public search: VMWareNSXSearchSubDriver;
   constructor(public config: RequestConfig) {
     super(config);
     this.groups = new VMWareNSXGroupsSubDriver(config);
+    this.search = new VMWareNSXSearchSubDriver(config);
   }
 
   /**
@@ -54,7 +56,11 @@ export class VMWareNSXDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
+      throw new HTTPError(
+        `${response?.status} ${response.statusText}`,
+        response.status,
+        response
+      );
     }
   }
 
@@ -82,7 +88,11 @@ export class VMWareNSXDriver extends ZenikiCoreDriver {
       if (response.ok) {
         return await response.json();
       } else {
-        throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
+        throw new HTTPError(
+          `${response?.status} ${response.statusText}`,
+          response.status,
+          response
+        );
       }
     }
     const response = await this.get<T>(
@@ -93,7 +103,11 @@ export class VMWareNSXDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
+      throw new HTTPError(
+        `${response?.status} ${response.statusText}`,
+        response.status,
+        response
+      );
     }
   }
 

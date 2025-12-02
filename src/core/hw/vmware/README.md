@@ -4,9 +4,9 @@
 
 The VMware NSX driver provides type-safe integration with VMware NSX Policy API (v3.0+) for software-defined networking and micro-segmentation. Core functionality includes security group management via sub-driver architecture, expression-based dynamic membership, and multi-domain policy operations with local/global manager support.
 
-Key features include comprehensive TypeScript type definitions with enum support, HTTP error handling via `HTTPError` class, automatic pagination for large result sets, and specialized sub-driver (`groups`) for organized API access. The driver supports enterprise features like Kubernetes workload protection, cross-site policy distribution, and Zero Trust architecture implementation.
+Key features include comprehensive TypeScript type definitions with enum support, HTTP error handling via `HTTPError` class, automatic pagination for large result sets, and specialized sub-drivers (`groups`, `search`) for organized API access. The driver supports enterprise features like Kubernetes workload protection, cross-site policy distribution, and Zero Trust architecture implementation.
 
-Access patterns follow sub-driver structure: `nsx.groups.*` for security group operations, plus `getByUrl()` and `getPaginatedByUrl()` for generic Policy API access. Each sub-driver provides standard CRUD operations with consistent method signatures across local manager and global manager deployments.
+Access patterns follow sub-driver structure: `nsx.groups.*` for security group operations, `nsx.search.*` for unified search queries, plus `getByUrl()` and `getPaginatedByUrl()` for generic Policy API access. Each sub-driver provides standard CRUD operations with consistent method signatures across local manager and global manager deployments.
 
 Technical implementation uses native fetch API with `RequestConfig` supporting standard `RequestInit` options. Authentication via Basic Auth (username/password) or Bearer tokens, with domain targeting through method parameters. Error handling through `HTTPError` class exposing HTTP status codes and response details.
 
@@ -113,6 +113,9 @@ await nsx.groups.patchGroup('web-servers', 'default', {
 });
 
 await nsx.groups.deleteGroup('old-group', 'default');
+
+// Search operations
+const searchResults = await nsx.search.query({ query: 'web-servers', resource_type: 'Group' });
 ```
 
 ## Advanced Usage
@@ -178,9 +181,6 @@ try {
     'cross-site-policy',
     'global-domain',
     {},
-    true  // Use global manager
-  );
-
   // Generic API access with pagination
   const allPolicies = await nsx.getPaginatedByUrl(
     '/policy/api/v1/infra/domains/default/security-policies',
@@ -188,21 +188,34 @@ try {
     true  // Auto-follow pagination
   );
 
+  // Search across NSX resources
+  const vmSearch = await nsx.search.query({
+    query: 'web',
+    resource_type: 'VirtualMachine',
+    cursor: undefined
+  });
+
+} catch (error) {-follow pagination
+  );
+
 } catch (error) {
   if (error instanceof HTTPError) {
     console.error(`NSX API Error ${error.code}: ${error.message}`);
     if (error.code === 409) console.log('Group already exists');
-    if (error.code === 400) console.log('Invalid configuration');
-  }
-}
-```
-
-## Components
-
 ### Sub-Drivers
 
 **`groups`** - VMWareNSXGroupsSubDriver
 - `getGroup(group_id, domain_id?, params?, global_manager?)` - Retrieve security group by ID
+- `getGroups(domain_id?, params?, global_manager?)` - List all security groups with pagination
+- `addGroup(group_id, domain_id?, group, params?)` - Create new security group (upsert)
+- `updateGroup(group_id, domain_id?, group, params?)` - Complete replacement of security group
+- `patchGroup(group_id, domain_id?, group, params?)` - Partial update of security group
+- `deleteGroup(group_id, domain_id?, params?)` - Delete security group
+
+**`search`** - VMWareNSXSearchSubDriver
+- `query<T>(params)` - Execute unified search query across NSX resources
+
+### Generic Methodsd, domain_id?, params?, global_manager?)` - Retrieve security group by ID
 - `getGroups(domain_id?, params?, global_manager?)` - List all security groups with pagination
 - `addGroup(group_id, domain_id?, group, params?)` - Create new security group (upsert)
 - `updateGroup(group_id, domain_id?, group, params?)` - Complete replacement of security group

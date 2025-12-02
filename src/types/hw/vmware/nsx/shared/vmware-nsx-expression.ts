@@ -10,7 +10,7 @@ import {
 } from "./vmware-nsx-common";
 import { VMwareNSXIdentityGroupInfo } from "./vmware-nsx-identity-group-info";
 import { VMwareNSXPolicyConfigResource } from "./vmware-nsx-policy-config-resource";
-import { VMWareNSXTag } from "./vmware-nsx-tag";
+import { VMwareNSXTag } from "./vmware-nsx-tag";
 
 /**
  * VMware NSX expression for group membership and policy criteria.
@@ -102,5 +102,5 @@ export interface VMWareExpression
    * Tag collection for matching and filtering.
    * @maxItems 30
    */
-  tags?: VMWareNSXTag[];
+  tags?: VMwareNSXTag[];
 }

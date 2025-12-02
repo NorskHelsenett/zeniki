@@ -2,11 +2,11 @@
 
 ## Summary
 
-NAM (Network Architecture Management) v2 driver provides enterprise-grade integration with NHN's network infrastructure orchestration system. Manages centralized automation for NetBox IPAM synchronization, multi-vendor firewall configurations (FortiGate), and VMware NSX security groups with MongoDB-backed persistence.
+NAM (Network Architecture Management) v2 driver provides enterprise-grade integration with NHN's network infrastructure orchestration system. Manages centralized automation for NetBox IPAM synchronization, multi-vendor firewall configurations (FortiGate), VMware NSX security groups, and FortiGate-to-NSX integrations with MongoDB-backed persistence.
 
-Features comprehensive CRUD operations through specialized sub-drivers: `netbox_integrators` for NetBox integration management, `ror_integrators` for ROR synchronization, and `api_endpoints` for vendor API configuration. Supports priority-based scheduling, multi-tenant isolation, NHN-specific custom field filtering (environment, domain, infrastructure, purpose), VDOM-aware FortiGate operations, and NSX micro-segmentation.
+Features comprehensive CRUD operations through specialized sub-drivers: `netbox_integrators` for NetBox integration management, `ror_integrators` for ROR synchronization, `nsx_integrators` for FortiGate-to-NSX automation, and `api_endpoints` for vendor API configuration. Supports priority-based scheduling, multi-tenant isolation, NHN-specific custom field filtering (environment, domain, infrastructure, purpose), VDOM-aware FortiGate operations, and NSX micro-segmentation.
 
-Sub-driver architecture enables modular resource management with consistent CRUD patterns. Access via `nam.netbox_integrators.*`, `nam.ror_integrators.*`, and `nam.api_endpoints.*` methods. Generic endpoint access through `nam.getByUrl()` and `nam.getPaginatedByUrl()` for custom operations.
+Sub-driver architecture enables modular resource management with consistent CRUD patterns. Access via `nam.netbox_integrators.*`, `nam.ror_integrators.*`, `nam.nsx_integrators.*`, and `nam.api_endpoints.*` methods. Generic endpoint access through `nam.getByUrl()` and `nam.getPaginatedByUrl()` for custom operations.
 
 Built on native fetch API with HTTPError exception handling, type-safe TypeScript interfaces, and automatic pagination support. Implements MongoDB ObjectId references for document relationships, SSL/TLS configuration management, and API key expiration tracking.
 
@@ -100,6 +100,20 @@ await nam.netbox_integrators.addNetboxIntegrator({
 // ROR integrator operations
 const rorIntegrator = await nam.ror_integrators.getRorIntegrator('674d7b2c8f1e4a1b2c3d4e5f');
 await nam.ror_integrators.patchRorIntegrator('674d7b2c8f1e4a1b2c3d4e5f', { enabled: false });
+
+// NSX integrator operations
+const nsxIntegrator = await nam.nsx_integrators.getNsxIntegrator('674d7b2c8f1e4a1b2c3d4e5f');
+await nam.nsx_integrators.addNsxIntegrator({
+  name: 'fortigate-to-nsx-sync',
+  sync_priority: 'high',
+  enabled: true,
+  scope: '/infra/domains/default',
+  exposed_vms: true,
+  fortigate_endpoints: [{
+    endpoint: '674d7b2c8f1e4a1b2c3d4e60',
+    vdoms: [{ name: 'root', enabled: true }]
+  }]
+});
 
 // API endpoint operations
 const endpoint = await nam.api_endpoints.getApiEndpoint('674d7b2c8f1e4a1b2c3d4e5f');
@@ -197,6 +211,17 @@ Manages ROR (Regional Operational Registry) integrator configurations.
 - **`patchRorIntegrator(id, integrator, params?)`** - Partial update
 - **`updateRorIntegrator(id, integrator, params?)`** - Complete replacement
 - **`deleteRorIntegrator(id, params?)`** - Delete ROR integrator
+
+### NSX Integrators Sub-Driver (`nam.nsx_integrators`)
+
+Manages FortiGate-to-NSX integrator configurations for automated VM synchronization.
+
+- **`getNsxIntegrator(id, params?)`** - Retrieve single NSX integrator by ObjectId
+- **`getNsxIntegrators(params?)`** - List NSX integrators with filtering/pagination
+- **`addNsxIntegrator(integrator, params?)`** - Create new NSX integrator
+- **`patchNsxIntegrator(id, integrator, params?)`** - Partial update
+- **`updateNsxIntegrator(id, integrator, params?)`** - Complete replacement
+- **`deleteNsxIntegrator(id, params?)`** - Delete NSX integrator
 
 ### API Endpoints Sub-Driver (`nam.api_endpoints`)
 
