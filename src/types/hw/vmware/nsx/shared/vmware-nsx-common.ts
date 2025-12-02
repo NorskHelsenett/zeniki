@@ -124,4 +124,4 @@ export type VMwareNSXVirtualMachineTypes =
   | "UNKNOWN";
 
 // String literal union for Unified Packet Trace V2 enabled values
-export type VMwareNSXUnifiredPacketTraceV2Values = "NONE" | "true" | "false";
+export type VMwareNSXUnifiedPacketTraceV2Values = "NONE" | "true" | "false";

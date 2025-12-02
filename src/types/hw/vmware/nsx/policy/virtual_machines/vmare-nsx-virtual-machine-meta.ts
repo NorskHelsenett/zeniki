@@ -25,50 +25,50 @@ export interface VMwareNSXVirtualMachineMeta {
   /**
    * Managed object identifier on the host system
    */
-  moIdOnHost: string;
+  moIdOnHost?: string;
 
   /**
    * Unique identifier for the virtual machine
    */
-  identifier: string;
+  identifier?: string;
 
   /**
    * Local identifier of the host where the VM resides
    */
-  hostLocalId: string;
+  hostLocalId?: string;
 
   /**
    * Tag indicating the stream or environment of the VM
    */
-  stream_tag: string;
+  stream_tag?: string;
 
   /**
    * Location identifier where the VM is deployed
    */
-  locationId: string;
+  locationId?: string;
 
   /**
    * Array of scope paths defining the VM's context
    */
-  scope: string[];
+  scope?: string[];
 
   /**
    * Instance UUID assigned by vCenter
    */
-  instanceUuid: string;
+  instanceUuid?: string;
 
   /**
    * External system identifier for the VM
    */
 
-  externalId: string;
+  externalId?: string;
   /**
    * Array of virtual interface identifiers
    */
-  vif_ids: string[];
+  vif_ids?: string[];
 
   /**
    * BIOS UUID of the virtual machine
    */
-  biosUuid: string;
+  biosUuid?: string;
 }

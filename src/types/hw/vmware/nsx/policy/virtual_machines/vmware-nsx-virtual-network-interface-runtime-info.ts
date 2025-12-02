@@ -1,4 +1,4 @@
-import { VMwareNSXUnifiredPacketTraceV2Values } from "../../shared/vmware-nsx-common";
+import { VMwareNSXUnifiedPacketTraceV2Values } from "../../shared/vmware-nsx-common";
 
 /**
  * Represents runtime information for a VMware NSX virtual network interface.
@@ -16,5 +16,5 @@ export interface VMwareNSXVirtualNetworkInterfaceRuntimeInfo {
   /** Unique external identifier for the virtual network interface */
   external_id: string;
   /** Indicates whether UPTV2 (Unified Packet Trace Version 2) is active on this interface */
-  uptv2_active?: VMwareNSXUnifiredPacketTraceV2Values;
+  uptv2_active?: VMwareNSXUnifiedPacketTraceV2Values;
 }

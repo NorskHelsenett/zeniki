@@ -15,7 +15,7 @@ import { NAMAPIEndpointsSubDriver } from "./settings/nam-api-endpoints-sub_drive
 
 /**
  * NAM v2 driver for network architecture management with specialized sub-drivers.
- * Manages NetBox integrators, ROR integrators, and API endpoints through dedicated
+ * Manages NetBox integrators, ROR integrators, NSX integrators, and API endpoints through dedicated
  * sub-drivers. Supports MongoDB ObjectId operations, automated pagination, and enterprise-grade
  * network orchestration.
  *
@@ -28,6 +28,7 @@ import { NAMAPIEndpointsSubDriver } from "./settings/nam-api-endpoints-sub_drive
  * });
  * await nam.netbox_integrators.getNetboxIntegrators();
  * await nam.ror_integrators.getRorIntegrators();
+ * await nam.nsx_integrators.getNsxIntegrators();
  * await nam.api_endpoints.getApiEndpoints();
  * ```
  */

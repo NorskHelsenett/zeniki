@@ -13,7 +13,7 @@ export interface VMwareNSXGuestInfo {
   /**
    * Computer name.
    */
-  readonly computer_name: string;
+  readonly computer_name?: string;
 
   /**
    * Operating system name.
