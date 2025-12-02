@@ -10,6 +10,7 @@ import { VMwareNsxModifyResponse } from "../../../types";
 import { queryBuilderSync } from "../../utils";
 import { HTTPError } from "../../../types/shared/errors/http-error";
 import { VMWareNSXGroupsSubDriver } from "./groups/vmware-nsx-groups-sub_driver";
+import { VMWareNSXSearchSubDriver } from "./search/vmware-nsx-search-sub_driver";
 
 /**
  * VMware NSX-T driver for policy-based network security and micro-segmentation.
@@ -36,6 +37,7 @@ import { VMWareNSXGroupsSubDriver } from "./groups/vmware-nsx-groups-sub_driver"
  */
 export class VMWareNSXDriver extends ZenikiCoreDriver {
   public groups: VMWareNSXGroupsSubDriver;
+  public search: VMWareNSXSearchSubDriver;
   /**
    * Initialize VMware NSX driver with connection configuration.
    * @param config - Request configuration for NSX manager connection
@@ -50,6 +52,7 @@ export class VMWareNSXDriver extends ZenikiCoreDriver {
   constructor(public config: RequestConfig) {
     super(config);
     this.groups = new VMWareNSXGroupsSubDriver(config);
+    this.search = new VMWareNSXSearchSubDriver(config);
   }
 
   /**

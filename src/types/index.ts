@@ -64,6 +64,7 @@ export * from "./hw/vmware/nsx/shared/vmware-nsx-params";
 export * from "./hw/vmware/nsx/shared/vmware-nsx-response";
 export * from "./hw/vmware/nsx/shared/vmware-nsx-modify-response";
 export * from "./hw/vmware/nsx/policy/groups/vmware-nsx-group";
+export * from "./hw/vmware/nsx/policy/virtual_machines/vmware-nsx-virtual-machine";
 
 // ===== NAM V2 TYPES =====
 export * from "./tools/nhn/nam-v2/nam-api-endpoint";
@@ -71,6 +72,7 @@ export * from "./tools/nhn/nam-v2/nam-api-endpoint-ssl";
 export * from "./tools/nhn/nam-v2/nam-fortios-vdom";
 export * from "./tools/nhn/nam-v2/integrators/nam-netbox-integrator";
 export * from "./tools/nhn/nam-v2/integrators/nam-ror-integrator";
+export * from "./tools/nhn/nam-v2/integrators/nam-nsx-integrator";
 export * from "./tools/nhn/nam-v2/shared/nam-default-fields";
 export * from "./tools/nhn/nam-v2/shared/nam-params";
 export * from "./tools/nhn/nam-v2/shared/nam-api-endpoint-types";
