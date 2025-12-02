@@ -8,7 +8,7 @@ import {
   VmwareExternalIDExpressionTypes,
 } from "./vmware-nsx-common";
 import { VMwareNSXPolicyConfigResource } from "./vmware-nsx-policy-config-resource";
-import { VMWareNSXTag } from "./vmware-nsx-tag";
+import { VMwareNSXTag } from "./vmware-nsx-tag";
 
 /**
  * VMware NSX expression for group membership and policy criteria.
@@ -26,10 +26,11 @@ import { VMWareNSXTag } from "./vmware-nsx-tag";
  * };
  * ```
  */
-export interface VMWareExpression extends Partial<VMwareNSXPolicyConfigResource> {
+export interface VMWareExpression
+  extends Partial<VMwareNSXPolicyConfigResource> {
   /** Expression resource type defining matching behavior. */
   resource_type?: VmwareExpressionResourceTypes;
-  
+
   /**
    * Value for condition expression matching.
    * @maxLength 1024
@@ -62,5 +63,5 @@ export interface VMWareExpression extends Partial<VMwareNSXPolicyConfigResource>
    * Tag collection for matching and filtering.
    * @maxItems 30
    */
-  tags?: VMWareNSXTag[];
+  tags?: VMwareNSXTag[];
 }

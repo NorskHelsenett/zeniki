@@ -1,60 +1,78 @@
 import {
-  VmwareResourceTypes,
-  VmwareNSXVirtualMachinePowerStatesx,
+  VMwareResourceTypes,
+  VmwareNSXVirtualMachinePowerStates,
+  VMwareNSXVirtualMachineTypes,
 } from "../../shared/vmware-nsx-common";
-import { VMWareNSXGuestInfo } from "./vmware-nsx-guest-info";
-import { VMWareNSXTag } from "../../shared/vmware-nsx-tag";
+import { VMwareNSXGuestInfo } from "./vmware-nsx-guest-info";
+import { VMwareNSXTag } from "../../shared/vmware-nsx-tag";
+import { VMwareNSXDiscoveredResource } from "../../shared/vmware-nsx-discovered-resource";
+import { VMwareNSXResourceReference } from "../../shared/vmware-nsx-resource-reference";
+import { VMwareNSXVirtualMachineRuntimeInfo } from "./vmware-nsx-virtual-machine-runtime-info";
 
-export interface VMwareNSXVirtualMachine {
+/**
+ * Virtual machine resource in NSX inventory.
+ * @example
+ * ```typescript
+ * const vm: VMwareNSXVirtualMachine = {
+ *   display_name: "web-server-01",
+ *   external_id: "vm-123",
+ *   compute_ids: ["uuid:xxxx-xxxx-xxxx-xxxx"],
+ *   local_id_on_host: "moref-11",
+ *   power_state: "VM_RUNNING",
+ *   resource_type: "VirtualMachine",
+ *   type: "REGULAR"
+ * };
+ * ```
+ */
+export interface VMwareNSXVirtualMachine
+  extends Partial<VMwareNSXDiscoveredResource> {
   /**
-   * List of external compute ids of the virtual machine in the format 'id-type-key:value
+   * External compute IDs in format 'id-type-key:value'.
    */
   compute_ids: string[];
 
   /**
-   * Description of the virtual machine.
-   * @maximum 1024
+   * Current external ID in the system.
    */
-  description?: string;
+  external_id: string;
 
   /**
-   * Display name of the virtual machine.
-   * @maximum 255
+   * Guest VM details (OS name, computer name).
    */
-  display_name: string;
+  readonly guest_info?: VMwareNSXGuestInfo;
 
   /**
-   * External identifier for the virtual machine.
+   * Host system ID where VM exists.
    */
-  external_id?: string;
+  host_id?: string;
 
   /**
-   * Expression list defining group membership criteria.
-   */
-  readonly guest_info?: VMWareNSXGuestInfo;
-
-  /**
-   * Host system identifier.
-   */
-  host_id: string;
-
-  /**
-   * Local ID on host system.
+   * VM ID unique within the host.
    */
   local_id_on_host: string;
 
   /**
-   * Power state of the virtual machine.
+   * Current power state of the VM.
    */
-  power_state: VmwareNSXVirtualMachinePowerStatesx;
+  power_state: VmwareNSXVirtualMachinePowerStates;
 
   /**
-   * Resource type identifier.
+   * Runtime details of the VM.
    */
-  resource_type?: VmwareResourceTypes;
+  readonly runtime_info?: VMwareNSXVirtualMachineRuntimeInfo;
 
   /**
-   * Tag collection for metadata and filtering.
+   * Reference to Host or Public Cloud Gateway that reported the VM.
    */
-  tags?: VMWareNSXTag[] | [];
+  source?: VMwareNSXResourceReference;
+
+  /**
+   * VM type: Edge, Service, Regular, etc.
+   */
+  readonly type: VMwareNSXVirtualMachineTypes;
+
+  /**
+   * Indicates if UPT is enabled on any virtual network interface.
+   */
+  readonly uptv2_enabled?: boolean;
 }

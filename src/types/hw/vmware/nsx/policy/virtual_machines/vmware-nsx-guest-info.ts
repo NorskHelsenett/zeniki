@@ -9,7 +9,7 @@
  * };
  * ```
  */
-export interface VMWareNSXGuestInfo {
+export interface VMwareNSXGuestInfo {
   /**
    * Computer name.
    */

@@ -12,7 +12,7 @@ export type VmwareRealizationStates = "IN_PROGRESS" | "SUCCESS" | "FAILURE";
 export enum VmwareResourceType {}
 
 // String literal union for resource types
-export type VmwareResourceTypes =
+export type VMwareResourceTypes =
   | "Group"
   | "NSGroup"
   | "VirtualMachine"
@@ -104,8 +104,24 @@ export type VmwareProtectionStatuses =
   | "UNKNOWN";
 
 // String literal union for virtual machine power state
-export type VmwareNSXVirtualMachinePowerStatesx =
+export type VmwareNSXVirtualMachinePowerStates =
   | "VM_RUNNING"
   | "VM_STOPPED"
   | "VM_SUSPENDED"
   | "VM_UNKNOWN";
+
+// String literal union for scope types
+export type VMwareNSXScopeTypes = "CONTAINER_CLUSTER" | "VPC";
+
+// String literal union for virtual machine types
+export type VMwareNSXVirtualMachineTypes =
+  | "EDGE"
+  | "SERVICE"
+  | "REGULAR"
+  | "MP"
+  | "INTELLIGENCE"
+  | "VC_SYSTEM"
+  | "UNKNOWN";
+
+// String literal union for Unified Packet Trace V2 enabled values
+export type VMwareNSXUnifiredPacketTraceV2Values = "NONE" | "true" | "false";
