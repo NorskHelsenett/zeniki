@@ -18,7 +18,7 @@
  * import { NHNTypes, NAMv2Types, FortiOSTypes } from '@norskhelsenett/zeniki';
  *
  * // Use specific namespace types
- * const domain: NHNTypes.NHN_CommonNetboxExtraChoicesDomains = 'nhn.local';
+ * const env: NHNTypes.NHN_CommonNetboxExtraChoicesEnvironments = 'prod';
  * ```
  */
 

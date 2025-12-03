@@ -8,7 +8,7 @@ Features flexible type system accepting both string literals and type-safe enums
 
 All sub-drivers accessible via consistent interface: `netbox.prefixes.*`, `netbox.devices.*`, `netbox.vlans.*`, `netbox.vrfs.*`, `netbox.sites.*`, `netbox.tenants.*`, `netbox.tags.*`, `netbox.customFields.*`.
 
-Includes NHN-specific enums for organizational filtering (environment, domain, infrastructure, purpose). Built on native fetch API with HTTPError exception handling.
+Includes NHN-specific enums for organizational filtering (environment, infrastructure, purpose). Built on native fetch API with HTTPError exception handling.
 
 ## Table of Contents
 
@@ -94,7 +94,10 @@ const allocated = await netbox.prefixes.registerNextAvailablePrefix(
   100,     // VLAN ID
   'Production network',
   { status: NetboxPrefixStatus.Active },
-  { env: NHN_CommonNetboxExtraChoicesEnvironment.prod }
+  { 
+    env: NHN_CommonNetboxExtraChoicesEnvironment.prod,
+    domain: 'example.com'
+  }
 );
 
 // Access all sub-drivers with consistent patterns
@@ -326,15 +329,6 @@ enum NHN_CommonNetboxExtraChoicesEnvironment {
   lab = "lab"
 }
 
-// Domain and DNS zone selections (44+ values)
-enum NHN_CommonNetboxExtraChoicesDomain {
-  na = "na",
-  "nhn.local" = "nhn.local",
-  "prod.drift.nhn.no" = "prod.drift.nhn.no",
-  "mgmt.ld.nhn.no" = "mgmt.ld.nhn.no",
-  // ... additional NHN organizational domains
-}
-
 // Infrastructure service classifications
 enum NHN_CommonNetboxExtraChoicesInfrastructure {
   na = "na",
@@ -364,9 +358,9 @@ const prefix = await netbox.addPrefix({
   prefix: '10.0.0.0/24',
   custom_fields: {
     env: NHN_CommonNetboxExtraChoicesEnvironment.prod,
-    domain: NHN_CommonNetboxExtraChoicesDomain["nhn.local"],
     infra: NHN_CommonNetboxExtraChoicesInfrastructure.prod,
-    purpose: NHN_CommonNetboxExtraChoicesPurpose.datacenter
+    purpose: NHN_CommonNetboxExtraChoicesPurpose.datacenter,
+    domain: 'prod.example.com'
   }
 });
 ```
