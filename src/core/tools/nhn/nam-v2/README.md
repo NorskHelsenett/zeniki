@@ -4,7 +4,7 @@
 
 NAM (Network Architecture Management) v2 driver provides enterprise-grade integration with NHN's network infrastructure orchestration system. Manages centralized automation for NetBox IPAM synchronization, multi-vendor firewall configurations (FortiGate), VMware NSX security groups, and FortiGate-to-NSX integrations with MongoDB-backed persistence.
 
-Features comprehensive CRUD operations through specialized sub-drivers: `netbox_integrators` for NetBox integration management, `ror_integrators` for ROR synchronization, `nsx_integrators` for FortiGate-to-NSX automation, and `api_endpoints` for vendor API configuration. Supports priority-based scheduling, multi-tenant isolation, NHN-specific custom field filtering (environment, domain, infrastructure, purpose), VDOM-aware FortiGate operations, and NSX micro-segmentation.
+Features comprehensive CRUD operations through specialized sub-drivers: `netbox_integrators` for NetBox integration management, `ror_integrators` for ROR synchronization, `nsx_integrators` for FortiGate-to-NSX automation, and `api_endpoints` for vendor API configuration. Supports priority-based scheduling, multi-tenant isolation, NHN-specific custom field filtering (environment, infrastructure, purpose), VDOM-aware FortiGate operations, and NSX micro-segmentation.
 
 Sub-driver architecture enables modular resource management with consistent CRUD patterns. Access via `nam.netbox_integrators.*`, `nam.ror_integrators.*`, `nam.nsx_integrators.*`, and `nam.api_endpoints.*` methods. Generic endpoint access through `nam.getByUrl()` and `nam.getPaginatedByUrl()` for custom operations.
 
@@ -162,6 +162,10 @@ const integrator = await nam.netbox_integrators.addNetboxIntegrator({
     { name: 'prod' as NHN_CommonNetboxExtraChoicesEnvironments },
     { name: 'mgmt' as NHN_CommonNetboxExtraChoicesEnvironments }
   ],
+  domains: [
+    { name: 'prod.example.com' },
+    { name: 'mgmt.example.com' }
+  ],
   tenants: [{ id: 1, name: 'Production', slug: 'production' }],
   create_fg_group: true,
   fg_group_name: 'Auto_{{tenant}}_{{environment}}',
@@ -291,9 +295,9 @@ interface NAMNetboxIntegrator extends NAMDefaultFields {
   
   // Custom field filtering with NHN-specific choices
   environments?: CommonKeyValueStore<"name", NHN_CommonNetboxExtraChoicesEnvironments | string>[];
-  domains?: CommonKeyValueStore<"name", NHN_CommonNetboxExtraChoicesDomains | string>[];
   infrastructures?: CommonKeyValueStore<"name", NHN_CommonNetboxExtraChoicesInfrastructures | string>[];
   purposes?: CommonKeyValueStore<"name", NHN_CommonNetboxExtraChoicesPurposes | string>[];
+  domains?: CommonKeyValueStore<"name", string>[];
   tags?: NetboxTag[];
 }
 ```
@@ -426,14 +430,6 @@ NHN-specific NetBox custom field choice values for organizational filtering:
 type NHN_CommonNetboxExtraChoicesEnvironments = 
   "na" | "dev" | "qa" | "test" | "prod" | "mgmt" | "lab";
 
-// Domain choices for NHN network domains and DNS zones
-type NHN_CommonNetboxExtraChoicesDomains = 
-  "na" | "365lab.no" | "ld.365lab.no" | "ad.ehelse.no" | "ad.noma.no" | 
-  "cloud.ld.nhn.no" | "cloud.nhn.no" | "drift.nhn.no" | "fhi.no" | 
-  "nhn.local" | "prod.drift.nhn.no" | "mgmt.ld.nhn.no" | 
-  "test.drift.nhn.no" | "qa.drift.nhn.no" | "video.nhn.no" | 
-  /* Additional 30+ domain values available */;
-
 // Infrastructure choices for NHN service classifications
 type NHN_CommonNetboxExtraChoicesInfrastructures = 
   "na" | "bck" | "cert" | "mgmt" | "prod" | "test";
@@ -452,7 +448,8 @@ type NHN_CommonNetboxExtraChoicesPurposes =
 const basicIntegrator = await nam.addNetboxIntegrator({
   name: 'basic-integration',
   environments: [{ name: 'prod' }, { name: 'test' }],
-  purposes: [{ name: 'datacenter' }, { name: 'service' }]
+  purposes: [{ name: 'datacenter' }, { name: 'service' }],
+  domains: [{ name: 'example.com' }, { name: 'test.local' }]
 });
 
 // Example 2: Using type-safe enum values for validation
@@ -462,10 +459,6 @@ const typedIntegrator = await nam.addNetboxIntegrator({
     { name: 'prod' as NHN_CommonNetboxExtraChoicesEnvironments },
     { name: 'mgmt' as NHN_CommonNetboxExtraChoicesEnvironments }
   ],
-  domains: [
-    { name: 'nhn.local' as NHN_CommonNetboxExtraChoicesDomains },
-    { name: 'prod.drift.nhn.no' as NHN_CommonNetboxExtraChoicesDomains }
-  ],
   infrastructures: [
     { name: 'prod' as NHN_CommonNetboxExtraChoicesInfrastructures },
     { name: 'mgmt' as NHN_CommonNetboxExtraChoicesInfrastructures }
@@ -473,6 +466,10 @@ const typedIntegrator = await nam.addNetboxIntegrator({
   purposes: [
     { name: 'ops' as NHN_CommonNetboxExtraChoicesPurposes },
     { name: 'technical' as NHN_CommonNetboxExtraChoicesPurposes }
+  ],
+  domains: [
+    { name: 'prod.example.com' },
+    { name: 'mgmt.example.com' }
   ]
 });
 ```

@@ -117,7 +117,6 @@ mockFetch.mockResolvedValueOnce({
 
 Tests use NHN organizational enums for NetBox custom fields:
 
-- **Domain:** `NHN_CommonNetboxExtraChoicesDomain` (44 domains)
 - **Environment:** `NHN_CommonNetboxExtraChoicesEnvironment` (dev, qa, test, prod, mgmt, lab)
 - **Infrastructure:** `NHN_CommonNetboxExtraChoicesInfrastructure` (bck, cert, mgmt, prod, test)
 - **Purpose:** `NHN_CommonNetboxExtraChoicesPurpose` (service, devops, mgmt, archive, etc.)
