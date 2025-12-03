@@ -75,8 +75,7 @@ import { NetboxDriver } from "npm:@norskhelsenett/zeniki";
 import { 
   NetboxDriver, 
   NetboxPrefixStatus,
-  NHN_CommonNetboxExtraChoicesEnvironment,
-  NHN_CommonNetboxExtraChoicesDomain 
+  NHN_CommonNetboxExtraChoicesEnvironment
 } from '@norskhelsenett/zeniki';
 
 const netbox = new NetboxDriver({
@@ -92,7 +91,7 @@ const prefix = await netbox.prefixes.addPrefix({
   site: 1,
   custom_fields: {
     environment: NHN_CommonNetboxExtraChoicesEnvironment.dev,
-    domain: NHN_CommonNetboxExtraChoicesDomain["nhn.local"]
+    domain: 'dev.example.com'
   }
 });
 
