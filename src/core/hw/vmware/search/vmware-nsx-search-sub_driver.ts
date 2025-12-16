@@ -29,10 +29,15 @@ export class VMWareNSXSearchSubDriver extends ZenikiCoreDriver {
    * ```
    */
   async query<T>(
-    params: { [key: string]: any } | VMwareNSXParams | URLSearchParams
+    params: { [key: string]: any } | VMwareNSXParams | URLSearchParams,
+    global_manager: boolean = false
   ): Promise<VMwareNSXResponse<T>> {
+    const path = global_manager
+      ? "/global-manager/api/v1/search/"
+      : "/api/v1/search/";
+
     const response = await this.get<T>(
-      this.config.baseURL + "/api/v1/search/" + queryBuilderSync(params as any),
+      this.config.baseURL + path + queryBuilderSync(params as any),
       { ...this.config, method: "GET" }
     );
 

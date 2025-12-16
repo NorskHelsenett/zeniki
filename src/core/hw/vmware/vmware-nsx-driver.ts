@@ -1,7 +1,7 @@
 import {
-  ZenikiCoreDriver,
   RequestConfig,
   ResponseGeneric,
+  ZenikiCoreDriver,
 } from "../../base/zeniki-core-driver";
 import { VMwareNSXResponse } from "../../../types/hw/vmware/nsx/shared/vmware-nsx-response";
 import { VMwareNSXGroup } from "../../../types/hw/vmware/nsx/policy/groups/vmware-nsx-group";
@@ -11,6 +11,8 @@ import { queryBuilderSync } from "../../utils";
 import { HTTPError } from "../../../types/shared/errors/http-error";
 import { VMWareNSXGroupsSubDriver } from "./groups/vmware-nsx-groups-sub_driver";
 import { VMWareNSXSearchSubDriver } from "./search/vmware-nsx-search-sub_driver";
+import { VMWareNSXVirtualInterfacesSubDriver } from "./inventory/vmware-nsx-virtual-interfaces-sub_driver";
+import { VMWareNSXSitesSubDriver } from "./sites/vmware-nsx-sites-sub_driver";
 
 /**
  * VMware NSX-T driver for policy-based network security and micro-segmentation.
@@ -29,10 +31,15 @@ import { VMWareNSXSearchSubDriver } from "./search/vmware-nsx-search-sub_driver"
 export class VMWareNSXDriver extends ZenikiCoreDriver {
   public groups: VMWareNSXGroupsSubDriver;
   public search: VMWareNSXSearchSubDriver;
+  public sites: VMWareNSXSitesSubDriver;
+  public virtualInterfaces: VMWareNSXVirtualInterfacesSubDriver;
+
   constructor(public config: RequestConfig) {
     super(config);
     this.groups = new VMWareNSXGroupsSubDriver(config);
     this.search = new VMWareNSXSearchSubDriver(config);
+    this.sites = new VMWareNSXSitesSubDriver(config);
+    this.virtualInterfaces = new VMWareNSXVirtualInterfacesSubDriver(config);
   }
 
   /**

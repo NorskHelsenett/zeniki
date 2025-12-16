@@ -4,6 +4,7 @@ import {
   VMwareNsxModifyResponse,
   VMwareNSXParams,
   VMwareNSXResponse,
+  VMwareNSXVirtualNetworkInterface,
 } from "../../../../types";
 import {
   RequestConfig,
@@ -45,7 +46,11 @@ export class VMWareNSXGroupsSubDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
+      throw new HTTPError(
+        `${response?.status} ${response.statusText}`,
+        response.status,
+        response
+      );
     }
   }
 
@@ -76,7 +81,11 @@ export class VMWareNSXGroupsSubDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
+      throw new HTTPError(
+        `${response?.status} ${response.statusText}`,
+        response.status,
+        response
+      );
     }
   }
 
@@ -115,7 +124,11 @@ export class VMWareNSXGroupsSubDriver extends ZenikiCoreDriver {
         data: await response.text(),
       };
     } else {
-      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
+      throw new HTTPError(
+        `${response?.status} ${response.statusText}`,
+        response.status,
+        response
+      );
     }
   }
 
@@ -154,7 +167,11 @@ export class VMWareNSXGroupsSubDriver extends ZenikiCoreDriver {
         data: await response.text(),
       };
     } else {
-      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
+      throw new HTTPError(
+        `${response?.status} ${response.statusText}`,
+        response.status,
+        response
+      );
     }
   }
 
@@ -193,7 +210,11 @@ export class VMWareNSXGroupsSubDriver extends ZenikiCoreDriver {
         data: await response.text(),
       };
     } else {
-      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
+      throw new HTTPError(
+        `${response?.status} ${response.statusText}`,
+        response.status,
+        response
+      );
     }
   }
 
@@ -230,7 +251,100 @@ export class VMWareNSXGroupsSubDriver extends ZenikiCoreDriver {
         data: await response.text(),
       };
     } else {
-      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
+      throw new HTTPError(
+        `${response?.status} ${response.statusText}`,
+        response.status,
+        response
+      );
+    }
+  }
+
+  /**
+   * Retrieves a security group member ip addresses from the specified domain.
+   * @param group_id - Unique security group identifier
+   * @param domain_id - Domain identifier (default: "default")
+   * @param global_manager - Use global manager API (default: false)
+   * @returns Promise resolving to security group member IP addresses
+   * @example
+   * ```typescript
+   * const group = await nsx.getGroup('web-servers', {}, 'production');
+   * ```
+   */
+  async getGroupMemberIPAddresses(
+    group_id: string,
+    params?: { [key: string]: any } | VMwareNSXParams | URLSearchParams,
+    domain_id: string = "default",
+    global_manager: boolean = false,
+    global_group: boolean = false
+  ): Promise<VMwareNSXResponse<string>> {
+    const path = global_manager
+      ? `/global-manager/api/v1/global-infra/domains/${domain_id}/groups/${group_id}/members/ip-addresses`
+      : `/policy/api/v1/${
+          global_group ? "global-infra" : "infra"
+        }/domains/${domain_id}/groups/${group_id}/members/ip-addresses`;
+
+    const response = await this.get<VMwareNSXResponse<string>>(
+      this.config.baseURL + path + queryBuilderSync(params as any),
+      {
+        ...this.config,
+        method: "GET",
+      }
+    );
+
+    console.log(
+      "URL",
+      this.config.baseURL + path + queryBuilderSync(params as any)
+    );
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new HTTPError(
+        `${response?.status} ${response.statusText}`,
+        response.status,
+        response
+      );
+    }
+  }
+
+  /**
+   * Retrieves a security group member ip addresses from the specified domain.
+   * @param group_id - Unique security group identifier
+   * @param domain_id - Domain identifier (default: "default")
+   * @param global_manager - Use global manager API (default: false)
+   * @returns Promise resolving to security group member IP addresses
+   * @example
+   * ```typescript
+   * const group = await nsx.getGroup('web-servers', {}, 'production');
+   * ```
+   */
+  async getGroupMemberVifs(
+    group_id: string,
+    params?: { [key: string]: any } | VMwareNSXParams | URLSearchParams,
+    domain_id: string = "default",
+    global_manager: boolean = false,
+    global_group: boolean = false
+  ): Promise<VMwareNSXResponse<VMwareNSXVirtualNetworkInterface>> {
+    const path = global_manager
+      ? `/api/v1/global-infra/domains/${domain_id}/groups/${group_id}/members/vifs`
+      : `/policy/api/v1/${
+          global_group ? "global-infra" : "infra"
+        }/domains/${domain_id}/groups/${group_id}/members/vifs`;
+    const response = await this.get<
+      VMwareNSXResponse<VMwareNSXVirtualNetworkInterface>
+    >(this.config.baseURL + path + queryBuilderSync(params as any), {
+      ...this.config,
+      method: "GET",
+    });
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new HTTPError(
+        `${response?.status} ${response.statusText}`,
+        response.status,
+        response
+      );
     }
   }
 }
