@@ -10,7 +10,7 @@ import {
 } from "../../../base/zeniki-core-driver";
 import { queryBuilderSync } from "../../../utils";
 
-export class VMWareNSXVirtualInterfacesSubDriver extends ZenikiCoreDriver {
+export class VMwareNSXVirtualInterfacesSubDriver extends ZenikiCoreDriver {
   constructor(public config: RequestConfig) {
     super(config);
   }

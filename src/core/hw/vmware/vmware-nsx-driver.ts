@@ -9,10 +9,10 @@ import { VMwareNSXParams } from "../../../types/hw/vmware/nsx/shared/vmware-nsx-
 import { VMwareNsxModifyResponse } from "../../../types";
 import { queryBuilderSync } from "../../utils";
 import { HTTPError } from "../../../types/shared/errors/http-error";
-import { VMWareNSXGroupsSubDriver } from "./groups/vmware-nsx-groups-sub_driver";
-import { VMWareNSXSearchSubDriver } from "./search/vmware-nsx-search-sub_driver";
-import { VMWareNSXVirtualInterfacesSubDriver } from "./inventory/vmware-nsx-virtual-interfaces-sub_driver";
-import { VMWareNSXSitesSubDriver } from "./sites/vmware-nsx-sites-sub_driver";
+import { VMwareNSXGroupsSubDriver } from "./groups/vmware-nsx-groups-sub_driver";
+import { VMwareNSXSearchSubDriver } from "./search/vmware-nsx-search-sub_driver";
+import { VMwareNSXVirtualInterfacesSubDriver } from "./inventory/vmware-nsx-virtual-interfaces-sub_driver";
+import { VMwareNSXSitesSubDriver } from "./sites/vmware-nsx-sites-sub_driver";
 
 /**
  * VMware NSX-T driver for policy-based network security and micro-segmentation.
@@ -28,18 +28,18 @@ import { VMWareNSXSitesSubDriver } from "./sites/vmware-nsx-sites-sub_driver";
  * const domains = await nsx.getByUrl('/policy/api/v1/infra/domains');
  * ```
  */
-export class VMWareNSXDriver extends ZenikiCoreDriver {
-  public groups: VMWareNSXGroupsSubDriver;
-  public search: VMWareNSXSearchSubDriver;
-  public sites: VMWareNSXSitesSubDriver;
-  public virtualInterfaces: VMWareNSXVirtualInterfacesSubDriver;
+export class VMwareNSXDriver extends ZenikiCoreDriver {
+  public groups: VMwareNSXGroupsSubDriver;
+  public search: VMwareNSXSearchSubDriver;
+  public sites: VMwareNSXSitesSubDriver;
+  public virtualInterfaces: VMwareNSXVirtualInterfacesSubDriver;
 
   constructor(public config: RequestConfig) {
     super(config);
-    this.groups = new VMWareNSXGroupsSubDriver(config);
-    this.search = new VMWareNSXSearchSubDriver(config);
-    this.sites = new VMWareNSXSitesSubDriver(config);
-    this.virtualInterfaces = new VMWareNSXVirtualInterfacesSubDriver(config);
+    this.groups = new VMwareNSXGroupsSubDriver(config);
+    this.search = new VMwareNSXSearchSubDriver(config);
+    this.sites = new VMwareNSXSitesSubDriver(config);
+    this.virtualInterfaces = new VMwareNSXVirtualInterfacesSubDriver(config);
   }
 
   /**
