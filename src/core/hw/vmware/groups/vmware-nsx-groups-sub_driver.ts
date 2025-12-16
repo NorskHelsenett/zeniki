@@ -264,6 +264,7 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
    * @param group_id - Unique security group identifier
    * @param domain_id - Domain identifier (default: "default")
    * @param global_manager - Use global manager API (default: false)
+   * @param global_group - Use global group API (default: false)
    * @returns Promise resolving to security group member IP addresses
    * @example
    * ```typescript
@@ -312,6 +313,7 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
    * @param group_id - Unique security group identifier
    * @param domain_id - Domain identifier (default: "default")
    * @param global_manager - Use global manager API (default: false)
+   * @param global_group - Use global group API (default: false)
    * @returns Promise resolving to security group member IP addresses
    * @example
    * ```typescript
