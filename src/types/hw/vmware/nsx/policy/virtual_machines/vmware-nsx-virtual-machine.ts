@@ -1,6 +1,6 @@
 import {
   VMwareResourceTypes,
-  VmwareNSXVirtualMachinePowerStates,
+  VMwareNSXVirtualMachinePowerStates,
   VMwareNSXVirtualMachineTypes,
   VMwareNSXUnifiedPacketTraceV2Values,
 } from "../../shared/vmware-nsx-common";
@@ -44,7 +44,7 @@ export interface VMwareNSXVirtualMachine
   local_id_on_host: string;
 
   /** Current power state of the VM. */
-  power_state: VmwareNSXVirtualMachinePowerStates;
+  power_state: VMwareNSXVirtualMachinePowerStates;
 
   /** Runtime details of the VM.
    * @readonly

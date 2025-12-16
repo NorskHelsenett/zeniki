@@ -10,7 +10,7 @@ import { NetboxTenant } from "../../../netbox/tenancy/netbox-tenant";
 import { NAMAPIEndpoint } from "../nam-api-endpoint";
 import { NAMFortiOSVdom } from "../nam-fortios-vdom";
 import { NAMDefaultFields } from "../shared/nam-default-fields";
-import { NHN_CommonNetboxExtraChoicesDomain, NHN_CommonNetboxExtraChoicesDomains, NHN_CommonNetboxExtraChoicesEnvironment, NHN_CommonNetboxExtraChoicesEnvironments, NHN_CommonNetboxExtraChoicesInfrastructure, NHN_CommonNetboxExtraChoicesInfrastructures, NHN_CommonNetboxExtraChoicesPurpose, NHN_CommonNetboxExtraChoicesPurposes } from "../../../../common/common-nhn-types";
+import {  NHN_CommonNetboxExtraChoicesEnvironment, NHN_CommonNetboxExtraChoicesEnvironments, NHN_CommonNetboxExtraChoicesInfrastructure, NHN_CommonNetboxExtraChoicesInfrastructures, NHN_CommonNetboxExtraChoicesPurpose, NHN_CommonNetboxExtraChoicesPurposes } from "../../../../common/common-nhn-types";
 
 /**
  * NAM v2 NetBox integrator configuration.
@@ -118,7 +118,7 @@ export interface NAMNetboxIntegrator extends NAMDefaultFields {
   environments?: CommonKeyValueStore<"name", NHN_CommonNetboxExtraChoicesEnvironments | NHN_CommonNetboxExtraChoicesEnvironment | string>[];
 
   /** Domain custom field values. */
-  domains?: CommonKeyValueStore<"name", NHN_CommonNetboxExtraChoicesDomains | NHN_CommonNetboxExtraChoicesDomain | string>[];
+  domains?: CommonKeyValueStore<"name", string>[];
 
   /** Infrastructure custom field values. */
   infrastructures?: CommonKeyValueStore<"name", NHN_CommonNetboxExtraChoicesInfrastructures | NHN_CommonNetboxExtraChoicesInfrastructure| string>[];

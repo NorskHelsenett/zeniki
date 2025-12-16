@@ -22,7 +22,7 @@ import { VMWareNSXSitesSubDriver } from "./sites/vmware-nsx-sites-sub_driver";
  * @example
  * ```typescript
  * const authString = btoa('admin:VMware123!');
- * const nsx = new VMWareNSXDriver({ baseURL: 'https://nsx.example.com', headers: { 'Authorization': `Basic ${authString}`, 'Content-Type': 'application/json' } });
+ * const nsx = new VMwareNSXDriver({ baseURL: 'https://nsx.example.com', headers: { 'Authorization': `Basic ${authString}`, 'Content-Type': 'application/json' } });
  * const group = await nsx.groups.getGroup('web-servers', 'default');
  * await nsx.groups.addGroup('app-servers', 'default', { display_name: 'App Servers', resource_type: 'Group', expression: [{ resource_type: 'Condition', member_type: 'VirtualMachine', key: 'Tag', value: 'app' }] });
  * const domains = await nsx.getByUrl('/policy/api/v1/infra/domains');

@@ -10,7 +10,6 @@ import { NetboxPaginated } from '../src/types/tools/netbox/shared/netbox-paginat
 import { NetboxAvailablePrefix } from '../src/types/tools/netbox/shared/netbox-available-prefix';
 import { NetboxParams } from '../src/types/tools/netbox/shared/netbox-params';
 import {
-  NHN_CommonNetboxExtraChoicesDomain,
   NHN_CommonNetboxExtraChoicesEnvironment,
   NHN_CommonNetboxExtraChoicesInfrastructure,
   NHN_CommonNetboxExtraChoicesPurpose,
@@ -60,7 +59,7 @@ describe('NetboxDriver - Prefix Methods', () => {
         comments: 'Primary production subnet',
         tags: [{ id: 1, name: 'production', display: 'production' }],
         custom_fields: {
-          domain: NHN_CommonNetboxExtraChoicesDomain['prod.drift.nhn.no'],
+          domain: 'example.com',
           environment: NHN_CommonNetboxExtraChoicesEnvironment.prod,
           infrastructure: NHN_CommonNetboxExtraChoicesInfrastructure.prod,
           purpose: NHN_CommonNetboxExtraChoicesPurpose.service,
@@ -92,7 +91,7 @@ describe('NetboxDriver - Prefix Methods', () => {
       );
       expect(result).toEqual(mockPrefix);
       expect(result?.prefix).toBe('192.168.100.0/24');
-      expect(result?.custom_fields?.domain).toBe('prod.drift.nhn.no');
+      expect(result?.custom_fields?.domain).toBe('example.com');
       expect(result?.custom_fields?.environment).toBe('prod');
     });
 
@@ -150,7 +149,7 @@ describe('NetboxDriver - Prefix Methods', () => {
             is_pool: false,
             description: 'Private network space',
             custom_fields: {
-              domain: NHN_CommonNetboxExtraChoicesDomain['nhn.local'],
+              domain: 'test.local',
               environment: NHN_CommonNetboxExtraChoicesEnvironment.na,
               infrastructure: NHN_CommonNetboxExtraChoicesInfrastructure.na,
               purpose: NHN_CommonNetboxExtraChoicesPurpose.datacenter,
@@ -165,7 +164,7 @@ describe('NetboxDriver - Prefix Methods', () => {
             is_pool: true,
             description: 'Internal networks',
             custom_fields: {
-              domain: NHN_CommonNetboxExtraChoicesDomain['test.drift.nhn.no'],
+              domain: 'test.example.com',
               environment: NHN_CommonNetboxExtraChoicesEnvironment.test,
               infrastructure: NHN_CommonNetboxExtraChoicesInfrastructure.test,
               purpose: NHN_CommonNetboxExtraChoicesPurpose.lab,
@@ -203,7 +202,7 @@ describe('NetboxDriver - Prefix Methods', () => {
             is_pool: false,
             site: { id: 1, name: 'Data Center Oslo', display: 'Data Center Oslo' },
             custom_fields: {
-              domain: NHN_CommonNetboxExtraChoicesDomain['prod.drift.nhn.no'],
+              domain: 'prod.example.com',
               environment: NHN_CommonNetboxExtraChoicesEnvironment.prod,
               infrastructure: NHN_CommonNetboxExtraChoicesInfrastructure.prod,
               purpose: NHN_CommonNetboxExtraChoicesPurpose.service,
@@ -254,7 +253,7 @@ describe('NetboxDriver - Prefix Methods', () => {
             status: { value: 'active', label: 'Active' },
             is_pool: false,
             custom_fields: {
-              domain: NHN_CommonNetboxExtraChoicesDomain.na,
+              domain: 'network1.local',
               environment: NHN_CommonNetboxExtraChoicesEnvironment.dev,
             },
           },
@@ -266,7 +265,7 @@ describe('NetboxDriver - Prefix Methods', () => {
             status: { value: 'active', label: 'Active' },
             is_pool: false,
             custom_fields: {
-              domain: NHN_CommonNetboxExtraChoicesDomain['qa.drift.nhn.no'],
+              domain: 'qa.example.com',
               environment: NHN_CommonNetboxExtraChoicesEnvironment.qa,
             },
           },
@@ -284,7 +283,7 @@ describe('NetboxDriver - Prefix Methods', () => {
             status: { value: 'active', label: 'Active' },
             is_pool: false,
             custom_fields: {
-              domain: NHN_CommonNetboxExtraChoicesDomain['prod.drift.nhn.no'],
+              domain: 'prod2.example.com',
               environment: NHN_CommonNetboxExtraChoicesEnvironment.prod,
             },
           },
@@ -401,7 +400,7 @@ describe('NetboxDriver - Prefix Methods', () => {
           description: 'Production network',
           is_pool: false,
           custom_fields: {
-            domain: NHN_CommonNetboxExtraChoicesDomain['prod.drift.nhn.no'],
+            domain: 'auto.example.com',
             environment: NHN_CommonNetboxExtraChoicesEnvironment.prod,
             infrastructure: NHN_CommonNetboxExtraChoicesInfrastructure.prod,
             purpose: NHN_CommonNetboxExtraChoicesPurpose.service,
@@ -425,7 +424,7 @@ describe('NetboxDriver - Prefix Methods', () => {
         'Production network',
         { status: 'active', role: 5 },
         {
-          domain: NHN_CommonNetboxExtraChoicesDomain['prod.drift.nhn.no'],
+          domain: 'allocated.example.com',
           environment: NHN_CommonNetboxExtraChoicesEnvironment.prod,
           infrastructure: NHN_CommonNetboxExtraChoicesInfrastructure.prod,
           purpose: NHN_CommonNetboxExtraChoicesPurpose.service,
@@ -501,7 +500,7 @@ describe('NetboxDriver - Prefix Methods', () => {
         comments: 'Primary development network',
         tags: [{ id: 2, name: 'development', display: 'development' }],
         custom_fields: {
-          domain: NHN_CommonNetboxExtraChoicesDomain['test.drift.nhn.no'],
+          domain: 'newprod.example.com',
           environment: NHN_CommonNetboxExtraChoicesEnvironment.dev,
           infrastructure: NHN_CommonNetboxExtraChoicesInfrastructure.test,
           purpose: NHN_CommonNetboxExtraChoicesPurpose.devops,
@@ -536,7 +535,7 @@ describe('NetboxDriver - Prefix Methods', () => {
       );
       expect(result?.id).toBe(200);
       expect(result?.prefix).toBe('172.16.50.0/24');
-      expect(result?.custom_fields?.domain).toBe('test.drift.nhn.no');
+      expect(result?.custom_fields?.domain).toBe('newprod.example.com');
       expect(result?.custom_fields?.environment).toBe('dev');
     });
 
@@ -546,7 +545,7 @@ describe('NetboxDriver - Prefix Methods', () => {
         status: 'active',
         description: 'IPv6 management network',
         custom_fields: {
-          domain: NHN_CommonNetboxExtraChoicesDomain['mgmt.ld.nhn.no'],
+          domain: 'ipv6.example.com',
           environment: NHN_CommonNetboxExtraChoicesEnvironment.mgmt,
           infrastructure: NHN_CommonNetboxExtraChoicesInfrastructure.mgmt,
           purpose: NHN_CommonNetboxExtraChoicesPurpose.mgmt,
@@ -584,7 +583,7 @@ describe('NetboxDriver - Prefix Methods', () => {
         status: 'deprecated',
         description: 'Deprecated network - migrate to new range',
         custom_fields: {
-          domain: NHN_CommonNetboxExtraChoicesDomain['prod.drift.nhn.no'],
+          domain: 'updated.example.com',
           environment: NHN_CommonNetboxExtraChoicesEnvironment.prod,
           infrastructure: NHN_CommonNetboxExtraChoicesInfrastructure.prod,
           purpose: NHN_CommonNetboxExtraChoicesPurpose.archive,
