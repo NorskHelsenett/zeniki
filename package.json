@@ -64,8 +64,6 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "ip-num": "^1.5.2",
-    "ipaddr.js": "^2.3.0",
     "lodash.differencewith": "^4.5.0",
     "logform": "^2.7.0",
     "winston-transport": "^4.9.0",
