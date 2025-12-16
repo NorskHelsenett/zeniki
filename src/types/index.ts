@@ -69,12 +69,17 @@ export * from "./hw/vmware/nsx/shared/vmware-nsx-resource-reference";
 export * from "./hw/vmware/nsx/shared/vmware-nsx-response";
 export * from "./hw/vmware/nsx/shared/vmware-nsx-self-resource-link";
 export * from "./hw/vmware/nsx/shared/vmware-nsx-tag";
+export * from "./hw/vmware/nsx/shared/vmware-nsx-ip-address-info";
 export * from "./hw/vmware/nsx/policy/groups/vmware-nsx-group";
-export * from "./hw/vmware/nsx/policy/virtual_machines/vmare-nsx-virtual-machine-meta";
+export * from "./hw/vmware/nsx/policy/virtual_machines/vmware-nsx-virtual-machine-meta";
 export * from "./hw/vmware/nsx/policy/virtual_machines/vmware-nsx-guest-info";
 export * from "./hw/vmware/nsx/policy/virtual_machines/vmware-nsx-virtual-machine";
 export * from "./hw/vmware/nsx/policy/virtual_machines/vmware-nsx-virtual-machine-runtime-info";
 export * from "./hw/vmware/nsx/policy/virtual_machines/vmware-nsx-virtual-network-interface-runtime-info";
+export * from "./hw/vmware/nsx/policy/inventory/vmware-nsx-virtual-interface";
+export * from "./hw/vmware/nsx/policy/sites/vmware-nsx-site";
+export * from "./hw/vmware/nsx/policy/sites/vmware-nsx-enforcement-point";
+export * from "./hw/vmware/nsx/policy/sites/vmware-nsx-enforcement-point-connection-info";
 
 // ===== NAM V2 TYPES =====
 export * from "./tools/nhn/nam-v2/nam-api-endpoint";

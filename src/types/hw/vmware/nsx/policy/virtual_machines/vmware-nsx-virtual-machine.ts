@@ -9,7 +9,7 @@ import { VMwareNSXTag } from "../../shared/vmware-nsx-tag";
 import { VMwareNSXDiscoveredResource } from "../../shared/vmware-nsx-discovered-resource";
 import { VMwareNSXResourceReference } from "../../shared/vmware-nsx-resource-reference";
 import { VMwareNSXVirtualMachineRuntimeInfo } from "./vmware-nsx-virtual-machine-runtime-info";
-import { VMwareNSXVirtualMachineMeta } from "./vmare-nsx-virtual-machine-meta";
+import { VMwareNSXVirtualMachineMeta } from "./vmware-nsx-virtual-machine-meta";
 
 /**
  * Virtual machine resource in NSX inventory with compute and runtime information.

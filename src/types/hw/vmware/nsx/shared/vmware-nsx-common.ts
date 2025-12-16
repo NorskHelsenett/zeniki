@@ -126,3 +126,9 @@ export type VMwareNSXVirtualMachineTypes =
 
 // String literal union for Unified Packet Trace V2 enabled values
 export type VMwareNSXUnifiedPacketTraceV2Values = "NONE" | "true" | "false";
+
+// String literal union ip address info source values
+export type VMwareNSXIPAddressInfoSourceValues = "VM_TOOLS";
+
+// String literal union for site types
+export type VMwareNSXSiteTypes = "ONPREM_LM" | "SDDC_LM";

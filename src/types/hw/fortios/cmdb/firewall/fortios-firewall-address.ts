@@ -37,7 +37,7 @@ export interface FortiOSFirewallAddress extends FortiOSFirewallAddrMeta {
   uuid?: string;
 
   /** Primary IPv4 address specification. */
-  subnet: string;
+  subnet?: string;
 
   /** Address type defining interpretation. */
   type: FortiOSFirewallAddressTypes | FortiOSFirewallAddressType;
