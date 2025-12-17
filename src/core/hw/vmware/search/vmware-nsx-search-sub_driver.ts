@@ -44,7 +44,6 @@ export class VMwareNSXSearchSubDriver extends ZenikiCoreDriver {
     if (response.ok) {
       return (await response.json()) as VMwareNSXResponse<T>;
     } else {
-      console.log();
       throw new HTTPError(response.statusText, response.status, response);
     }
   }
