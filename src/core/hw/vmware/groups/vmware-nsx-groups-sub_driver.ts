@@ -292,11 +292,6 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
       }
     );
 
-    console.log(
-      "URL",
-      this.config.baseURL + path + queryBuilderSync(params as any)
-    );
-
     if (response.ok) {
       return await response.json();
     } else {
