@@ -46,7 +46,7 @@ export class VMwareNSXDriver extends ZenikiCoreDriver {
    * Execute HTTP GET request to any NSX Policy API endpoint.
    *
    * @template T - Expected response data type
-   * @param url - NSX API endpoint URL
+   * @param path - NSX API endpoint URL
    * @param params - Optional query parameters
    * @returns Promise resolving to typed NSX response
    * @example
@@ -54,10 +54,13 @@ export class VMwareNSXDriver extends ZenikiCoreDriver {
    * const domains = await nsx.getByUrl('/policy/api/v1/infra/domains', { page_size: 100 });
    * ```
    */
-  async getByUrl<T>(url: string, params?: { [key: string]: any }): Promise<T> {
+  async getByUrl<T>(
+    path: string,
+    params?: { [key: string]: any } | VMwareNSXParams | URLSearchParams,
+  ): Promise<T> {
     const response = await this.get<T>(
-      this.config.baseURL + url + queryBuilderSync(params as any),
-      { ...this.config, method: "GET" }
+      this.config.baseURL + path + queryBuilderSync(params as any),
+      { ...this.config, method: "GET" },
     );
 
     if (response.ok) {
@@ -66,7 +69,7 @@ export class VMwareNSXDriver extends ZenikiCoreDriver {
       throw new HTTPError(
         `${response?.status} ${response.statusText}`,
         response.status,
-        response
+        response,
       );
     }
   }
@@ -75,7 +78,7 @@ export class VMwareNSXDriver extends ZenikiCoreDriver {
    * Execute paginated HTTP GET request with optional automatic result aggregation.
    *
    * @template T - Expected response data type
-   * @param url - NSX API endpoint URL
+   * @param path - NSX API endpoint URL
    * @param params - Optional query parameters (page_size, cursor)
    * @param follow - Enable automatic pagination
    * @default false
@@ -86,25 +89,22 @@ export class VMwareNSXDriver extends ZenikiCoreDriver {
    * ```
    */
   async getPaginatedByUrl<T>(
-    url: string,
-    params?: { [key: string]: any },
-    follow = false
+    path: string,
+    params?: { [key: string]: any } | VMwareNSXParams | URLSearchParams,
+    follow = false,
   ): Promise<T> {
     if (follow) {
-      const response = await this.next<T>(url, params);
-      if (response.ok) {
-        return await response.json();
-      } else {
-        throw new HTTPError(
-          `${response?.status} ${response.statusText}`,
-          response.status,
-          response
-        );
-      }
+      const response = await this.next<T>(
+        path,
+        params,
+      );
+
+      return await response.json();
     }
+
     const response = await this.get<T>(
-      this.config.baseURL + url + queryBuilderSync(params as any),
-      { ...this.config, method: "GET" }
+      this.config.baseURL + path + queryBuilderSync(params as any),
+      { ...this.config, method: "GET" },
     );
 
     if (response.ok) {
@@ -113,7 +113,7 @@ export class VMwareNSXDriver extends ZenikiCoreDriver {
       throw new HTTPError(
         `${response?.status} ${response.statusText}`,
         response.status,
-        response
+        response,
       );
     }
   }
@@ -122,7 +122,7 @@ export class VMwareNSXDriver extends ZenikiCoreDriver {
    * Internal pagination handler for NSX API response aggregation.
    *
    * @template T - Expected response data type
-   * @param url - NSX API endpoint URL
+   * @param path - NSX API endpoint URL
    * @param params - Optional pagination parameters (count, skip)
    * @returns Promise resolving to aggregated paginated response
    * @protected
@@ -132,23 +132,19 @@ export class VMwareNSXDriver extends ZenikiCoreDriver {
    * ```
    */
   protected async next<T>(
-    url: string | URL | Request,
-    params?: { [key: string]: any }
+    path: string | URL | Request,
+    params?: { [key: string]: any } | VMwareNSXParams,
   ): Promise<ResponseGeneric<T>> {
-    if (params && !params?.count) {
-      params["count"] = 5;
-      params["skip"] = 1;
-    } else {
+    if (!params) {
       params = {
-        count: 5,
-        skip: 1,
+        cursor: 0,
       };
     }
 
     let tmp: any[] = [];
     const res = await this.get<any>(
-      this.config.baseURL + url + queryBuilderSync(params as any),
-      { ...this.config, method: "GET" }
+      this.config.baseURL + path + queryBuilderSync(params as any),
+      { ...this.config, method: "GET" },
     );
 
     if (!res.ok) {
@@ -156,34 +152,43 @@ export class VMwareNSXDriver extends ZenikiCoreDriver {
     }
 
     let data = await res.json();
-    const size = data.result_count || 0;
-    let index = params.count;
+    let result_count = data.result_count || 0;
+    let cursor = data.cursor || 0;
     tmp = data.results || [];
 
-    while (size > index) {
-      params["skip"] = index;
-      const response = await this.get<any>(
-        this.config.baseURL + url + queryBuilderSync(params as any),
-        { ...this.config, method: "GET" }
+    while (result_count > cursor) {
+      if (params && !params?.cursor) {
+        params["cursor"] = cursor;
+      } else {
+        params.cursor = cursor;
+      }
+
+      const res = await this.get<any>(
+        this.config.baseURL + path + queryBuilderSync(params as any),
+        { ...this.config, method: "GET" },
       );
       if (res.ok) {
-        const pageData = await response.json();
-        if (pageData.results && pageData.results.length > 0) {
-          tmp = tmp.concat(pageData.results);
+        const data = await res.json();
+        if (data.results && data.results.length > 0) {
+          tmp = tmp.concat(data.results);
+          result_count = data.result_count || 0;
+          cursor = data.cursor || 0;
         }
-        index += params.count;
       } else {
         throw new HTTPError(res.statusText, res.status, res);
       }
     }
-    // Return ResponseGeneric wrapper with aggregated data
+
+    const finalData: any = {
+      ...data,
+      results: tmp,
+      result_count: tmp.length,
+      cursor: tmp.length,
+    };
+
     return {
       ...res,
-      json: async () => ({
-        ...data,
-        results: tmp,
-        result_count: tmp.length,
-      }),
+      json: async () => finalData,
     } as ResponseGeneric<T>;
   }
 }

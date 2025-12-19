@@ -9,7 +9,7 @@
  * ```
  */
 export const queryBuilder = async (
-  params: object | URLSearchParams
+  params: object | URLSearchParams,
 ): Promise<String> => {
   if (!params) {
     return "";

@@ -8,6 +8,7 @@ import {
 } from "../../../../types";
 import {
   RequestConfig,
+  ResponseGeneric,
   ZenikiCoreDriver,
 } from "../../../base/zeniki-core-driver";
 import { queryBuilderSync } from "../../../utils";
@@ -33,14 +34,14 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
     group_id: string,
     params?: { [key: string]: any } | VMwareNSXParams | URLSearchParams,
     domain_id: string = "default",
-    global_manager: boolean = false
+    global_manager: boolean = false,
   ): Promise<VMwareNSXGroup> {
     const path = global_manager
       ? `/api/v1/global-infra/domains/${domain_id}/groups/${group_id}`
       : `/policy/api/v1/infra/domains/${domain_id}/groups/${group_id}`;
     const response = await this.get<VMwareNSXGroup>(
       this.config.baseURL + path + queryBuilderSync(params as any),
-      { ...this.config, method: "GET" }
+      { ...this.config, method: "GET" },
     );
 
     if (response.ok) {
@@ -49,7 +50,7 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
       throw new HTTPError(
         `${response?.status} ${response.statusText}`,
         response.status,
-        response
+        response,
       );
     }
   }
@@ -68,14 +69,14 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
   async getGroups(
     params?: { [key: string]: any } | VMwareNSXParams | URLSearchParams,
     domain_id: string = "default",
-    global_manager: boolean = false
+    global_manager: boolean = false,
   ): Promise<VMwareNSXResponse<VMwareNSXGroup>> {
     const path = global_manager
       ? `/api/v1/global-infra/domains/${domain_id}/groups/`
       : `/policy/api/v1/infra/domains/${domain_id}/groups/`;
     const response = await this.get<VMwareNSXResponse<VMwareNSXGroup>>(
       this.config.baseURL + path + queryBuilderSync(params as any),
-      { ...this.config, method: "GET" }
+      { ...this.config, method: "GET" },
     );
 
     if (response.ok) {
@@ -84,7 +85,7 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
       throw new HTTPError(
         `${response?.status} ${response.statusText}`,
         response.status,
-        response
+        response,
       );
     }
   }
@@ -107,14 +108,14 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
     group: VMwareNSXGroup,
     params?: { [key: string]: any } | VMwareNSXParams | URLSearchParams,
     domain_id: string = "default",
-    global_manager: boolean = false
+    global_manager: boolean = false,
   ): Promise<VMwareNsxModifyResponse> {
     const path = global_manager
       ? `/api/v1/global-infra/domains/${domain_id}/groups/${group_id}`
       : `/policy/api/v1/infra/domains/${domain_id}/groups/${group_id}`;
     const response = await this.put<VMwareNsxModifyResponse>(
       this.config.baseURL + path + queryBuilderSync(params as any),
-      { ...this.config, method: "PUT", body: JSON.stringify(group) }
+      { ...this.config, method: "PUT", body: JSON.stringify(group) },
     );
 
     if (response.ok) {
@@ -127,7 +128,7 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
       throw new HTTPError(
         `${response?.status} ${response.statusText}`,
         response.status,
-        response
+        response,
       );
     }
   }
@@ -150,14 +151,14 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
     group: VMwareNSXGroup,
     params?: { [key: string]: any } | VMwareNSXParams | URLSearchParams,
     domain_id: string = "default",
-    global_manager: boolean = false
+    global_manager: boolean = false,
   ): Promise<VMwareNsxModifyResponse> {
     const path = global_manager
       ? `/api/v1/global-infra/domains/${domain_id}/groups/${group_id}`
       : `/policy/api/v1/infra/domains/${domain_id}/groups/${group_id}`;
     const response = await this.put<VMwareNsxModifyResponse>(
       this.config.baseURL + path + queryBuilderSync(params as any),
-      { ...this.config, method: "PUT", body: JSON.stringify(group) }
+      { ...this.config, method: "PUT", body: JSON.stringify(group) },
     );
 
     if (response.ok) {
@@ -170,7 +171,7 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
       throw new HTTPError(
         `${response?.status} ${response.statusText}`,
         response.status,
-        response
+        response,
       );
     }
   }
@@ -193,14 +194,14 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
     group: Partial<VMwareNSXGroup>,
     params?: { [key: string]: any } | VMwareNSXParams | URLSearchParams,
     domain_id: string = "default",
-    global_manager: boolean = false
+    global_manager: boolean = false,
   ): Promise<VMwareNsxModifyResponse> {
     const path = global_manager
       ? `/api/v1/global-infra/domains/${domain_id}/groups/${group_id}`
       : `/policy/api/v1/infra/domains/${domain_id}/groups/${group_id}`;
     const response = await this.patch<VMwareNsxModifyResponse>(
       this.config.baseURL + path + queryBuilderSync(params as any),
-      { ...this.config, method: "PATCH", body: JSON.stringify(group) }
+      { ...this.config, method: "PATCH", body: JSON.stringify(group) },
     );
 
     if (response.ok) {
@@ -213,7 +214,7 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
       throw new HTTPError(
         `${response?.status} ${response.statusText}`,
         response.status,
-        response
+        response,
       );
     }
   }
@@ -234,14 +235,14 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
     group_id: string,
     params?: { [key: string]: any } | VMwareNSXParams | URLSearchParams,
     domain_id: string = "default",
-    global_manager: boolean = false
+    global_manager: boolean = false,
   ): Promise<VMwareNsxModifyResponse> {
     const path = global_manager
       ? `/api/v1/global-infra/domains/${domain_id}/groups/${group_id}`
       : `/policy/api/v1/infra/domains/${domain_id}/groups/${group_id}`;
     const response = await this.delete<VMwareNsxModifyResponse>(
       this.config.baseURL + path + queryBuilderSync(params as any),
-      { ...this.config, method: "DELETE" }
+      { ...this.config, method: "DELETE" },
     );
 
     if (response.ok) {
@@ -254,7 +255,7 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
       throw new HTTPError(
         `${response?.status} ${response.statusText}`,
         response.status,
-        response
+        response,
       );
     }
   }
@@ -276,20 +277,20 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
     params?: { [key: string]: any } | VMwareNSXParams | URLSearchParams,
     domain_id: string = "default",
     global_manager: boolean = false,
-    global_group: boolean = false
+    global_group: boolean = false,
   ): Promise<VMwareNSXResponse<string>> {
     const path = global_manager
       ? `/global-manager/api/v1/global-infra/domains/${domain_id}/groups/${group_id}/members/ip-addresses`
       : `/policy/api/v1/${
-          global_group ? "global-infra" : "infra"
-        }/domains/${domain_id}/groups/${group_id}/members/ip-addresses`;
+        global_group ? "global-infra" : "infra"
+      }/domains/${domain_id}/groups/${group_id}/members/ip-addresses`;
 
     const response = await this.get<VMwareNSXResponse<string>>(
       this.config.baseURL + path + queryBuilderSync(params as any),
       {
         ...this.config,
         method: "GET",
-      }
+      },
     );
 
     if (response.ok) {
@@ -298,7 +299,7 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
       throw new HTTPError(
         `${response?.status} ${response.statusText}`,
         response.status,
-        response
+        response,
       );
     }
   }
@@ -320,13 +321,13 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
     params?: { [key: string]: any } | VMwareNSXParams | URLSearchParams,
     domain_id: string = "default",
     global_manager: boolean = false,
-    global_group: boolean = false
+    global_group: boolean = false,
   ): Promise<VMwareNSXResponse<VMwareNSXVirtualNetworkInterface>> {
     const path = global_manager
       ? `/api/v1/global-infra/domains/${domain_id}/groups/${group_id}/members/vifs`
       : `/policy/api/v1/${
-          global_group ? "global-infra" : "infra"
-        }/domains/${domain_id}/groups/${group_id}/members/vifs`;
+        global_group ? "global-infra" : "infra"
+      }/domains/${domain_id}/groups/${group_id}/members/vifs`;
     const response = await this.get<
       VMwareNSXResponse<VMwareNSXVirtualNetworkInterface>
     >(this.config.baseURL + path + queryBuilderSync(params as any), {
@@ -340,8 +341,82 @@ export class VMwareNSXGroupsSubDriver extends ZenikiCoreDriver {
       throw new HTTPError(
         `${response?.status} ${response.statusText}`,
         response.status,
-        response
+        response,
       );
     }
+  }
+
+  /**
+   * Internal pagination handler for NSX API response aggregation.
+   *
+   * @template T - Expected response data type
+   * @param path - NSX API endpoint URL
+   * @param params - Optional pagination parameters (count, skip)
+   * @returns Promise resolving to aggregated paginated response
+   * @protected
+   * @example
+   * ```typescript
+   * const response = await this.next('/policy/api/v1/infra/domains', { count: 100, skip: 1 });
+   * ```
+   */
+  protected async next<T>(
+    path: string | URL | Request,
+    params?: { [key: string]: any } | VMwareNSXParams,
+  ): Promise<ResponseGeneric<T>> {
+    if (!params) {
+      params = {
+        cursor: 0,
+      };
+    }
+
+    let tmp: any[] = [];
+    const res = await this.get<any>(
+      this.config.baseURL + path + queryBuilderSync(params as any),
+      { ...this.config, method: "GET" },
+    );
+
+    if (!res.ok) {
+      throw new HTTPError(res.statusText, res.status, res);
+    }
+
+    let data = await res.json();
+    let result_count = data.result_count || 0;
+    let cursor = data.cursor || 0;
+    tmp = data.results || [];
+
+    while (result_count > cursor) {
+      if (params && !params?.cursor) {
+        params["cursor"] = cursor;
+      } else {
+        params.cursor = cursor;
+      }
+
+      const res = await this.get<any>(
+        this.config.baseURL + path + queryBuilderSync(params as any),
+        { ...this.config, method: "GET" },
+      );
+      if (res.ok) {
+        const data = await res.json();
+        if (data.results && data.results.length > 0) {
+          tmp = tmp.concat(data.results);
+          result_count = data.result_count || 0;
+          cursor = data.cursor || 0;
+        }
+      } else {
+        throw new HTTPError(res.statusText, res.status, res);
+      }
+    }
+
+    const finalData: any = {
+      ...data,
+      results: tmp,
+      result_count: tmp.length,
+      cursor: tmp.length,
+    };
+
+    return {
+      ...res,
+      json: async () => finalData,
+    } as ResponseGeneric<T>;
   }
 }
