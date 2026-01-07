@@ -12,6 +12,7 @@ import { NAMNetboxIntegratorsSubDriver } from "./vendors/nam-netbox-integrators-
 import { NAMRorIntegratorsSubDriver } from "./vendors/nam-ror-integrators-sub_driver";
 import { NAMNsxIntegratorsSubDriver } from "./vendors/nam-nsx-integrators-sub_driver";
 import { NAMAPIEndpointsSubDriver } from "./settings/nam-api-endpoints-sub_driver";
+import { NAMDomainsSubDriver } from "./ipam/nam-domains-sub_driver";
 
 /**
  * NAM v2 driver for network architecture management with specialized sub-drivers.
@@ -37,6 +38,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
   public ror_integrators: NAMRorIntegratorsSubDriver;
   public nsx_integrators: NAMNsxIntegratorsSubDriver;
   public api_endpoints: NAMAPIEndpointsSubDriver;
+  public domains: NAMDomainsSubDriver;
 
   /**
    * Initialize NAM v2 driver with request configuration.
@@ -55,6 +57,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
     this.ror_integrators = new NAMRorIntegratorsSubDriver(config);
     this.nsx_integrators = new NAMNsxIntegratorsSubDriver(config);
     this.api_endpoints = new NAMAPIEndpointsSubDriver(config);
+    this.domains = new NAMDomainsSubDriver(config);
   }
 
   /**
@@ -84,7 +87,11 @@ export class NAMv2Driver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
+      throw new HTTPError(
+        `${response?.status} ${response.statusText}`,
+        response.status,
+        response
+      );
     }
   }
 
@@ -110,7 +117,11 @@ export class NAMv2Driver extends ZenikiCoreDriver {
       if (response.ok) {
         return await response.json();
       } else {
-        throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
+        throw new HTTPError(
+          `${response?.status} ${response.statusText}`,
+          response.status,
+          response
+        );
       }
     }
     const fullUrl =
@@ -125,7 +136,11 @@ export class NAMv2Driver extends ZenikiCoreDriver {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new HTTPError(`${response?.status} ${response.statusText}`, response.status, response);
+      throw new HTTPError(
+        `${response?.status} ${response.statusText}`,
+        response.status,
+        response
+      );
     }
   }
 
