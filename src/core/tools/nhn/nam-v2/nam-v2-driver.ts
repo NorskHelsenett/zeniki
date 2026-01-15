@@ -13,6 +13,7 @@ import { NAMRorIntegratorsSubDriver } from "./vendors/nam-ror-integrators-sub_dr
 import { NAMNsxIntegratorsSubDriver } from "./vendors/nam-nsx-integrators-sub_driver";
 import { NAMAPIEndpointsSubDriver } from "./settings/nam-api-endpoints-sub_driver";
 import { NAMDomainsSubDriver } from "./ipam/nam-domains-sub_driver";
+import { NAMNsxSecurityGroupsSubDriver } from "./vendors/nam-nsx-security-groups-sub_driver";
 
 /**
  * NAM v2 driver for network architecture management with specialized sub-drivers.
@@ -38,6 +39,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
   public ror_integrators: NAMRorIntegratorsSubDriver;
   public nsx_integrators: NAMNsxIntegratorsSubDriver;
   public api_endpoints: NAMAPIEndpointsSubDriver;
+  public nsx_security_groups: NAMNsxSecurityGroupsSubDriver;
   public domains: NAMDomainsSubDriver;
 
   /**
@@ -57,6 +59,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
     this.ror_integrators = new NAMRorIntegratorsSubDriver(config);
     this.nsx_integrators = new NAMNsxIntegratorsSubDriver(config);
     this.api_endpoints = new NAMAPIEndpointsSubDriver(config);
+    this.nsx_security_groups = new NAMNsxSecurityGroupsSubDriver(config);
     this.domains = new NAMDomainsSubDriver(config);
   }
 
