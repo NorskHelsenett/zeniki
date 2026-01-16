@@ -93,6 +93,7 @@ export * from "./hw/vmware/nsx/management/vmware-nsx-nsgroup-simple-expression";
 export * from "./tools/nhn/nam-v2/nam-api-endpoint";
 export * from "./tools/nhn/nam-v2/nam-api-endpoint-ssl";
 export * from "./tools/nhn/nam-v2/nam-fortios-vdom";
+export * from "./tools/nhn/nam-v2/vendors/vmware/nam-nsx-security-group";
 export * from "./tools/nhn/nam-v2/integrators/nam-netbox-integrator";
 export * from "./tools/nhn/nam-v2/integrators/nam-ror-integrator";
 export * from "./tools/nhn/nam-v2/integrators/nam-nsx-integrator";

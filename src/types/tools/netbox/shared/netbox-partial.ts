@@ -5,7 +5,7 @@ import { NetboxTag } from "../extras/netbox-tag";
 /**
  * Base interface for NetBox entity representations.
  * Provides common properties for identification, metadata, custom fields, and tagging.
- * 
+ *
  * @example
  * ```typescript
  * const entity: NetboxPartial = {
@@ -38,22 +38,22 @@ export interface NetboxPartial {
 
   /** Entity description. */
   description?: string;
-  
+
   /** Additional notes or comments. */
   comments?: string;
-  
+
   /** Tag collection for categorization. */
   tags?: number[] | Partial<NetboxTag>[];
-  
+
   /** Custom fields for additional metadata. */
   custom_fields?: CommonKeyValueStore<string, string>;
-  
+
   /**
    * Entity creation timestamp.
    * @readonly
    */
   readonly created?: string | Date | null;
-  
+
   /**
    * Last modification timestamp.
    * @readonly
