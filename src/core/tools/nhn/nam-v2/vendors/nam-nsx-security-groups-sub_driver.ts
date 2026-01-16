@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import {
   HTTPError,
-  NAMNsxIntegrator,
+  NAMNsxSecurityGroup,
   NAMParams,
   NAMResponse,
 } from "../../../../../types";
@@ -11,7 +11,6 @@ import {
   ZenikiCoreDriver,
 } from "../../../../base/zeniki-core-driver";
 import { queryBuilderSync } from "../../../../utils";
-import { NAMNsxSecurityGroup } from "../../../../../types/tools/nhn/nam-v2/nam-nsx-security-group";
 
 /**
  * NAM NSX Security Groups Sub-Driver for managing NSX security group configurations.

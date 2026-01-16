@@ -1,4 +1,4 @@
-import { NAMDefaultFields } from "../../..";
+import { NAMDefaultFields } from "../../shared/nam-default-fields";
 
 /**
  * NAM v2 NSX security group configuration.
