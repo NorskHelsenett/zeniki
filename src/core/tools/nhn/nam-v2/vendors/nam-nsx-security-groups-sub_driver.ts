@@ -116,14 +116,14 @@ export class NAMNsxSecurityGroupsSubDriver extends ZenikiCoreDriver {
   }
 
   /**
-   * Update existing NSX integrator with partial changes.
+   * Update existing NSX security group with partial changes.
    * @param id - MongoDB ObjectId or string identifier
-   * @param integrator - Partial NAMNsxIntegrator object
+   * @param securityGroup - Partial NAMNsxSecurityGroup object
    * @param params - Optional query parameters
-   * @returns Promise resolving to updated NAMNsxIntegrator
+   * @returns Promise resolving to updated NAMNsxSecurityGroup
    * @example
    * ```typescript
-   * const updated = await nam.nsx_integrators.patchNsxIntegrator('674d7b2c8f1e4a1b2c3d4e5f', { enabled: false });
+   * const updated = await nam.nsx_security_groups.patchNsxSecurityGroup('674d7b2c8f1e4a1b2c3d4e5f', { enabled: false });
    * ```
    */
   async patchNsxSecurityGroup(
@@ -131,10 +131,6 @@ export class NAMNsxSecurityGroupsSubDriver extends ZenikiCoreDriver {
     securityGroup: Partial<NAMNsxSecurityGroup>,
     params?: { [key: string]: any } | NAMParams | URLSearchParams
   ): Promise<NAMNsxSecurityGroup> {
-    console.log(
-      "Patching NSX Security Group with data:",
-      JSON.stringify(securityGroup, null, 2)
-    );
     const response = await this.patch<NAMNsxSecurityGroup>(
       this.config.baseURL +
         `/vendors/vmware/nsx/security-groups/${id}/` +
@@ -150,14 +146,14 @@ export class NAMNsxSecurityGroupsSubDriver extends ZenikiCoreDriver {
   }
 
   /**
-   * Replace existing NSX integrator with complete configuration.
+   * Replace existing NSX security group with complete configuration.
    * @param id - MongoDB ObjectId or string identifier
-   * @param integrator - Complete NAMNsxIntegrator configuration
+   * @param securityGroup - Complete NAMNsxSecurityGroup configuration
    * @param params - Optional query parameters
-   * @returns Promise resolving to updated NAMNsxIntegrator
+   * @returns Promise resolving to updated NAMNsxSecurityGroup
    * @example
    * ```typescript
-   * const integrator = await nam.nsx_integrators.updateNsxIntegrator('674d7b2c8f1e4a1b2c3d4e5f', {
+   * const securityGroup = await nam.nsx_security_groups.updateNsxSecurityGroup('674d7b2c8f1e4a1b2c3d4e5f', {
    *   name: 'updated',
    *   enabled: true
    * });
@@ -189,7 +185,7 @@ export class NAMNsxSecurityGroupsSubDriver extends ZenikiCoreDriver {
    * @returns Promise resolving to deleted NAMNsxSecurityGroup
    * @example
    * ```typescript
-   * await nam.nsx_integrators.deleteNsxIntegrator('674d7b2c8f1e4a1b2c3d4e5f');
+   * await nam.nsx_security_groups.deleteNsxSecurityGroup('674d7b2c8f1e4a1b2c3d4e5f');
    * ```
    */
   async deleteNsxSecurityGroup(
