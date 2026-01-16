@@ -1,28 +1,20 @@
-import { ObjectId } from "mongodb";
-import {
-  CommonKeyValueStore,
-  SyncPriorities,
-} from "../../../common/common-types";
-import { NAMDefaultFields, NetboxTag } from "../../..";
-// import { NetboxTag } from "../../netbox/extras/netbox-tag";
-// import { NAMAPIEndpoint } from "../nam-api-endpoint";
-// import { NAMFortiOSVdom } from "../nam-fortios-vdom";
-// import { NAMDefaultFields } from "../shared/nam-default-fields";
+import { NAMDefaultFields } from "../../..";
 
 /**
- * NAM v2 NSX integrator configuration.
- * Automated network synchronization between NSX and multi-vendor infrastructure
- * with FortiGate/VMware NSX support and priority-based scheduling.
+ * NAM v2 NSX security group configuration.
+ * Automated network synchronization from IPAM to VMware.
  *
  * @example
  * ```typescript
- * const integrator: NAMNetboxIntegrator = {
- *   name: 'production-sync',
- *   sync_priority: 'high',
- *   enabled: true,
- *   address_family: '4',
- *   netbox_endpoint: new ObjectId('...'),
- *   fortigate_endpoints: [{ endpoint: {...}, vdoms: [...] }]
+ * const integrator: NAMNsxSecurityGroup = {
+ *   name: 'security-group-1',
+ *   desc: 'Security group 1',
+ *  scope: 'consumer',
+ *  tag: 'example.com',
+ *  ipAddresses: [
+ *    { ip: '10.10.10.0/24' },
+ *    { ip: '10.10.20.123/32' },
+ *  ]
  * };
  * ```
  */
@@ -39,6 +31,7 @@ export interface NAMNsxSecurityGroup extends NAMDefaultFields {
   /** Tag */
   tag: string;
 
+  /** IP addresses associated with the security group */
   ipAddresses: NAMNsxSecurityGroupIP[];
 }
 
