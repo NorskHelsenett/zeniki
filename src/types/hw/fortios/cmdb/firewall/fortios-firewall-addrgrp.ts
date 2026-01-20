@@ -2,6 +2,7 @@ import {
   CommonEnableDisable,
   CommonEnableDisables,
 } from "../../../../common/common-types";
+import { FortiOSFirewallAddrMeta } from "../../shared/fortios-firewall-addr-meta";
 
 /**
  * FortiOS IPv4 firewall address group configuration for enterprise network security.
@@ -28,7 +29,7 @@ import {
  * };
  * ```
  */
-export interface FortiOSFirewallAddrGrp {
+export interface FortiOSFirewallAddrGrp extends FortiOSFirewallAddrMeta {
   /**
    * Unique address group name.
    * @maxLength 79
