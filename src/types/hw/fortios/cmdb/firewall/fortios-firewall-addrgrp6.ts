@@ -2,6 +2,7 @@ import {
   CommonEnableDisable,
   CommonEnableDisables,
 } from "../../../../common/common-types";
+import { FortiOSFirewallAddrMeta } from "../../shared/fortios-firewall-addr-meta";
 
 /**
  * FortiOS IPv6 firewall address group configuration for enterprise network security.
@@ -25,7 +26,7 @@ import {
  * };
  * ```
  */
-export interface FortiOSFirewallAddrGrp6 {
+export interface FortiOSFirewallAddrGrp6 extends FortiOSFirewallAddrMeta {
   /**
    * Unique address group name.
    * @maxLength 79
@@ -42,13 +43,13 @@ export interface FortiOSFirewallAddrGrp6 {
    * Address objects in group (up to 600 members).
    * @maxItems 600
    */
-  member:  {
-      /**
-       * Address object name reference.
-       * @maxLength 79
-       */
-      name: string;
-    }[];
+  member: {
+    /**
+     * Address object name reference.
+     * @maxLength 79
+     */
+    name: string;
+  }[];
 
   /**
    * Administrative comment.
