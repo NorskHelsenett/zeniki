@@ -14,6 +14,7 @@ import { NAMNsxIntegratorsSubDriver } from "./vendors/nam-nsx-integrators-sub_dr
 import { NAMAPIEndpointsSubDriver } from "./settings/nam-api-endpoints-sub_driver";
 import { NAMDomainsSubDriver } from "./ipam/nam-domains-sub_driver";
 import { NAMNsxSecurityGroupsSubDriver } from "./vendors/nam-nsx-security-groups-sub_driver";
+import { NAMVitiNetworkPoliciesSubDriver } from "./vitistack/nam-viti-network-policies-sub_driver";
 
 /**
  * NAM v2 driver for network architecture management with specialized sub-drivers.
@@ -41,6 +42,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
   public api_endpoints: NAMAPIEndpointsSubDriver;
   public nsx_security_groups: NAMNsxSecurityGroupsSubDriver;
   public domains: NAMDomainsSubDriver;
+  public viti_networkpolicies: NAMVitiNetworkPoliciesSubDriver;
 
   /**
    * Initialize NAM v2 driver with request configuration.
@@ -61,6 +63,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
     this.api_endpoints = new NAMAPIEndpointsSubDriver(config);
     this.nsx_security_groups = new NAMNsxSecurityGroupsSubDriver(config);
     this.domains = new NAMDomainsSubDriver(config);
+    this.viti_networkpolicies = new NAMVitiNetworkPoliciesSubDriver(config);
   }
 
   /**
@@ -76,7 +79,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
    */
   async getByUrl<T>(
     url: string | URL | Request,
-    params?: { [key: string]: any }
+    params?: { [key: string]: any },
   ): Promise<T> {
     const fullUrl =
       typeof url === "string" && !url.startsWith("http")
@@ -93,7 +96,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
       throw new HTTPError(
         `${response?.status} ${response.statusText}`,
         response.status,
-        response
+        response,
       );
     }
   }
@@ -113,7 +116,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
   async getPaginatedByUrl<T>(
     url: string | URL | Request,
     params?: { [key: string]: any },
-    follow = false
+    follow = false,
   ): Promise<T> {
     if (follow) {
       const response = await this.next<T>(url as string, params);
@@ -123,7 +126,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
         throw new HTTPError(
           `${response?.status} ${response.statusText}`,
           response.status,
-          response
+          response,
         );
       }
     }
@@ -142,7 +145,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
       throw new HTTPError(
         `${response?.status} ${response.statusText}`,
         response.status,
-        response
+        response,
       );
     }
   }
@@ -157,7 +160,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
    */
   protected async next<T>(
     url: string | URL | Request,
-    params?: { [key: string]: any }
+    params?: { [key: string]: any },
   ): Promise<ResponseGeneric<T>> {
     if (params && !params?.count) {
       params["count"] = 5;
@@ -172,7 +175,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
     let tmp: any[] = [];
     const res = await this.get<any>(
       this.config.baseURL + url + queryBuilderSync(params as any),
-      { ...this.config, method: "GET" }
+      { ...this.config, method: "GET" },
     );
     let data = await res.json();
     const size = data.count || 0;
@@ -182,7 +185,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
       params["skip"] = index;
       const response = await this.get<any>(
         this.config.baseURL + url + queryBuilderSync(params as any),
-        { ...this.config, method: "GET" }
+        { ...this.config, method: "GET" },
       );
       data = await response.json();
       if (data.results && data.results.length > 0) {

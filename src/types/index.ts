@@ -102,6 +102,7 @@ export * from "./tools/nhn/nam-v2/shared/nam-params";
 export * from "./tools/nhn/nam-v2/shared/nam-api-endpoint-types";
 export * from "./tools/nhn/nam-v2/shared/nam-response";
 export * from "./tools/nhn/nam-v2/ipam/nam-domain";
+export * from "./tools/nhn/nam-v2/vitistack/nam-viti-network-policy";
 
 // ===== ROR V1 TYPES =====
 export * from "./tools/nhn/ror-v1/clusters/ror-cluster-control-plane-metadata";
