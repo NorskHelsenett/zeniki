@@ -52,7 +52,7 @@ export interface NAMVitiNetworkPolicy extends NAMDefaultFields {
   enabled: Boolean;
 
   /** Git API endpoints. */
-  git_config: NAMAPIEndpoint[];
+  git_configs: NAMAPIEndpoint[];
 
   /** NSX scope. */
   scope: string;
