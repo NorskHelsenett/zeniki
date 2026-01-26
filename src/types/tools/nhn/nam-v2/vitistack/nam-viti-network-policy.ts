@@ -41,6 +41,11 @@ import {
  * };
  * ```
  */
+
+interface GitConfig {
+  endpoint: NAMAPIEndpoint;
+  branch: string;
+}
 export interface NAMVitiNetworkPolicy extends NAMDefaultFields {
   /** Integrator name. */
   name: string;
@@ -52,7 +57,7 @@ export interface NAMVitiNetworkPolicy extends NAMDefaultFields {
   enabled: Boolean;
 
   /** Git API endpoints. */
-  git_configs: NAMAPIEndpoint[];
+  git_configs: GitConfig[];
 
   /** NSX scope. */
   scope: string;
