@@ -1,3 +1,4 @@
+import { XCSRFTokenKeys } from "../../types";
 import { isDevMode } from "../utils/is-dev-mode";
 
 /**
@@ -35,6 +36,7 @@ export interface RequestConfig extends RequestInit {
 export abstract class ZenikiCoreDriver {
   /** Original configuration passed to the driver */
   protected config: RequestConfig;
+  #pre_login = false;
 
   /**
    * Creates a new core driver instance with the specified configuration.
@@ -49,12 +51,28 @@ export abstract class ZenikiCoreDriver {
    */
   constructor(config: RequestConfig) {
     this.config = config;
-  }  public getInstanceConfig(): RequestConfig {
+  }
+
+  public getInstanceConfig(): RequestConfig {
     return this.config;
   }
 
   public setInstanceConfig(config: RequestConfig) {
     this.config = config;
+  }
+
+  public setCookies(headers: Headers, csrf_token_key?: XCSRFTokenKeys) {
+    const cookies = headers.getSetCookie();
+    const csrfTokenCookie = cookies.find((c) => c.includes("csrftoken="));
+    const csrfToken = csrfTokenCookie?.match(/csrftoken=([^;]+)/)?.[1] || "";
+  }
+
+  public set pre_login(pre_login: boolean) {
+    this.#pre_login = pre_login;
+  }
+
+  public get pre_login() {
+    return this.#pre_login;
   }
 
   /**
@@ -103,7 +121,7 @@ export abstract class ZenikiCoreDriver {
    */
   protected async get<T>(
     url: string | URL | Request,
-    config?: RequestConfig
+    config?: RequestConfig,
   ): Promise<ResponseGeneric<T>> {
     return (await fetch(url, config)) as ResponseGeneric<T>;
   }
@@ -123,7 +141,7 @@ export abstract class ZenikiCoreDriver {
    */
   protected async post<T>(
     url: string | URL | Request,
-    config?: RequestInit
+    config?: RequestInit,
   ): Promise<ResponseGeneric<T>> {
     if (config?.method) {
       config.method = "POST";
@@ -147,7 +165,7 @@ export abstract class ZenikiCoreDriver {
    */
   protected async put<T>(
     url: string | URL | Request,
-    config?: RequestInit
+    config?: RequestInit,
   ): Promise<ResponseGeneric<T>> {
     if (config?.method) {
       config.method = "PUT";
@@ -170,7 +188,7 @@ export abstract class ZenikiCoreDriver {
    */
   protected async patch<T>(
     url: string | URL | Request,
-    config?: RequestInit
+    config?: RequestInit,
   ): Promise<ResponseGeneric<T>> {
     if (config?.method) {
       config.method = "PATCH";
@@ -191,7 +209,7 @@ export abstract class ZenikiCoreDriver {
    */
   protected async delete<T>(
     url: string | URL | Request,
-    config?: RequestInit
+    config?: RequestInit,
   ): Promise<ResponseGeneric<T>> {
     if (config?.method) {
       config.method = "DELETE";
@@ -212,10 +230,10 @@ export abstract class ZenikiCoreDriver {
    */
   protected async getByUrl<T>(
     url: string | URL | Request,
-    params?: { [key: string]: any }
+    params?: { [key: string]: any },
   ): Promise<T> {
     throw new Error(
-      "CustomDriver must implement getByUrl function for generic API access."
+      "CustomDriver must implement getByUrl function for generic API access.",
     );
   }
 
@@ -234,10 +252,10 @@ export abstract class ZenikiCoreDriver {
   protected async getPaginatedByUrl<T>(
     url: string | URL | Request,
     params?: { [key: string]: any },
-    follow = false
+    follow = false,
   ): Promise<T> {
     throw new Error(
-      "CustomDriver must implement getPaginatedByUrl function for generic API access with pagination support."
+      "CustomDriver must implement getPaginatedByUrl function for generic API access with pagination support.",
     );
   }
 
@@ -257,10 +275,10 @@ export abstract class ZenikiCoreDriver {
    */
   protected async next<T>(
     url: string | URL | Request,
-    params?: { [key: string]: any }
+    params?: { [key: string]: any },
   ): Promise<ResponseGeneric<T>> {
     throw new Error(
-      "CustomDriver must implement next function with pagination support."
+      "CustomDriver must implement next function with pagination support.",
     );
   }
 }
