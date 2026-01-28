@@ -36,7 +36,8 @@ export interface RequestConfig extends RequestInit {
 export abstract class ZenikiCoreDriver {
   /** Original configuration passed to the driver */
   protected config: RequestConfig;
-  #pre_login = false;
+  #authenticated = false;
+  #initial_config: RequestConfig;
 
   /**
    * Creates a new core driver instance with the specified configuration.
@@ -51,6 +52,7 @@ export abstract class ZenikiCoreDriver {
    */
   constructor(config: RequestConfig) {
     this.config = config;
+    this.#initial_config = config;
   }
 
   public getInstanceConfig(): RequestConfig {
@@ -61,18 +63,38 @@ export abstract class ZenikiCoreDriver {
     this.config = config;
   }
 
-  public setCookies(headers: Headers, csrf_token_key?: XCSRFTokenKeys) {
-    const cookies = headers.getSetCookie();
-    const csrfTokenCookie = cookies.find((c) => c.includes("csrftoken="));
-    const csrfToken = csrfTokenCookie?.match(/csrftoken=([^;]+)/)?.[1] || "";
+  public async setCookies(headers: Headers, csrf_token_key?: XCSRFTokenKeys) {
+    try {
+      const cookies = headers.getSetCookie();
+      const csrfTokenCookie = cookies.find((c) => c.includes("csrftoken="));
+      const csrfToken = csrfTokenCookie?.match(/csrftoken=([^;]+)/)?.[1] || "";
+      const key: string = csrf_token_key?.toString() + "";
+
+      const cfg: RequestConfig = {
+        ...this.config,
+        headers: {
+          ...this.config.headers,
+          [key]: csrfToken ? csrfToken : undefined,
+          Cookie: cookies.join("; "),
+        },
+        credentials: "include",
+      };
+
+      this.#authenticated = true;
+      this.config = cfg;
+    } catch (error) {
+      this.#authenticated = false;
+      throw new Error("zeniki-core: Failed setting cookies");
+    }
   }
 
-  public set pre_login(pre_login: boolean) {
-    this.#pre_login = pre_login;
+  public async unsetCookies() {
+    this.#authenticated = false;
+    this.config = this.#initial_config;
   }
 
-  public get pre_login() {
-    return this.#pre_login;
+  public get is_authenticated() {
+    return this.#authenticated;
   }
 
   /**
