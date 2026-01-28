@@ -33,3 +33,10 @@ export enum SyncPriority {
 
 // String literal union for sync priorities
 export type SyncPriorities = "low" | "medium" | "high";
+
+export type XCSRFTokenKeys =
+  | "X-CSRFToken"
+  | "X-CSRF-TOKEN"
+  | "CSRF-Token"
+  | "X-XSRF-TOKEN"
+  | "X-Csrf-Token";

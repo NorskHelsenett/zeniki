@@ -89,6 +89,28 @@ export * from "./hw/vmware/nsx/policy/virtual_machines/vmware-nsx-virtual-networ
 export * from "./hw/vmware/nsx/management/vmware-nsx-nsgroup";
 export * from "./hw/vmware/nsx/management/vmware-nsx-nsgroup-simple-expression";
 
+// ===== VMWARE AVI SHARED TYPES =====
+export * from "./hw/vmware/avi/shared/vmware-avi-common";
+export * from "./hw/vmware/avi/shared/vmware-avi-configpb-attr";
+export * from "./hw/vmware/avi/shared/vmware-avi-ipaddr";
+export * from "./hw/vmware/avi/shared/vmware-avi-ipaddr-prefix";
+export * from "./hw/vmware/avi/shared/vmware-avi-ipaddr-range";
+export * from "./hw/vmware/avi/shared/vmware-avi-ipaddrport";
+export * from "./hw/vmware/avi/shared/vmware-avi-login-response";
+export * from "./hw/vmware/avi/shared/vmware-avi-login-response-version";
+export * from "./hw/vmware/avi/shared/vmware-avi-params";
+export * from "./hw/vmware/avi/shared/vmware-avi-partial";
+export * from "./hw/vmware/avi/shared/vmware-avi-rate-limiter";
+export * from "./hw/vmware/avi/shared/vmware-avi-response";
+export * from "./hw/vmware/avi/shared/vmware-avi-role-filter-match-label";
+
+// ===== VMWARE AVI IPADDRGROUP TYPES =====
+export * from "./hw/vmware/avi/ipaddrgroup/vmware-avi-ipaddrgroup";
+
+// ===== VMWARE AVI VSDATASCRIPTSET TYPES =====
+export * from "./hw/vmware/avi/vsdatascriptset/vmware-avi-vs-datascript";
+export * from "./hw/vmware/avi/vsdatascriptset/vmware-avi-vs-datascript-set";
+
 // ===== NAM V2 TYPES =====
 export * from "./tools/nhn/nam-v2/nam-api-endpoint";
 export * from "./tools/nhn/nam-v2/nam-api-endpoint-ssl";
