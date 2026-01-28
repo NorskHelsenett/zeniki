@@ -54,6 +54,7 @@ export * as IPTypes from "./types/utils/ip-types";
 export * as NetboxTypes from "./types/tools/netbox/shared/netbox-partial";
 export * as FortiOSTypes from "./types/hw/fortios/shared/fortios-params";
 export * as VMwareNSXTypes from "./types/hw/vmware/nsx/shared/vmware-nsx-common";
+export * as VMwareAVITypes from "./types/hw/vmware/avi/shared/vmware-avi-common";
 export * as NAMv2Types from "./types/tools/nhn/nam-v2/shared/nam-default-fields";
 export * as NHNTypes from "./types/common/common-nhn-types";
 

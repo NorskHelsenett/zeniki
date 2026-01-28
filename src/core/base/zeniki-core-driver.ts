@@ -103,7 +103,7 @@ export abstract class ZenikiCoreDriver {
       this.config = cfg;
     } catch (error) {
       this.#authenticated = false;
-      throw new Error("zeniki-core: Failed setting cookie(s)");
+      throw new Error("Unable to configure cookie(s)");
     }
   }
 
