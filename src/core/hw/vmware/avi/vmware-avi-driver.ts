@@ -6,11 +6,40 @@ import {
 } from "../../../base/zeniki-core-driver";
 import { queryBuilderSync } from "../../../utils";
 
+/**
+ * Driver for VMware AVI (NSX Advanced Load Balancer) API.
+ * Handles authentication, session management, and API operations.
+ * @extends ZenikiCoreDriver
+ * @example
+ * ```typescript
+ * const driver = new VMwareAVIDriver({ baseURL: 'https://avi.example.com/api' });
+ * await driver.login('admin', 'password');
+ * ```
+ */
 export class VMwareAVIDriver extends ZenikiCoreDriver {
+  /**
+   * Creates a new VMware AVI driver instance.
+   * @param config - Request configuration
+   * @example
+   * ```typescript
+   * new VMwareAVIDriver({ baseURL: 'https://avi.example.com/api' });
+   * ```
+   */
   constructor(public config: RequestConfig) {
     super(config);
   }
 
+  /**
+   * Authenticates with AVI controller and sets up session.
+   * @param username - AVI username
+   * @param password - AVI password
+   * @returns Login response with user info and version
+   * @throws {HTTPError} When authentication fails
+   * @example
+   * ```typescript
+   * await driver.login('admin', 'password');
+   * ```
+   */
   public async login(username: string, password: string) {
     const response = await this.post<VMwareAVILoginResponse>(
       this.config.baseURL.replace("api", "login"),
@@ -51,6 +80,15 @@ export class VMwareAVIDriver extends ZenikiCoreDriver {
     }
   }
 
+  /**
+   * Logs out from AVI controller and clears session.
+   * @returns HTTP status code
+   * @throws {HTTPError} When not authenticated or logout fails
+   * @example
+   * ```typescript
+   * await driver.logout();
+   * ```
+   */
   public async logout() {
     if (!this.is_authenticated) {
       throw new HTTPError(
@@ -87,6 +125,18 @@ export class VMwareAVIDriver extends ZenikiCoreDriver {
     }
   }
 
+  /**
+   * Performs authenticated GET request to AVI API endpoint.
+   * @template T - Expected response data type
+   * @param path - API endpoint path
+   * @param params - Optional query parameters
+   * @returns Typed data promise
+   * @throws {HTTPError} When not authenticated or request fails
+   * @example
+   * ```typescript
+   * const pools = await driver.getByUrl<Pool[]>('/pool');
+   * ```
+   */
   async getByUrl<T>(
     path: string,
     params?: { [key: string]: any } | URLSearchParams,

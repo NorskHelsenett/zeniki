@@ -2,11 +2,9 @@ import { XCSRFTokenKeys } from "../../types";
 import { isDevMode } from "../utils/is-dev-mode";
 
 /**
- * Abstract base class for all Zeniki API drivers providing standardized HTTP operations.
- * Implements common patterns for HTTP communication, authentication handling, and error management
- * using native fetch API. Derived classes should implement API-specific methods and override the
- * abstract `next()` method for pagination support.
- *
+ * Abstract base class for Zeniki API drivers providing standardized HTTP operations.
+ * Implements common patterns for HTTP communication, authentication, and error handling.
+ * Derived classes should implement API-specific methods and pagination support.
  * @abstract
  * @example
  * ```typescript
@@ -15,15 +13,11 @@ import { isDevMode } from "../utils/is-dev-mode";
  *     return await this.get<User>(`/users/${id}`);
  *   }
  * }
- * const driver = new MyAPIDriver({
- *   baseURL: 'https://api.example.com',
- *   headers: { 'Authorization': 'Bearer token' }
- * });
  * ```
  */
 
 /**
- * Extended Response interface with typed JSON parsing for type-safe response handling.
+ * Response interface with typed JSON parsing.
  */
 export interface ResponseGeneric<T> extends Response {
   json(): Promise<T>;
@@ -40,14 +34,11 @@ export abstract class ZenikiCoreDriver {
   #initial_config: RequestConfig;
 
   /**
-   * Creates a new core driver instance with the specified configuration.
-   * @param config - Request configuration including base URL, headers, authentication, etc.
+   * Creates a new driver instance.
+   * @param config - Request configuration including base URL and headers
    * @example
    * ```typescript
-   * super({
-   *   baseURL: 'https://api.example.com',
-   *   headers: { 'Authorization': 'Token key' }
-   * });
+   * super({ baseURL: 'https://api.example.com' });
    * ```
    */
   constructor(config: RequestConfig) {
@@ -55,14 +46,40 @@ export abstract class ZenikiCoreDriver {
     this.#initial_config = config;
   }
 
+  /**
+   * Gets the current request configuration.
+   * @returns Current RequestConfig
+   * @example
+   * ```typescript
+   * const config = driver.getInstanceConfig();
+   * ```
+   */
   public getInstanceConfig(): RequestConfig {
     return this.config;
   }
 
+  /**
+   * Updates the request configuration.
+   * @param config - New RequestConfig to set
+   * @example
+   * ```typescript
+   * driver.setInstanceConfig({ baseURL: 'https://new-url.com' });
+   * ```
+   */
   public setInstanceConfig(config: RequestConfig) {
     this.config = config;
   }
 
+  /**
+   * Sets cookies and CSRF token from response headers.
+   * @param headers - Response headers containing cookies
+   * @param csrf_token_key - CSRF token header key
+   * @throws {Error} When setting cookies fails
+   * @example
+   * ```typescript
+   * await driver.setCookies(response.headers, 'X-CSRFToken');
+   * ```
+   */
   public async setCookies(headers: Headers, csrf_token_key?: XCSRFTokenKeys) {
     try {
       const cookies = headers.getSetCookie();
@@ -77,28 +94,45 @@ export abstract class ZenikiCoreDriver {
           [key]: csrfToken ? csrfToken : undefined,
           Cookie: cookies.join("; "),
         },
-        credentials: "include",
+        credentials: this.config.credentials
+          ? this.config.credentials
+          : "same-origin",
       };
 
       this.#authenticated = true;
       this.config = cfg;
     } catch (error) {
       this.#authenticated = false;
-      throw new Error("zeniki-core: Failed setting cookies");
+      throw new Error("zeniki-core: Failed setting cookie(s)");
     }
   }
 
+  /**
+   * Clears cookies and resets configuration to initial state.
+   * @example
+   * ```typescript
+   * await driver.unsetCookies();
+   * ```
+   */
   public async unsetCookies() {
     this.#authenticated = false;
     this.config = this.#initial_config;
   }
 
+  /**
+   * Returns authentication status.
+   * @returns True if authenticated
+   * @example
+   * ```typescript
+   * if (driver.is_authenticated) { // do stuff  }
+   * ```
+   */
   public get is_authenticated() {
     return this.#authenticated;
   }
 
   /**
-   * Disposes of the driver instance and cleans up resources.
+   * Disposes driver instance and cleans up resources.
    * @example
    * ```typescript
    * driver.dispose();
@@ -109,12 +143,12 @@ export abstract class ZenikiCoreDriver {
   }
 
   /**
-   * Extracts the hostname from the base URL.
-   * @returns The hostname from the base URL
-   * @throws {Error} When baseURL is not configured or invalid
+   * Extracts hostname from base URL.
+   * @returns Hostname from base URL
+   * @throws {Error} When baseURL is invalid
    * @example
    * ```typescript
-   * const hostname = driver.getHostname(); // "netbox.example.com"
+   * const hostname = driver.getHostname();
    * ```
    */
   public getHostname(): string {
@@ -131,14 +165,14 @@ export abstract class ZenikiCoreDriver {
   }
 
   /**
-   * Performs an HTTP GET request with type safety.
+   * Performs HTTP GET request.
    * @template T - Expected response data type
-   * @param url - Relative URL path (will be combined with baseURL)
-   * @param config - Optional additional request configuration
-   * @returns Promise resolving to the typed Response
+   * @param url - Request URL
+   * @param config - Optional request configuration
+   * @returns Typed Response promise
    * @example
    * ```typescript
-   * const response = await this.get<User>('/users/123');
+   * const res = await this.get<User>('/users/123');
    * ```
    */
   protected async get<T>(
@@ -149,16 +183,14 @@ export abstract class ZenikiCoreDriver {
   }
 
   /**
-   * Performs an HTTP POST request for creating new resources.
+   * Performs HTTP POST request.
    * @template T - Expected response data type
-   * @param url - Relative URL path (will be combined with baseURL)
-   * @param config - Optional request configuration including body
-   * @returns Promise resolving to the typed Response
+   * @param url - Request URL
+   * @param config - Optional request configuration
+   * @returns Typed Response promise
    * @example
    * ```typescript
-   * const response = await this.post<User>('/users', {
-   *   body: JSON.stringify({ name: 'John' })
-   * });
+   * const res = await this.post<User>('/users', { body });
    * ```
    */
   protected async post<T>(
@@ -173,16 +205,14 @@ export abstract class ZenikiCoreDriver {
   }
 
   /**
-   * Performs an HTTP PUT request for complete resource updates.
+   * Performs HTTP PUT request.
    * @template T - Expected response data type
-   * @param url - Relative URL path (will be combined with baseURL)
-   * @param config - Optional request configuration including body
-   * @returns Promise resolving to the typed Response
+   * @param url - Request URL
+   * @param config - Optional request configuration
+   * @returns Typed Response promise
    * @example
    * ```typescript
-   * const response = await this.put<User>('/users/123', {
-   *   body: JSON.stringify({ name: 'John', email: 'john@mail.com' })
-   * });
+   * const res = await this.put<User>('/users/123', { body });
    * ```
    */
   protected async put<T>(
@@ -196,16 +226,14 @@ export abstract class ZenikiCoreDriver {
   }
 
   /**
-   * Performs an HTTP PATCH request for partial resource updates.
+   * Performs HTTP PATCH request.
    * @template T - Expected response data type
-   * @param url - Relative URL path (will be combined with baseURL)
-   * @param config - Optional request configuration including body
-   * @returns Promise resolving to the typed Response
+   * @param url - Request URL
+   * @param config - Optional request configuration
+   * @returns Typed Response promise
    * @example
    * ```typescript
-   * const response = await this.patch<User>('/users/123', {
-   *   body: JSON.stringify({ email: 'new@mail.com' })
-   * });
+   * const res = await this.patch<User>('/users/123', { body });
    * ```
    */
   protected async patch<T>(
@@ -219,11 +247,11 @@ export abstract class ZenikiCoreDriver {
     return (await fetch(url, config)) as ResponseGeneric<T>;
   }
   /**
-   * Performs an HTTP DELETE request for removing resources.
+   * Performs HTTP DELETE request.
    * @template T - Expected response data type
-   * @param url - Relative URL path (will be combined with baseURL)
-   * @param config - Optional additional request configuration
-   * @returns Promise resolving to the typed Response
+   * @param url - Request URL
+   * @param config - Optional request configuration
+   * @returns Typed Response promise
    * @example
    * ```typescript
    * await this.delete('/users/123');
@@ -240,14 +268,14 @@ export abstract class ZenikiCoreDriver {
   }
 
   /**
-   * Performs an HTTP GET request to a custom URL, must be implemented by derived classes.
+   * Performs GET request to custom URL (must be implemented by derived classes).
    * @template T - Expected response data type
-   * @param url - Complete or relative URL path to the API endpoint
+   * @param url - Request URL
    * @param params - Optional query parameters
-   * @returns Promise resolving to the typed data
+   * @returns Typed data promise
    * @example
    * ```typescript
-   * const data = await driver.getByUrl<Item>('/items', { filter: 'active' });
+   * const data = await driver.getByUrl<Item>('/items');
    * ```
    */
   protected async getByUrl<T>(
@@ -260,12 +288,12 @@ export abstract class ZenikiCoreDriver {
   }
 
   /**
-   * Performs a paginated HTTP GET request, must be implemented by derived classes.
+   * Performs paginated GET request (must be implemented by derived classes).
    * @template T - Expected response data type
-   * @param url - Complete or relative URL path
+   * @param url - Request URL
    * @param params - Optional query parameters
-   * @param follow - Whether to automatically follow all pages (default: false)
-   * @returns Promise resolving to the paginated data
+   * @param follow - Whether to follow all pages
+   * @returns Paginated data promise
    * @example
    * ```typescript
    * const all = await driver.getPaginatedByUrl<Item>('/items', {}, true);
@@ -282,17 +310,15 @@ export abstract class ZenikiCoreDriver {
   }
 
   /**
-   * Abstract method for pagination support, must be implemented by derived classes.
+   * Abstract pagination method (must be implemented by derived classes).
    * @abstract
-   * @template T - Type of objects in paginated results
-   * @param url - The API endpoint URL that supports pagination
-   * @param params - Query parameters for pagination control
-   * @returns Promise resolving to paginated response
+   * @template T - Type of paginated objects
+   * @param url - API endpoint URL
+   * @param params - Query parameters
+   * @returns Paginated response promise
    * @example
    * ```typescript
-   * async next<T>(url: string) {
-   *   return this.get<PaginatedResponse<T>>(url);
-   * }
+   * return this.get<Page<T>>(url);
    * ```
    */
   protected async next<T>(

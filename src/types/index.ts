@@ -89,6 +89,10 @@ export * from "./hw/vmware/nsx/policy/virtual_machines/vmware-nsx-virtual-networ
 export * from "./hw/vmware/nsx/management/vmware-nsx-nsgroup";
 export * from "./hw/vmware/nsx/management/vmware-nsx-nsgroup-simple-expression";
 
+// ===== VMWARE AVI SHARED TYPES =====
+export * from "./hw/vmware/avi/shared/vmware-avi-login-response";
+export * from "./hw/vmware/avi/shared/vmware-avi-login-response-version";
+
 // ===== NAM V2 TYPES =====
 export * from "./tools/nhn/nam-v2/nam-api-endpoint";
 export * from "./tools/nhn/nam-v2/nam-api-endpoint-ssl";
