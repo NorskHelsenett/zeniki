@@ -9,6 +9,7 @@ tmp/
 *.tmp.ts
 test_/
 playground/*.ts
+playground/*.json
 
 #Certs
 *.pem

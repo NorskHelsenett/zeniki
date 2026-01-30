@@ -30,6 +30,9 @@ export interface RequestConfig extends RequestInit {
 export abstract class ZenikiCoreDriver {
   /** Original configuration passed to the driver */
   protected config: RequestConfig;
+  #cookie?: string[] | string | undefined;
+  #token?: string | undefined;
+  #refresh_token?: string | undefined;
   #authenticated = false;
   #initial_config: RequestConfig;
 
@@ -43,7 +46,7 @@ export abstract class ZenikiCoreDriver {
    */
   constructor(config: RequestConfig) {
     this.config = config;
-    this.#initial_config = config;
+    this.#initial_config = this.config;
   }
 
   /**
@@ -68,6 +71,68 @@ export abstract class ZenikiCoreDriver {
    */
   public setInstanceConfig(config: RequestConfig) {
     this.config = config;
+  }
+
+  /**
+   * Resets configuration to initial state and clears authentication.
+   * @example
+   * ```typescript
+   * driver.resetInstanceConfig();
+   * ```
+   */
+  public resetInstanceConfig() {
+    this.#authenticated = false;
+    this.config = this.#initial_config;
+  }
+
+  /**
+   * Gets the current authentication token.
+   * @returns Authentication token or undefined
+   * @example
+   * ```typescript
+   * const token = driver.token;
+   * ```
+   */
+  get token(): string | undefined {
+    return this.#token;
+  }
+
+  /**
+   * Sets the authentication token and updates authentication status.
+   * @param token - Authentication token or undefined to clear
+   * @example
+   * ```typescript
+   * driver.token = 'abc123';
+   * ```
+   */
+  set token(token: string | undefined) {
+    token ? this.#authenticated = true : this.#authenticated = false;
+    this.#token = token;
+  }
+
+  /**
+   * Gets the current session cookies.
+   * @returns Session cookies or undefined
+   * @example
+   * ```typescript
+   * const cookies = driver.cookie;
+   * ```
+   */
+  get cookie() {
+    return this.#cookie;
+  }
+
+  /**
+   * Sets session cookies and updates authentication status.
+   * @param cookie - Session cookies or undefined to clear
+   * @example
+   * ```typescript
+   * driver.cookie = ['session=xyz'];
+   * ```
+   */
+  set cookie(cookie: string[] | string | undefined) {
+    cookie ? this.#authenticated = true : this.#authenticated = false;
+    this.#cookie = cookie;
   }
 
   /**
@@ -98,7 +163,7 @@ export abstract class ZenikiCoreDriver {
           ? this.config.credentials
           : "same-origin",
       };
-
+      this.#cookie = headers.getSetCookie();
       this.#authenticated = true;
       this.config = cfg;
     } catch (error) {
@@ -116,6 +181,7 @@ export abstract class ZenikiCoreDriver {
    */
   public async unsetCookies() {
     this.#authenticated = false;
+    this.#cookie = undefined;
     this.config = this.#initial_config;
   }
 
