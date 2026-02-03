@@ -1,8 +1,11 @@
 import { HTTPError } from "../../../types";
 import { F5BigIPLoginResponse } from "../../../types/hw/f5/bigip/shared/f5-bigip-login-response";
-import { F5BigIPDeviceCollectionsState } from "../../../types/hw/f5/bigip/tm/cm/f5-bigip-device-collections-state";
+import { F5BigIPItemsResponse } from "../../../types/hw/f5/bigip/shared/f5-bigip-items-response";
 import { RequestConfig, ZenikiCoreDriver } from "../../base/zeniki-core-driver";
 import { queryBuilderSync } from "../../utils";
+import { F5BigIPDevice } from "../../../types/hw/f5/bigip/tm/cm/f5-bigip-device";
+import { F5BigIPCMSubDriver } from "./tm/cm/f5-bigip-cm-sub_driver";
+import { F5BigIPFirewallSubDriver } from "./security/firewall/f5-bigip-firewall-sub_driver";
 
 /**
  * Driver for F5 BIG-IP API.
@@ -17,16 +20,17 @@ import { queryBuilderSync } from "../../utils";
  * ```
  */
 export class F5BigIPDriver extends ZenikiCoreDriver {
-  /**
-   * Creates a new F5 BIG-IP driver instance.
-   * @param config - Request configuration
-   * @example
-   * ```typescript
-   * new F5BigIPDriver({ baseURL: 'https://bigip.example.com' });
-   * ```
-   */
+  public cluster_management: F5BigIPCMSubDriver;
+  public firewall: F5BigIPFirewallSubDriver;
   constructor(config: RequestConfig) {
     super(config);
+    this.cluster_management = new F5BigIPCMSubDriver(this.config);
+    this.firewall = new F5BigIPFirewallSubDriver(this.config);
+  }
+
+  private propagateConfig() {
+    this.cluster_management.setInstanceConfig(this.config);
+    this.firewall.setInstanceConfig(this.config);
   }
 
   /**
@@ -43,7 +47,7 @@ export class F5BigIPDriver extends ZenikiCoreDriver {
    */
   public async login(username: string, password: string, ha = false) {
     const response = await this.post<F5BigIPLoginResponse>(
-      this.config.baseURL + "/mgmt/shared/authn/login/",
+      this.config.baseURL + "/mgmt/shared/authn/login",
       {
         ...this.config,
         method: "POST",
@@ -70,24 +74,31 @@ export class F5BigIPDriver extends ZenikiCoreDriver {
       this.token = jsonResponse.token.token;
 
       if (ha) {
-        const dev_response = await this.get<F5BigIPDeviceCollectionsState>(
+        const dev_response = await this.get<
+          F5BigIPItemsResponse<F5BigIPDevice>
+        >(
           this.config.baseURL + "/mgmt/tm/cm/device",
           this.config,
         );
         if (dev_response.ok) {
           const deviceResponse = await dev_response.json();
-          const selfDeviceConfig = deviceResponse.items.find(
+          const selfDeviceConfig = deviceResponse.items?.find(
             // (yes really, the string 'true' is what we're after here)
             (deviceConfig) => deviceConfig.selfDevice === "true",
           );
           if (selfDeviceConfig?.failoverState !== "active") {
             this.logout();
-            return undefined;
+            throw new HTTPError(
+              "HA member is not primary, please login to active HA member.",
+              502,
+              response,
+              "BIGIP_HA_MEMBER",
+            );
           }
         }
       }
 
-      // this.propagateConfig();
+      this.propagateConfig();
       return jsonResponse;
     } else {
       throw new HTTPError(
@@ -118,7 +129,7 @@ export class F5BigIPDriver extends ZenikiCoreDriver {
     }
     const response = await this.delete<number>(
       this.config.baseURL +
-        `mgmt/shared/authz/tokens/${this.token}`,
+        `/mgmt/shared/authz/tokens/${this.token}`,
       {
         ...this.config,
         method: "DELETE",
@@ -129,6 +140,7 @@ export class F5BigIPDriver extends ZenikiCoreDriver {
       // 302 is considered OK in logout, as we do not follow redirect.
       this.resetInstanceConfig();
       this.token = undefined;
+      this.propagateConfig();
       return response.status;
     } else {
       throw new HTTPError(

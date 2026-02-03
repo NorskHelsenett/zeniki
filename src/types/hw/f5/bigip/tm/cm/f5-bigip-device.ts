@@ -4,6 +4,7 @@ import {
   StringBoolean,
   StringBooleans,
 } from "../../../../../common/common-types";
+import { F5BigIPPartial } from "../../shared/f5-bigip-partial";
 import { F5BigIPLinkReference } from "../../shared/f5-bigip-link-reference";
 import { F5BigIPUnicastAddress } from "../../shared/f5-bigip-unicast-address";
 
@@ -23,77 +24,65 @@ import { F5BigIPUnicastAddress } from "../../shared/f5-bigip-unicast-address";
  * };
  * ```
  */
-export interface F5BigIpDeviceState {
-  /** Resource kind identifier */
-  kind: string;
-  /** Device name */
-  name: string;
-  /** Configuration partition */
-  partition: string;
-  /** Full path to resource */
-  fullPath: string;
-  /** Configuration generation number */
-  generation: number;
-  /** Self-reference link */
-  selfLink: string;
+export interface F5BigIPDevice extends F5BigIPPartial {
   /** Active licensed modules */
-  activeModules: string[];
+  activeModules?: string[];
   /** Alternate IP address */
-  alternateIp: string;
+  alternateIp?: string;
   /** Base MAC address */
-  baseMac: string;
+  baseMac?: string;
   /** Software build number */
-  build: string;
+  build?: string;
   /** Device certificate */
-  cert: string;
+  cert?: string;
   /** Reference to certificate resource */
-  certReference: F5BigIPLinkReference;
+  certReference?: F5BigIPLinkReference;
   /** Chassis identifier */
-  chassisId: string;
+  chassisId?: string;
   /** Chassis type */
-  chassisType: string;
+  chassisType?: string;
   /** ConfigSync IP address */
-  configsyncIp: string;
+  configsyncIp?: string;
   /** Software edition */
-  edition: string;
+  edition?: string;
   /** High availability failover state */
-  failoverState: FailOverStates | FailoverState;
+  failoverState?: FailOverStates | FailoverState;
   /** HA capacity rating */
-  haCapacity: number;
+  haCapacity?: number;
   /** Device hostname */
-  hostname: string;
+  hostname?: string;
   /** Device license key */
-  key: string;
+  key?: string;
   /** Reference to key resource */
-  keyReference: F5BigIPLinkReference;
+  keyReference?: F5BigIPLinkReference;
   /** Management IP address */
-  managementIp: string;
+  managementIp?: string;
   /** Marketing product name */
-  marketingName: string;
+  marketingName?: string;
   /** Management unicast mode */
-  mgmtUnicastMode: string;
+  mgmtUnicastMode?: string;
   /** Mirror IP address */
-  mirrorIp: string;
+  mirrorIp?: string;
   /** Secondary mirror IP address */
-  mirrorSecondaryIp: string;
+  mirrorSecondaryIp?: string;
   /** Multicast interface name */
-  multicastInterface: string;
+  multicastInterface?: string;
   /** Multicast IP address */
   multicastIp: string;
   /** Multicast port number */
-  multicastPort: number;
+  multicastPort?: number;
   /** Optional licensed modules */
-  optionalModules: string[];
+  optionalModules?: string[];
   /** Platform identifier */
-  platformId: string;
+  platformId?: string;
   /** Product name */
-  product: string;
+  product?: string;
   /** Whether this is the local device */
-  selfDevice: StringBooleans | StringBoolean;
+  selfDevice?: StringBooleans | StringBoolean;
   /** Device timezone */
-  timeZone: string;
+  timeZone?: string;
   /** Software version */
-  version: string;
+  version?: string;
   /** Unicast address configurations */
-  unicastAddress: F5BigIPUnicastAddress[];
+  unicastAddress?: F5BigIPUnicastAddress[];
 }
