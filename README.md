@@ -12,11 +12,12 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Zeniki is a modern TypeScript library that provides type-safe, well-documented
-drivers for network infrastructure platforms including NetBox IPAM, FortiGate
-firewalls, VMware NSX, VMware AVI (NSX Advanced Load Balancer), ROR (Resource
-Orchestration Registry), and Network Architecture Management (NAM) v2. Features
-comprehensive type safety with NHN-specific custom field types, immutable API
-responses, and enterprise-grade network automation capabilities.
+drivers for network infrastructure platforms including NetBox IPAM, F5 BIG-IP
+load balancers, FortiGate firewalls, VMware NSX, VMware AVI (NSX Advanced Load
+Balancer), ROR (Resource Orchestration Registry), and Network Architecture
+Management (NAM) v2. Features comprehensive type safety with NHN-specific
+custom field types, immutable API responses, and enterprise-grade network
+automation capabilities.
 
 ## ⚠️ Breaking Changes in v0.5.0
 
@@ -126,7 +127,9 @@ console.log(`Found ${prefixes.count} active prefixes`);
 
 - 📖 **[NetBox Driver](src/core/tools/netbox/README.md)** - Complete IPAM and
   DCIM management
-- 🛡️ **[FortiOS Driver](src/core/hw/fortinet/README.md)** - Enterprise firewall
+- � **[F5 BIG-IP Driver](src/core/hw/f5/README.md)** - Load balancer and
+  application delivery controller management
+- �🛡️ **[FortiOS Driver](src/core/hw/fortinet/README.md)** - Enterprise firewall
   management
 - 🔧 **[VMware NSX Driver](src/core/hw/vmware/README.md)** - Software-defined
   networking

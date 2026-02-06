@@ -40,3 +40,17 @@ export type XCSRFTokenKeys =
   | "CSRF-Token"
   | "X-XSRF-TOKEN"
   | "X-Csrf-Token";
+
+export enum FailoverState {
+  ACTIVE = "active",
+  STANDBY = "standby",
+}
+
+export type FailOverStates = "active" | "standby";
+
+export enum StringBoolean {
+  TRUE = "true",
+  FALSE = "false",
+}
+
+export type StringBooleans = "true" | "false";

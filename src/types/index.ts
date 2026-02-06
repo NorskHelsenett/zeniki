@@ -55,6 +55,21 @@ export * from "./hw/fortios/shared/fortios-response";
 export * from "./hw/fortios/shared/fortios-revision-response";
 export * from "./hw/fortios/shared/fortios-firewall-addr-meta";
 
+// ===== F5 BIGIP SHARED TYPES =====
+export * from "./hw/f5/bigip/shared/f5-bigip-login-response";
+export * from "./hw/f5/bigip/shared/f5-bigip-login-token";
+export * from "./hw/f5/bigip/shared/f5-bigip-link-reference";
+export * from "./hw/f5/bigip/shared/f5-bigip-unicast-address";
+export * from "./hw/f5/bigip/shared/f5-bigip-partial";
+export * from "./hw/f5/bigip/shared/f5-bigip-items-response";
+
+// ===== F5 BIGIP SECURITY FIREWALL TYPES =====
+export * from "./hw/f5/bigip/security/firewall/f5-bigip-firewall-address";
+export * from "./hw/f5/bigip/security/firewall/f5-bigip-firewall-address-list";
+
+// ===== F5 BIGIP TM CM TYPES =====
+export * from "./hw/f5/bigip/tm/cm/f5-bigip-device";
+
 // ===== VMWARE NSX SHARED TYPES =====
 export * from "./hw/vmware/nsx/shared/vmware-nsx-common";
 export * from "./hw/vmware/nsx/shared/vmware-nsx-discovered-resource";
