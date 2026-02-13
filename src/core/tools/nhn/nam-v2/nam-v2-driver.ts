@@ -15,6 +15,8 @@ import { NAMAPIEndpointsSubDriver } from "./settings/nam-api-endpoints-sub_drive
 import { NAMDomainsSubDriver } from "./ipam/nam-domains-sub_driver";
 import { NAMNsxSecurityGroupsSubDriver } from "./vendors/nam-nsx-security-groups-sub_driver";
 import { NAMVitiNetworkPoliciesSubDriver } from "./vitistack/nam-viti-network-policies-sub_driver";
+import { NAMAviIntegratorsSubDriver } from "./vendors/nam-avi-integrators-sub_driver";
+import { NAMBigIPIntegratorsSubDriver } from "./vendors/nam-bigip-integrators-sub_driver";
 
 /**
  * NAM v2 driver for network architecture management with specialized sub-drivers.
@@ -43,6 +45,8 @@ export class NAMv2Driver extends ZenikiCoreDriver {
   public nsx_security_groups: NAMNsxSecurityGroupsSubDriver;
   public domains: NAMDomainsSubDriver;
   public viti_networkpolicies: NAMVitiNetworkPoliciesSubDriver;
+  public avi_integrators: NAMAviIntegratorsSubDriver;
+  public bigip_integrators: NAMBigIPIntegratorsSubDriver;
 
   /**
    * Initialize NAM v2 driver with request configuration.
@@ -64,6 +68,8 @@ export class NAMv2Driver extends ZenikiCoreDriver {
     this.nsx_security_groups = new NAMNsxSecurityGroupsSubDriver(config);
     this.domains = new NAMDomainsSubDriver(config);
     this.viti_networkpolicies = new NAMVitiNetworkPoliciesSubDriver(config);
+    this.avi_integrators = new NAMAviIntegratorsSubDriver(config);
+    this.bigip_integrators = new NAMBigIPIntegratorsSubDriver(config);
   }
 
   /**

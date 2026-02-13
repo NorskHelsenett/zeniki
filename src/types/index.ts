@@ -134,6 +134,8 @@ export * from "./tools/nhn/nam-v2/vendors/vmware/nam-nsx-security-group";
 export * from "./tools/nhn/nam-v2/integrators/nam-netbox-integrator";
 export * from "./tools/nhn/nam-v2/integrators/nam-ror-integrator";
 export * from "./tools/nhn/nam-v2/integrators/nam-nsx-integrator";
+export * from "./tools/nhn/nam-v2/integrators/nam-avi-integrators";
+export * from "./tools/nhn/nam-v2/integrators/nam-bigip-integrators";
 export * from "./tools/nhn/nam-v2/shared/nam-default-fields";
 export * from "./tools/nhn/nam-v2/shared/nam-params";
 export * from "./tools/nhn/nam-v2/shared/nam-api-endpoint-types";
