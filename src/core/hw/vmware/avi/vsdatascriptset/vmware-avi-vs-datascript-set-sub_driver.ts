@@ -109,7 +109,12 @@ export class VMwareAVIVSDataScriptSetSubDriver extends ZenikiCoreDriver {
     const path = `/vsdatascriptset/`;
     const response = await this.post<VMwareAVIVSDataScriptSet>(
       this.config.baseURL + path + queryBuilderSync(params as any),
-      { ...this.config, method: "POST", body: JSON.stringify(dataset) },
+      {
+        ...this.config,
+        referrer: this.config.baseURL.replace("/api", ""),
+        method: "POST",
+        body: JSON.stringify(dataset),
+      },
     );
 
     if (response.ok) {
@@ -143,41 +148,12 @@ export class VMwareAVIVSDataScriptSetSubDriver extends ZenikiCoreDriver {
     const path = `/vsdatascriptset/${uuid}`;
     const response = await this.put<VMwareAVIVSDataScriptSet>(
       this.config.baseURL + path + queryBuilderSync(params as any),
-      { ...this.config, method: "PUT", body: JSON.stringify(dataset) },
-    );
-
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new HTTPError(
-        `${response?.status} ${response.statusText}`,
-        response.status,
-        response,
-      );
-    }
-  }
-
-  /**
-   * Partially updates an existing DataScript set.
-   * @param uuid - DataScript set UUID
-   * @param dataset - Partial DataScript set configuration
-   * @param params - Optional query parameters
-   * @returns Updated DataScript set
-   * @throws {HTTPError} When patch fails
-   * @example
-   * ```typescript
-   * const patched = await driver.patchVSDataScriptSet('uuid', { datascript: [...] });
-   * ```
-   */
-  async patchVSDataScriptSet(
-    uuid: string,
-    dataset: Partial<VMwareAVIVSDataScriptSet>,
-    params?: { [key: string]: any } | VMwareAVIParams | URLSearchParams,
-  ): Promise<VMwareAVIVSDataScriptSet> {
-    const path = `/vsdatascriptset/${uuid}`;
-    const response = await this.patch<VMwareAVIVSDataScriptSet>(
-      this.config.baseURL + path + queryBuilderSync(params as any),
-      { ...this.config, method: "PATCH", body: JSON.stringify(dataset) },
+      {
+        ...this.config,
+        referrer: this.config.baseURL.replace("/api", ""),
+        method: "PUT",
+        body: JSON.stringify(dataset),
+      },
     );
 
     if (response.ok) {
@@ -209,7 +185,11 @@ export class VMwareAVIVSDataScriptSetSubDriver extends ZenikiCoreDriver {
     const path = `/vsdatascriptset/${uuid}`;
     const response = await this.delete<VMwareAVIVSDataScriptSet>(
       this.config.baseURL + path + queryBuilderSync(params as any),
-      { ...this.config, method: "DELETE" },
+      {
+        ...this.config,
+        referrer: this.config.baseURL.replace("/api", ""),
+        method: "DELETE",
+      },
     );
 
     if (response.ok) {
