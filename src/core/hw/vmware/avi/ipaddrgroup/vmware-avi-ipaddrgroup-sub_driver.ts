@@ -104,10 +104,16 @@ export class VMwareAVIIpAddrGroupSubDriver extends ZenikiCoreDriver {
     group: Partial<VMwareAVIIpAddrGroup>,
     params?: { [key: string]: any } | VMwareAVIParams | URLSearchParams,
   ): Promise<VMwareAVIIpAddrGroup> {
+    console.log("Current config in addIpAddrGroup", this.config);
     const path = `/ipaddrgroup/`;
     const response = await this.post<VMwareAVIIpAddrGroup>(
       this.config.baseURL + path + queryBuilderSync(params as any),
-      { ...this.config, method: "POST", body: JSON.stringify(group) },
+      {
+        ...this.config,
+        referrer: this.config.baseURL.replace("/api", ""),
+        method: "POST",
+        body: JSON.stringify(group),
+      },
     );
 
     if (response.ok) {
@@ -141,41 +147,12 @@ export class VMwareAVIIpAddrGroupSubDriver extends ZenikiCoreDriver {
     const path = `/ipaddrgroup/${uuid}`;
     const response = await this.put<VMwareAVIIpAddrGroup>(
       this.config.baseURL + path + queryBuilderSync(params as any),
-      { ...this.config, method: "PUT", body: JSON.stringify(group) },
-    );
-
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new HTTPError(
-        `${response?.status} ${response.statusText}`,
-        response.status,
-        response,
-      );
-    }
-  }
-
-  /**
-   * Partially updates an existing IP address group.
-   * @param uuid - IP address group UUID
-   * @param group - Partial IP address group configuration
-   * @param params - Optional query parameters
-   * @returns Updated IP address group
-   * @throws {HTTPError} When patch fails
-   * @example
-   * ```typescript
-   * const patched = await driver.patchIpAddrGroup('uuid', { addrs: [...] });
-   * ```
-   */
-  async patchIpAddrGroup(
-    uuid: string,
-    group: Partial<VMwareAVIIpAddrGroup>,
-    params?: { [key: string]: any } | VMwareAVIParams | URLSearchParams,
-  ): Promise<VMwareAVIIpAddrGroup> {
-    const path = `/ipaddrgroup/${uuid}`;
-    const response = await this.patch<VMwareAVIIpAddrGroup>(
-      this.config.baseURL + path + queryBuilderSync(params as any),
-      { ...this.config, method: "PATCH", body: JSON.stringify(group) },
+      {
+        ...this.config,
+        referrer: this.config.baseURL.replace("/api", ""),
+        method: "PUT",
+        body: JSON.stringify(group),
+      },
     );
 
     if (response.ok) {
@@ -207,7 +184,11 @@ export class VMwareAVIIpAddrGroupSubDriver extends ZenikiCoreDriver {
     const path = `/ipaddrgroup/${uuid}`;
     const response = await this.delete<VMwareAVIIpAddrGroup>(
       this.config.baseURL + path + queryBuilderSync(params as any),
-      { ...this.config, method: "DELETE" },
+      {
+        ...this.config,
+        referrer: this.config.baseURL.replace("/api", ""),
+        method: "DELETE",
+      },
     );
 
     if (response.ok) {
