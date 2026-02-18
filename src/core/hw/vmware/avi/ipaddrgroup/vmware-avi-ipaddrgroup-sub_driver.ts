@@ -104,7 +104,6 @@ export class VMwareAVIIpAddrGroupSubDriver extends ZenikiCoreDriver {
     group: Partial<VMwareAVIIpAddrGroup>,
     params?: { [key: string]: any } | VMwareAVIParams | URLSearchParams,
   ): Promise<VMwareAVIIpAddrGroup> {
-    console.log("Current config in addIpAddrGroup", this.config);
     const path = `/ipaddrgroup/`;
     const response = await this.post<VMwareAVIIpAddrGroup>(
       this.config.baseURL + path + queryBuilderSync(params as any),
