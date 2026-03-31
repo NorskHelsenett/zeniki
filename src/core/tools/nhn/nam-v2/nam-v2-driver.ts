@@ -1,7 +1,7 @@
 import {
-  ZenikiCoreDriver,
   RequestConfig,
   ResponseGeneric,
+  ZenikiCoreDriver,
 } from "../../../base/zeniki-core-driver";
 import { NAMResponse } from "../../../../types/tools/nhn/nam-v2/shared/nam-response";
 import { HTTPError } from "../../../../types";
@@ -17,6 +17,7 @@ import { NAMNsxSecurityGroupsSubDriver } from "./vendors/nam-nsx-security-groups
 import { NAMVitiNetworkPoliciesSubDriver } from "./vitistack/nam-viti-network-policies-sub_driver";
 import { NAMAviIntegratorsSubDriver } from "./vendors/nam-avi-integrators-sub_driver";
 import { NAMBigIPIntegratorsSubDriver } from "./vendors/nam-bigip-integrators-sub_driver";
+import { NAMPassIntegratorsSubDriver } from "./vendors/nam-pass-integrators-sub_driver";
 
 /**
  * NAM v2 driver for network architecture management with specialized sub-drivers.
@@ -47,6 +48,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
   public viti_networkpolicies: NAMVitiNetworkPoliciesSubDriver;
   public avi_integrators: NAMAviIntegratorsSubDriver;
   public bigip_integrators: NAMBigIPIntegratorsSubDriver;
+  public pass_integrators: NAMPassIntegratorsSubDriver;
 
   /**
    * Initialize NAM v2 driver with request configuration.
@@ -70,6 +72,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
     this.viti_networkpolicies = new NAMVitiNetworkPoliciesSubDriver(config);
     this.avi_integrators = new NAMAviIntegratorsSubDriver(config);
     this.bigip_integrators = new NAMBigIPIntegratorsSubDriver(config);
+    this.pass_integrators = new NAMPassIntegratorsSubDriver(config);
   }
 
   /**
@@ -87,10 +90,9 @@ export class NAMv2Driver extends ZenikiCoreDriver {
     url: string | URL | Request,
     params?: { [key: string]: any },
   ): Promise<T> {
-    const fullUrl =
-      typeof url === "string" && !url.startsWith("http")
-        ? this.config.baseURL + url + queryBuilderSync(params as any)
-        : url;
+    const fullUrl = typeof url === "string" && !url.startsWith("http")
+      ? this.config.baseURL + url + queryBuilderSync(params as any)
+      : url;
     const response = await this.get<T>(fullUrl, {
       ...this.config,
       method: "GET",
@@ -136,10 +138,9 @@ export class NAMv2Driver extends ZenikiCoreDriver {
         );
       }
     }
-    const fullUrl =
-      typeof url === "string" && !url.startsWith("http")
-        ? this.config.baseURL + url + queryBuilderSync(params as any)
-        : url;
+    const fullUrl = typeof url === "string" && !url.startsWith("http")
+      ? this.config.baseURL + url + queryBuilderSync(params as any)
+      : url;
     const response = await this.get<T>(fullUrl, {
       ...this.config,
       method: "GET",
