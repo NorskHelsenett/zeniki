@@ -1,3 +1,5 @@
+import { VMwareNSXParamActionTagTypes } from "./vmware-nsx-common";
+
 /**
  * VMware NSX query parameters interface for API request configuration and result filtering.
  *
@@ -7,8 +9,13 @@
  * ```
  */
 export interface VMwareNSXParams {
+  action?: VMwareNSXParamActionTagTypes;
+
   /** Opaque cursor for pagination to next page of records */
   cursor?: string;
+  display_name?: string;
+  external_id?: string;
+  host_id?: string;
   /** Include resources marked for deletion in results
    * @default false
    */
