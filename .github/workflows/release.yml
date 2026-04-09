@@ -3,13 +3,13 @@ name: Release
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write  # Required for npm provenance/trusted publishing
+      id-token: write # Required for npm provenance/trusted publishing
       contents: write
       packages: write
 
@@ -26,9 +26,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          registry-url: 'https://registry.npmjs.org'
-          scope: '@norskhelsenett'
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+          scope: "@norskhelsenett"
 
       - name: Extract version from tag
         id: version
@@ -41,10 +41,10 @@ jobs:
       - name: Update package.json version
         run: |
           npm version ${{ steps.version.outputs.version }} --no-git-tag-version
-      
+
       - name: NPM Update
         run: npm install -g npm@latest
-        
+
       - name: Install dependencies
         run: npm install
 
