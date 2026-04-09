@@ -132,3 +132,8 @@ export type VMwareNSXIPAddressInfoSourceValues = "VM_TOOLS";
 
 // String literal union for site types
 export type VMwareNSXSiteTypes = "ONPREM_LM" | "SDDC_LM";
+
+export type VMwareNSXParamActionTagTypes =
+  | "add_tags"
+  | "remove_tags"
+  | "update_tags";

@@ -13,6 +13,7 @@ import { VMwareNSXGroupsSubDriver } from "./groups/vmware-nsx-groups-sub_driver"
 import { VMwareNSXSearchSubDriver } from "./search/vmware-nsx-search-sub_driver";
 import { VMwareNSXVirtualInterfacesSubDriver } from "./inventory/vmware-nsx-virtual-interfaces-sub_driver";
 import { VMwareNSXSitesSubDriver } from "./sites/vmware-nsx-sites-sub_driver";
+import { VMwareNSXVirtualMachinesSubDriver } from "./virtual-machines/vmware-nsx-virtual-machines-sub_driver";
 
 /**
  * VMware NSX-T driver for policy-based network security and micro-segmentation.
@@ -33,6 +34,7 @@ export class VMwareNSXDriver extends ZenikiCoreDriver {
   public search: VMwareNSXSearchSubDriver;
   public sites: VMwareNSXSitesSubDriver;
   public virtualInterfaces: VMwareNSXVirtualInterfacesSubDriver;
+  public virtual_machines: VMwareNSXVirtualMachinesSubDriver;
 
   constructor(public config: RequestConfig) {
     super(config);
@@ -40,6 +42,7 @@ export class VMwareNSXDriver extends ZenikiCoreDriver {
     this.search = new VMwareNSXSearchSubDriver(config);
     this.sites = new VMwareNSXSitesSubDriver(config);
     this.virtualInterfaces = new VMwareNSXVirtualInterfacesSubDriver(config);
+    this.virtual_machines = new VMwareNSXVirtualMachinesSubDriver(config);
   }
 
   /**
