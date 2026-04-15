@@ -130,6 +130,7 @@ export * from "./hw/vmware/avi/vsdatascriptset/vmware-avi-vs-datascript-set";
 export * from "./tools/nhn/nam-v2/nam-api-endpoint";
 export * from "./tools/nhn/nam-v2/nam-api-endpoint-ssl";
 export * from "./tools/nhn/nam-v2/nam-fortios-vdom";
+export * from "./tools/nhn/nam-v2/nam-vitistack-config";
 export * from "./tools/nhn/nam-v2/vendors/vmware/nam-nsx-security-group";
 export * from "./tools/nhn/nam-v2/integrators/nam-netbox-integrator";
 export * from "./tools/nhn/nam-v2/integrators/nam-ror-integrator";
@@ -142,7 +143,17 @@ export * from "./tools/nhn/nam-v2/shared/nam-params";
 export * from "./tools/nhn/nam-v2/shared/nam-api-endpoint-types";
 export * from "./tools/nhn/nam-v2/shared/nam-response";
 export * from "./tools/nhn/nam-v2/ipam/nam-domain";
+export * from "./tools/nhn/nam-v2/ipam/nam-vxlan";
+export * from "./tools/nhn/nam-v2/ipam/nam-asn";
+export * from "./tools/nhn/nam-v2/dcim/nam-container";
+export * from "./tools/nhn/nam-v2/dcim/nam-acl";
+export * from "./tools/nhn/nam-v2/dcim/nam-acl-rule";
+export * from "./tools/nhn/nam-v2/dcim/nam-snmp-location";
+export * from "./tools/nhn/nam-v2/dcim/nam-snmp-community";
+export * from "./tools/nhn/nam-v2/dcim/nam-device";
+export * from "./tools/nhn/nam-v2/dcim/nam-credentials";
 export * from "./tools/nhn/nam-v2/vitistack/nam-viti-network-policy";
+export * from "./tools/nhn/nam-v2/webhooks/nam-k8s-namespace-webhook";
 
 // ===== ROR V1 TYPES =====
 export * from "./tools/nhn/ror-v1/clusters/ror-cluster-control-plane-metadata";
