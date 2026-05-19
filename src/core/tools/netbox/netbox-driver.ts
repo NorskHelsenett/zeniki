@@ -14,6 +14,7 @@ import { NetboxTagsSubDriver } from "./extras/netbox-tags-sub_driver";
 import { NetboxVrfsSubDriver } from "./ipam/netbox-vrfs-sub_driver";
 import { NetboxVlansSubDriver } from "./ipam/netbox-vlans-sub_driver";
 import { NetboxDevicesSubDriver } from "./dcim/netbox-devices-sub_driver";
+import { NetboxDeviceTypesSubDriver } from "./dcim/netbox-device-types_sub_driver";
 
 /**
  * NetBox API driver providing type-safe interface for NetBox REST API.
@@ -49,6 +50,7 @@ export class NetboxDriver extends ZenikiCoreDriver {
   public vrfs: NetboxVrfsSubDriver;
   public vlans: NetboxVlansSubDriver;
   public devices: NetboxDevicesSubDriver;
+  public device_types: NetboxDeviceTypesSubDriver;
 
   constructor(config: RequestConfig) {
     super(config);
@@ -60,6 +62,7 @@ export class NetboxDriver extends ZenikiCoreDriver {
     this.vrfs = new NetboxVrfsSubDriver(config);
     this.vlans = new NetboxVlansSubDriver(config);
     this.devices = new NetboxDevicesSubDriver(config);
+    this.device_types = new NetboxDeviceTypesSubDriver(config);
 
   }
 
