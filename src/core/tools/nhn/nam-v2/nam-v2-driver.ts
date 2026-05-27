@@ -18,6 +18,7 @@ import { NAMVitiNetworkPoliciesSubDriver } from "./vitistack/nam-viti-network-po
 import { NAMAviIntegratorsSubDriver } from "./vendors/nam-avi-integrators-sub_driver";
 import { NAMBigIPIntegratorsSubDriver } from "./vendors/nam-bigip-integrators-sub_driver";
 import { NAMPassIntegratorsSubDriver } from "./vendors/nam-pass-integrators-sub_driver";
+import { NAMFagIntegratorsSubDriver } from "./vendors/nam-fag-integrators-sub_driver";
 import { NAMK8sNamespaceWebhooksSubDriver } from "./webhooks/nam-k8s-namspace-webhooks-sub_driver";
 import { NAMVitistackConfigsSubDriver } from "./settings/nam-vitistack-configs-sub_driver";
 import { NAMContainersSubDriver } from "./dcim/nam-containers-sub_driver";
@@ -53,6 +54,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
   public avi_integrators: NAMAviIntegratorsSubDriver;
   public bigip_integrators: NAMBigIPIntegratorsSubDriver;
   public pass_integrators: NAMPassIntegratorsSubDriver;
+  public fag_integrators: NAMFagIntegratorsSubDriver;
   public k8s_namespace_webhooks: NAMK8sNamespaceWebhooksSubDriver;
   public vitistack_configs: NAMVitistackConfigsSubDriver;
   public containers: NAMContainersSubDriver;
@@ -81,6 +83,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
     this.avi_integrators = new NAMAviIntegratorsSubDriver(config);
     this.bigip_integrators = new NAMBigIPIntegratorsSubDriver(config);
     this.pass_integrators = new NAMPassIntegratorsSubDriver(config);
+    this.fag_integrators = new NAMFagIntegratorsSubDriver(config);
     this.k8s_namespace_webhooks = new NAMK8sNamespaceWebhooksSubDriver(config);
     this.vitistack_configs = new NAMVitistackConfigsSubDriver(config);
     this.containers = new NAMContainersSubDriver(config);
