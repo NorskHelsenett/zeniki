@@ -23,6 +23,7 @@ import { NAMK8sNamespaceWebhooksSubDriver } from "./webhooks/nam-k8s-namspace-we
 import { NAMVitistackConfigsSubDriver } from "./settings/nam-vitistack-configs-sub_driver";
 import { NAMContainersSubDriver } from "./dcim/nam-containers-sub_driver";
 import { NAMDevicesSubDriver } from "./dcim/nam-devices-sub_driver";
+import { NAMVxlansSubDriver } from "./ipam/nam-vxlans-sub_driver";
 
 /**
  * NAM v2 driver for network architecture management with specialized sub-drivers.
@@ -59,7 +60,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
   public vitistack_configs: NAMVitistackConfigsSubDriver;
   public containers: NAMContainersSubDriver;
   public devices: NAMDevicesSubDriver;
-
+  public vxlans: NAMVxlansSubDriver;
   /**
    * Initialize NAM v2 driver with request configuration.
    * @param config - Request configuration including base URL and headers
@@ -88,6 +89,7 @@ export class NAMv2Driver extends ZenikiCoreDriver {
     this.vitistack_configs = new NAMVitistackConfigsSubDriver(config);
     this.containers = new NAMContainersSubDriver(config);
     this.devices = new NAMDevicesSubDriver(config);
+    this.vxlans = new NAMVxlansSubDriver(config);
   }
 
   /**
